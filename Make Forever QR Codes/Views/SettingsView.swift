@@ -15,15 +15,15 @@ struct SettingsView: View {
             List {
                 Section("How it works") {
                     InfoRow(symbol: "infinity", title: "Codes never expire",
-                            text: "The information is stored inside the squares. No server sits in between, so nobody can switch your code off.")
+                            text: "The information is saved on your device. No server sits in between, so nobody can switch your code off.")
                     InfoRow(symbol: "printer", title: "Print it, it's yours",
                             text: "Printed codes keep working forever. To stop using one, throw away the paper.")
                     InfoRow(symbol: "trash", title: "Deleting",
                             text: "Deleting a code only removes it from My Codes. Printed or shared copies keep working.")
-                    InfoRow(symbol: "pencil.slash", title: "Printed codes can't change",
-                            text: "To send people somewhere new, make a new code and reprint it.")
                     InfoRow(symbol: "link", title: "Links",
                             text: "A link code works as long as the website exists. Every other kind works with no internet at all.")
+                    InfoRow(symbol: "pencil.slash", title: "Printed codes can't change",
+                            text: "Printed a code with the wrong information? Fix it in the app and print it again.")
                 }
                 Section("Privacy") {
                     InfoRow(symbol: "lock.shield", title: "Nothing leaves your phone",
@@ -31,7 +31,6 @@ struct SettingsView: View {
                 }
                 Section {
                     LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0")
-                    LabeledContent("Price", value: "Free, forever")
                 }
             }
             .navigationTitle("Settings")
