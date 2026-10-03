@@ -32,10 +32,10 @@ Everything runs on the device. No account, no analytics, no network calls. Saved
 - iOS 27 or later (iPhone and iPad)
 - Xcode 26 or later to build
 
-## License
-
-Make Forever QR Codes is free and open source under the [MIT License](LICENSE). You're welcome to use it, learn from it, change it and share it. Just keep the copyright notice.
-
 ## Author
 
 Made by **Senalbert Rodriguez**.
+
+## License
+
+Make Forever QR Codes is free and open source under the [MIT License](LICENSE). You're welcome to use it, learn from it, change it and share it. Just keep the copyright notice.
