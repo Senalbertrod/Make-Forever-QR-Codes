@@ -1,6 +1,6 @@
 # Make Forever QR Codes
 
-Free QR codes that never expire. No account, no ads, no tracking, no subscription.
+Free QR codes that never expire. No account, no ads, no tracking, no subscription. Free and open source.
 
 Most QR services make "dynamic" codes that point to their own server, and the codes stop working when you stop paying. Make Forever QR Codes only makes codes where the information lives inside the squares, so nobody can ever switch them off. Make it, print it, it's yours forever.
 
@@ -31,6 +31,10 @@ Everything runs on the device. No account, no analytics, no network calls. Saved
 
 - iOS 27 or later (iPhone and iPad)
 - Xcode 26 or later to build
+
+## License
+
+Make Forever QR Codes is free and open source under the [MIT License](LICENSE). You're welcome to use it, learn from it, change it and share it. Just keep the copyright notice.
 
 ## Author
 
