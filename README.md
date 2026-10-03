@@ -1,12 +1,14 @@
 # Make Forever QR Codes
 
+Shown on the Home Screen as **MF QR Code**.
+
 Free QR codes that never expire. No account, no ads, no tracking, no subscription. Free and open source.
 
 Most QR services make "dynamic" codes that point to their own server, and the codes stop working when you stop paying. Make Forever QR Codes only makes codes where the information lives inside the squares, so nobody can ever switch them off. Make it, print it, it's yours forever.
 
 ## What it does
 
-- **9 kinds of codes:** link, business card, Wi-Fi, text, phone, text message, email, map location, calendar event
+- **6 kinds of codes:** link, business card, Wi-Fi, text, map location, calendar event
 - **Live preview** while you type, with optional colors (and a warning if they're hard to scan)
 - **My Codes:** every code saved with a name, favorites, search, rename, duplicate, delete
 - **Share or save** the code as an image

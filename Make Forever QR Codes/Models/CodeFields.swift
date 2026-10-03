@@ -61,18 +61,6 @@ struct CodeFields: Codable, Equatable {
     // Text
     var text = ""
 
-    // Phone
-    var phoneNumber = ""
-
-    // Message
-    var messageNumber = ""
-    var messageText = ""
-
-    // Email
-    var emailTo = ""
-    var emailSubject = ""
-    var emailBody = ""
-
     // Location
     var locationMode: LocationMode = .address
     var address = ""

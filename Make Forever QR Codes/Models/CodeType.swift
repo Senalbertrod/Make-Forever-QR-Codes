@@ -9,7 +9,7 @@
 import Foundation
 
 enum CodeType: String, CaseIterable, Identifiable, Codable {
-    case link, contact, wifi, text, phone, message, email, location, event
+    case link, contact, wifi, text, location, event
 
     var id: String { rawValue }
 
@@ -19,9 +19,6 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
         case .contact: "Business Card"
         case .wifi: "Wi-Fi"
         case .text: "Text"
-        case .phone: "Phone"
-        case .message: "Message"
-        case .email: "Email"
         case .location: "Location"
         case .event: "Event"
         }
@@ -33,9 +30,6 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
         case .contact: "person.crop.rectangle"
         case .wifi: "wifi"
         case .text: "text.alignleft"
-        case .phone: "phone"
-        case .message: "message"
-        case .email: "envelope"
         case .location: "mappin.and.ellipse"
         case .event: "calendar"
         }
@@ -48,9 +42,6 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
         case .contact: "Offers to add the contact"
         case .wifi: "Joins the Wi-Fi network"
         case .text: "Shows the text"
-        case .phone: "Offers to call the number"
-        case .message: "Opens a text message, ready to send"
-        case .email: "Opens a new email, ready to send"
         case .location: "Opens the spot in Maps"
         case .event: "Offers to add the event to the calendar"
         }
@@ -93,27 +84,6 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
 
         case .text:
             return f.text.trimmed.isEmpty ? nil : f.text
-
-        case .phone:
-            let number = f.phoneNumber.dialable
-            return number.isEmpty ? nil : "tel:" + number
-
-        case .message:
-            let number = f.messageNumber.dialable
-            guard !number.isEmpty else { return nil }
-            return "SMSTO:\(number):\(f.messageText)"
-
-        case .email:
-            let to = f.emailTo.trimmed
-            guard !to.isEmpty else { return nil }
-            var parts = URLComponents()
-            parts.scheme = "mailto"
-            parts.path = to
-            var items: [URLQueryItem] = []
-            if !f.emailSubject.trimmed.isEmpty { items.append(URLQueryItem(name: "subject", value: f.emailSubject)) }
-            if !f.emailBody.trimmed.isEmpty { items.append(URLQueryItem(name: "body", value: f.emailBody)) }
-            if !items.isEmpty { parts.queryItems = items }
-            return parts.string
 
         case .location:
             var parts = URLComponents(string: "https://maps.apple.com/")!
@@ -163,9 +133,6 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
             return name.isEmpty ? (f.company.trimmed.isEmpty ? "Business Card" : f.company.trimmed) : name
         case .wifi: return f.ssid.trimmed.isEmpty ? "Wi-Fi" : "Wi-Fi: \(f.ssid.trimmed)"
         case .text: return String(f.text.trimmed.prefix(30))
-        case .phone: return "Call \(f.phoneNumber.trimmed)"
-        case .message: return "Text \(f.messageNumber.trimmed)"
-        case .email: return "Email \(f.emailTo.trimmed)"
         case .location: return f.placeName.trimmed.isEmpty ? "Location" : f.placeName.trimmed
         case .event: return f.eventTitle.trimmed.isEmpty ? "Event" : f.eventTitle.trimmed
         }
@@ -208,6 +175,4 @@ extension String {
         return out
     }
 
-    /// Keeps only characters a phone can dial.
-    var dialable: String { filter { "+0123456789*#".contains($0) } }
 }
