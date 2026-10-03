@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct Make_Forever_QR_CodesApp: App {
@@ -13,5 +14,7 @@ struct Make_Forever_QR_CodesApp: App {
         WindowGroup {
             ContentView()
         }
+        // Saved codes stay on this device.
+        .modelContainer(for: SavedCode.self)
     }
 }

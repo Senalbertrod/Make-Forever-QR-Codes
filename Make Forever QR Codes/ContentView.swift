@@ -2,23 +2,27 @@
 //  ContentView.swift
 //  Make Forever QR Codes
 //
-//  Created by Senalbert Rodriguez on 10/3/26.
+//  Two tabs: Make and My Codes.
 //
 
 import SwiftUI
 
 struct ContentView: View {
+    @State private var selection = 0
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView(selection: $selection) {
+            Tab("Make", systemImage: "qrcode", value: 0) {
+                MakeView(onSaved: { selection = 1 })
+            }
+            Tab("My Codes", systemImage: "square.grid.2x2", value: 1) {
+                MyCodesView()
+            }
         }
-        .padding()
     }
 }
 
 #Preview {
     ContentView()
+        .modelContainer(for: SavedCode.self, inMemory: true)
 }
