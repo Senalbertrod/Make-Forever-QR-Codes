@@ -20,16 +20,23 @@ final class SavedCode {
     var foregroundHex: String = "#000000"
     var backgroundHex: String = "#FFFFFF"
     var isFavorite: Bool = false
+    /// Show the kind's icon in the middle of the code.
+    var showIcon: Bool = false
+    /// Saved from the Scan tab (exactly as scanned).
+    var isScanned: Bool = false
     var createdAt: Date = Date()
 
     init(name: String, type: CodeType, payload: String, fields: CodeFields,
-         foregroundHex: String = "#000000", backgroundHex: String = "#FFFFFF") {
+         foregroundHex: String = "#000000", backgroundHex: String = "#FFFFFF",
+         showIcon: Bool = false, isScanned: Bool = false) {
         self.name = name
         self.typeRaw = type.rawValue
         self.payload = payload
         self.fieldsData = fields.encoded()
         self.foregroundHex = foregroundHex
         self.backgroundHex = backgroundHex
+        self.showIcon = showIcon
+        self.isScanned = isScanned
         self.createdAt = Date()
     }
 
@@ -37,11 +44,15 @@ final class SavedCode {
     var fields: CodeFields { CodeFields.decoded(from: fieldsData) }
     var foreground: UIColor { UIColor(hex: foregroundHex) ?? .black }
     var background: UIColor { UIColor(hex: backgroundHex) ?? .white }
+    var icon: CodeType? { showIcon ? type : nil }
+
+    /// Scanned codes can be edited only when the form rebuilds exactly the same code.
+    var canEdit: Bool { !isScanned || type.payload(from: fields) == payload }
 
     /// Long codes have tiny squares that are hard to scan from a watch screen.
     var isDenseForWatch: Bool { Data(payload.utf8).count > QRRenderer.denseBytes }
 
     func image(size: CGFloat) -> UIImage? {
-        QRRenderer.image(for: payload, size: size, foreground: foreground, background: background)
+        QRRenderer.image(for: payload, size: size, foreground: foreground, background: background, icon: icon)
     }
 }

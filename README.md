@@ -8,27 +8,29 @@ Most QR services make "dynamic" codes that point to their own server, and the co
 
 ## What it does
 
-- **6 kinds of codes:** link, business card, Wi-Fi, text, map location, calendar event
+- **7 kinds of codes:** link, contact, social profile, Wi-Fi, text, map location, calendar event
+- **Icon in the middle** (optional): a small icon for the kind of code, drawn by the app
 - **Live preview** while you type, with optional colors (and a warning if they're hard to scan)
 - **My Codes:** every code saved with a name, favorites, search, rename, duplicate, delete
 - **Share or save** the code as an image
 - **Print right from the app:** one large code, a code with a caption, or a sheet of small codes, in three sizes, or save a PDF for a print shop
 - **Full-screen mode** for someone to scan, with the screen kept awake
-- **Business cards** with up to 3 phones, 3 emails, 3 websites, 3 social profiles and 2 addresses, each with a label
-- **Fill from my contact card** for business cards (the app only sees the one contact you pick)
+- **Contacts** with up to 3 phones, 3 emails, 3 websites, 3 social profiles and 2 addresses, each with a label
+- **Fill from my contact card** for contacts (the app only sees the one contact you pick)
 - **Apple Watch:** your favorite codes on your wrist, full screen with a tap. They come straight from your iPhone (no iCloud) and stay on the watch
 - Light mode, dark mode and tinted app icons
 
-Scanning is left to the iPhone's own Camera app, which already does it perfectly.
+- **Scan tab:** scan with the camera or from a photo. It shows what's inside before anything opens, with buttons to open, add to Contacts or Calendar, or copy a Wi-Fi password. Save to My Codes only if you want
+- **Safety checks, all on the phone:** look-alike letters, hidden real addresses, short links, number addresses, risky downloads, "http" without the "s", open Wi-Fi. No website or downloaded list is used
 
 ## Privacy
 
-Everything runs on the device. No account, no analytics, no network calls. Saved codes stay on your iPhone. App Store privacy label: **Data Not Collected**.
+Everything runs on the device. No account, no analytics, no network calls. The camera is only used to read codes, and nothing it sees is saved or sent. Saved codes stay on your iPhone. App Store privacy label: **Data Not Collected**.
 
 ## Coming next
 
 - A "Make Forever QR Code" action in the Share menu (Safari and other apps)
-- Apple Watch app: show your favorite codes from your wrist
+- Apple Watch: a watch face complication and Siri
 - iPad layout
 
 ## Requirements

@@ -44,7 +44,7 @@ struct ContactPicker: UIViewControllerRepresentable {
 }
 
 extension CodeFields {
-    /// Copies a contact's details into the business card fields.
+    /// Copies a contact's details into the contact fields.
     mutating func fill(from c: CNContact) {
         func has(_ key: String) -> Bool { c.isKeyAvailable(key) }
         if has(CNContactGivenNameKey) { firstName = c.givenName }

@@ -11,11 +11,13 @@ struct QRCodeImage: View {
     let payload: String?
     var foreground: UIColor = .black
     var background: UIColor = .white
+    var icon: CodeType? = nil
     var pixelSize: CGFloat = 1024
 
     var body: some View {
         if let payload, let image = QRRenderer.image(for: payload, size: pixelSize,
-                                                     foreground: foreground, background: background) {
+                                                     foreground: foreground, background: background,
+                                                     icon: icon) {
             Image(uiImage: image)
                 .interpolation(.none)
                 .resizable()

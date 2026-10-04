@@ -16,7 +16,8 @@ struct FullScreenCodeView: View {
             Color.white.ignoresSafeArea()
             VStack(spacing: 24) {
                 Spacer()
-                QRCodeImage(payload: code.payload, foreground: code.foreground, background: code.background)
+                QRCodeImage(payload: code.payload, foreground: code.foreground, background: code.background,
+                            icon: code.icon)
                     .padding(24)
                 Text(code.name)
                     .font(.title2.weight(.semibold))

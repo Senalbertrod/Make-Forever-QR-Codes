@@ -2,7 +2,7 @@
 //  ContactSections.swift
 //  Make Forever QR Codes
 //
-//  Business card form sections with a + button: phones, emails, websites,
+//  Contact form sections with a + button: phones, emails, websites,
 //  addresses and social profiles. The + disappears at the limit.
 //
 

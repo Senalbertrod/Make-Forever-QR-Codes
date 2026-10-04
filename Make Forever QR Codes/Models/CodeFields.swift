@@ -38,7 +38,7 @@ struct CodeFields: Codable, Equatable {
     // Link
     var url = ""
 
-    // Business card
+    // Contact
     var firstName = ""
     var lastName = ""
     var company = ""
@@ -57,6 +57,10 @@ struct CodeFields: Codable, Equatable {
     var websiteList: [LabeledValue]? = nil
     var addressList: [PostalAddress]? = nil
     var socialList: [SocialProfile]? = nil
+
+    // Social profile (optional so codes saved before it existed still load)
+    var socialServiceValue: SocialService? = nil
+    var socialHandleValue: String? = nil
 
     // Wi-Fi
     var ssid = ""

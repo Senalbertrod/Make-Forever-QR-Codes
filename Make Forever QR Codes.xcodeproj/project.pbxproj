@@ -332,6 +332,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "MF QR Code";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Lets you scan QR codes. Nothing the camera sees is saved or sent.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Lets you save your QR codes to Photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -366,6 +367,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "MF QR Code";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Lets you scan QR codes. Nothing the camera sees is saved or sent.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Lets you save your QR codes to Photos.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

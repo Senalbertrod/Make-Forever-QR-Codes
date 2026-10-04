@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Make Forever QR Codes
 //
-//  Two tabs: Make and My Codes. Also keeps the watch's favorites up to date.
+//  Three tabs: Make, Scan and My Codes. Also keeps the watch's favorites up to date.
 //
 
 import SwiftUI
@@ -15,16 +15,19 @@ struct ContentView: View {
 
     /// Changes whenever anything the watch shows changes.
     private var watchSignature: String {
-        favorites.map { "\($0.id)|\($0.name)|\($0.payload)|\($0.foregroundHex)|\($0.backgroundHex)" }
+        favorites.map { "\($0.id)|\($0.name)|\($0.payload)|\($0.foregroundHex)|\($0.backgroundHex)|\($0.showIcon)" }
             .joined(separator: "\n")
     }
 
     var body: some View {
         TabView(selection: $selection) {
             Tab("Make", systemImage: "qrcode", value: 0) {
-                MakeView(onSaved: { selection = 1 })
+                MakeView(onSaved: { selection = 2 })
             }
-            Tab("My Codes", systemImage: "square.grid.2x2", value: 1) {
+            Tab("Scan", systemImage: "qrcode.viewfinder", value: 1) {
+                ScanView()
+            }
+            Tab("My Codes", systemImage: "square.grid.2x2", value: 2) {
                 MyCodesView()
             }
         }

@@ -19,20 +19,28 @@ struct QRMatrix {
 }
 
 enum QRRenderer {
-    /// The most bytes a code can hold with the error correction we use ("M").
+    /// The most bytes a code can hold with the normal error correction ("M").
     static let maxBytes = 2331
+    /// With an icon in the middle we use the strongest correction ("H"),
+    /// which survives the covered squares but holds less.
+    static let maxBytesWithIcon = 1273
     /// Above this, codes get dense and harder to scan from a watch screen.
     static let denseBytes = 300
 
     private static let context = CIContext()
 
-    static func matrix(for payload: String) -> QRMatrix? {
+    /// True when this text is short enough to have an icon in the middle.
+    static func fitsIcon(_ payload: String) -> Bool {
+        Data(payload.utf8).count <= maxBytesWithIcon
+    }
+
+    static func matrix(for payload: String, strong: Bool = false) -> QRMatrix? {
         let data = Data(payload.utf8)
-        guard !data.isEmpty, data.count <= maxBytes else { return nil }
+        guard !data.isEmpty, data.count <= (strong ? maxBytesWithIcon : maxBytes) else { return nil }
 
         let filter = CIFilter.qrCodeGenerator()
         filter.message = data
-        filter.correctionLevel = "M"
+        filter.correctionLevel = strong ? "H" : "M"
         guard let output = filter.outputImage,
               let cg = context.createCGImage(output, from: output.extent) else { return nil }
 
@@ -54,10 +62,12 @@ enum QRRenderer {
     }
 
     /// A square picture of the code with a white (or chosen) border around it.
+    /// With `icon`, that kind's icon sits in the middle (if the code is short enough).
     static func image(for payload: String, size: CGFloat,
                       foreground: UIColor = .black, background: UIColor = .white,
-                      quietZone: Int = 3) -> UIImage? {
-        guard let m = matrix(for: payload) else { return nil }
+                      icon: CodeType? = nil, quietZone: Int = 3) -> UIImage? {
+        let useIcon = fitsIcon(payload) ? icon : nil
+        guard let m = matrix(for: payload, strong: useIcon != nil) else { return nil }
         let total = CGFloat(m.size + quietZone * 2)
         let module = size / total
 
@@ -77,6 +87,21 @@ enum QRRenderer {
                     let y2 = (CGFloat(row + quietZone + 1) * module).rounded(.down)
                     ctx.fill(CGRect(x: x, y: y, width: x2 - x, height: y2 - y))
                 }
+            }
+
+            if let useIcon {
+                // Clear a square of whole squares in the middle (about a fifth of
+                // the width), then draw the icon in it.
+                var count = max(5, Int((CGFloat(m.size) * 0.22).rounded()))
+                if (m.size - count) % 2 != 0 { count += 1 }
+                let start = CGFloat((m.size - count) / 2 + quietZone)
+                let x = (start * module).rounded(.down)
+                let x2 = ((start + CGFloat(count)) * module).rounded(.down)
+                let area = CGRect(x: x, y: x, width: x2 - x, height: x2 - x)
+                background.setFill()
+                UIBezierPath(roundedRect: area, cornerRadius: module * 1.2).fill()
+                QRIcons.draw(useIcon, in: area.insetBy(dx: area.width * 0.16, dy: area.width * 0.16),
+                             color: foreground, background: background)
             }
         }
     }

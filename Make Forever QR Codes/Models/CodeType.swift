@@ -2,21 +2,22 @@
 //  CodeType.swift
 //  Make Forever QR Codes
 //
-//  The 9 kinds of codes the app can make, and how each one turns its
+//  The 7 kinds of codes the app can make, and how each one turns its
 //  form fields into the text stored inside the QR code.
 //
 
 import Foundation
 
 enum CodeType: String, CaseIterable, Identifiable, Codable {
-    case link, contact, wifi, text, location, event
+    case link, contact, social, wifi, text, location, event
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
         case .link: "Link"
-        case .contact: "Business Card"
+        case .contact: "Contact"
+        case .social: "Social Profile"
         case .wifi: "Wi-Fi"
         case .text: "Text"
         case .location: "Location"
@@ -28,6 +29,7 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .link: "link"
         case .contact: "person.crop.rectangle"
+        case .social: "hand.thumbsup"
         case .wifi: "wifi"
         case .text: "text.alignleft"
         case .location: "mappin.and.ellipse"
@@ -40,6 +42,7 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
         switch self {
         case .link: "Opens the website"
         case .contact: "Offers to add the contact"
+        case .social: "Opens the profile"
         case .wifi: "Joins the Wi-Fi network"
         case .text: "Shows the text"
         case .location: "Opens the spot in Maps"
@@ -91,6 +94,10 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
             }
             lines.append("END:VCARD")
             return lines.joined(separator: "\n")
+
+        case .social:
+            guard !f.socialHandle.trimmed.isEmpty else { return nil }
+            return f.socialService.link(for: f.socialHandle)
 
         case .wifi:
             guard !f.ssid.trimmed.isEmpty else { return nil }
@@ -147,7 +154,12 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
             return URL(string: full)?.host() ?? "Link"
         case .contact:
             let name = [f.firstName.trimmed, f.lastName.trimmed].filter { !$0.isEmpty }.joined(separator: " ")
-            return name.isEmpty ? (f.company.trimmed.isEmpty ? "Business Card" : f.company.trimmed) : name
+            return name.isEmpty ? (f.company.trimmed.isEmpty ? "Contact" : f.company.trimmed) : name
+        case .social:
+            if let user = f.socialService.username(from: f.socialHandle), !user.isEmpty, f.socialService != .other {
+                return "\(f.socialService.title): @\(user)"
+            }
+            return f.socialService == .other ? "Social Profile" : f.socialService.title
         case .wifi: return f.ssid.trimmed.isEmpty ? "Wi-Fi" : "Wi-Fi: \(f.ssid.trimmed)"
         case .text: return String(f.text.trimmed.prefix(30))
         case .location: return f.placeName.trimmed.isEmpty ? "Location" : f.placeName.trimmed

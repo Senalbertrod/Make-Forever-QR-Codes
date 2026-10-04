@@ -27,7 +27,8 @@ struct CodeDetailView: View {
         ScrollView {
             VStack(spacing: 20) {
                 Button { showFullScreen = true } label: {
-                    QRCodeImage(payload: code.payload, foreground: code.foreground, background: code.background)
+                    QRCodeImage(payload: code.payload, foreground: code.foreground, background: code.background,
+                                icon: code.icon)
                         .frame(maxWidth: 320)
                         .shadow(color: .black.opacity(0.12), radius: 8, y: 2)
                 }
@@ -112,10 +113,12 @@ struct CodeDetailView: View {
                 }
             }
             HStack(spacing: 12) {
-                NavigationLink {
-                    CodeEditorView(type: code.type, existing: code)
-                } label: {
-                    ActionLabel(title: "Edit", symbol: "pencil")
+                if code.canEdit {
+                    NavigationLink {
+                        CodeEditorView(type: code.type, existing: code)
+                    } label: {
+                        ActionLabel(title: "Edit", symbol: "pencil")
+                    }
                 }
                 Button {
                     newName = code.name
@@ -134,7 +137,9 @@ struct CodeDetailView: View {
             .buttonStyle(.bordered)
             .padding(.top, 4)
 
-            Text("Editing changes this saved code. Copies you already printed or shared stay the same.")
+            Text(code.canEdit
+                 ? "Editing changes this saved code. Copies you already printed or shared stay the same."
+                 : "This code was saved from a scan exactly as it was, so it can be renamed but not edited.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -145,7 +150,8 @@ struct CodeDetailView: View {
     private func duplicate() {
         let copy = SavedCode(name: code.name + " copy", type: code.type, payload: code.payload,
                              fields: code.fields, foregroundHex: code.foregroundHex,
-                             backgroundHex: code.backgroundHex)
+                             backgroundHex: code.backgroundHex, showIcon: code.showIcon,
+                             isScanned: code.isScanned)
         modelContext.insert(copy)
     }
 }

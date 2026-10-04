@@ -20,6 +20,7 @@ struct CodeEditorView: View {
     @State private var fields = CodeFields()
     @State private var foreground: Color = .black
     @State private var background: Color = .white
+    @State private var showIcon = false
     @State private var askName = false
     @State private var name = ""
     @State private var showContactPicker = false
@@ -34,7 +35,8 @@ struct CodeEditorView: View {
     var body: some View {
         Form {
             Section {
-                QRCodeImage(payload: tooLong ? "" : payload, foreground: fg, background: bg)
+                QRCodeImage(payload: tooLong ? "" : payload, foreground: fg, background: bg,
+                            icon: showIcon ? type : nil)
                     .frame(maxWidth: 260)
                     .frame(maxWidth: .infinity)
                     .listRowBackground(Color.clear)
@@ -44,6 +46,9 @@ struct CodeEditorView: View {
                     if tooLong {
                         Text("Too much text for one QR code. Make it shorter.")
                             .foregroundStyle(.red)
+                    } else if showIcon && byteCount > QRRenderer.maxBytesWithIcon {
+                        Text("This code is too long for an icon, so it's shown without one.")
+                            .foregroundStyle(.orange)
                     } else if byteCount > QRRenderer.denseBytes {
                         Text("This code is getting dense. It may be hard to scan from a small screen; keep it shorter if you can.")
                             .foregroundStyle(.orange)
@@ -52,6 +57,12 @@ struct CodeEditorView: View {
             }
 
             CodeFormSections(type: type, fields: $fields, showContactPicker: $showContactPicker)
+
+            Section {
+                Toggle("Icon in the middle", isOn: $showIcon)
+            } footer: {
+                Text("Adds a small \(type.title.lowercased()) icon. The code still scans, it just gets a little denser.")
+            }
 
             Section {
                 ColorPicker("Code color", selection: $foreground, supportsOpacity: false)
@@ -103,6 +114,7 @@ struct CodeEditorView: View {
         fields = existing.fields
         foreground = Color(uiColor: existing.foreground)
         background = Color(uiColor: existing.background)
+        showIcon = existing.showIcon
     }
 
     private func save() {
@@ -112,6 +124,7 @@ struct CodeEditorView: View {
             existing.fieldsData = fields.encoded()
             existing.foregroundHex = fg.hexString
             existing.backgroundHex = bg.hexString
+            existing.showIcon = showIcon
             dismiss()
         } else {
             name = type.suggestedName(from: fields)
@@ -123,7 +136,7 @@ struct CodeEditorView: View {
         guard let payload else { return }
         let finalName = name.trimmed.isEmpty ? type.suggestedName(from: fields) : name.trimmed
         let code = SavedCode(name: finalName, type: type, payload: payload, fields: fields,
-                             foregroundHex: fg.hexString, backgroundHex: bg.hexString)
+                             foregroundHex: fg.hexString, backgroundHex: bg.hexString, showIcon: showIcon)
         modelContext.insert(code)
         dismiss()
         onSaved()
@@ -175,6 +188,34 @@ struct CodeFormSections: View {
                                 max: ContactLimits.websites, kind: .link)
             AddressesSection(addresses: $fields.addresses)
             SocialProfilesSection(profiles: $fields.socials)
+
+        case .social:
+            Section {
+                Picker("App", selection: $fields.socialService) {
+                    ForEach(SocialService.allCases) { Text($0.title).tag($0) }
+                }
+                if fields.socialService == .other {
+                    TextField("Link to your profile", text: $fields.socialHandle)
+                        .keyboardType(.URL)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                } else {
+                    TextField("Username", text: $fields.socialHandle)
+                        .keyboardType(.twitter)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                }
+            } header: {
+                Text("Social profile")
+            } footer: {
+                if fields.socialHandle.trimmed.isEmpty {
+                    Text(fields.socialService == .other
+                         ? "Paste the link to your profile."
+                         : "Type your username, like @yourname. A full link works too.")
+                } else {
+                    Text("Opens \(fields.socialService.link(for: fields.socialHandle))")
+                }
+            }
 
         case .wifi:
             Section {

@@ -2,8 +2,9 @@
 //  ContactParts.swift
 //  Make Forever QR Codes
 //
-//  Business card lines that can repeat (the + button): phones, emails,
+//  Contact lines that can repeat (the + button): phones, emails,
 //  websites, addresses and social profiles, each with a label.
+//  SocialService is also used by the Social Profile code type.
 //
 
 import Foundation
@@ -49,7 +50,9 @@ enum SocialService: String, CaseIterable, Codable, Identifiable {
     /// The profile link for a username (a full link is kept as it is).
     func link(for handle: String) -> String {
         let h = handle.trimmed
-        if h.contains("://") || h.contains(".") { return h.contains("://") ? h : "https://" + h }
+        if h.contains("://") { return h }
+        // A pasted link without https (usernames can have dots, so look for a slash).
+        if h.contains("/") || self == .other { return "https://" + h }
         let user = h.hasPrefix("@") ? String(h.dropFirst()) : h
         switch self {
         case .instagram: return "https://instagram.com/\(user)"
@@ -66,7 +69,7 @@ enum SocialService: String, CaseIterable, Codable, Identifiable {
     /// Just the username, when one was typed instead of a link.
     func username(from handle: String) -> String? {
         let h = handle.trimmed
-        guard !h.contains("/"), !h.contains(".") else { return nil }
+        guard !h.isEmpty, !h.contains("/"), self != .other else { return nil }
         return h.hasPrefix("@") ? String(h.dropFirst()) : h
     }
 }
@@ -125,5 +128,17 @@ extension CodeFields {
     var socials: [SocialProfile] {
         get { socialList ?? [] }
         set { socialList = newValue }
+    }
+
+    // The Social Profile code type.
+
+    var socialService: SocialService {
+        get { socialServiceValue ?? .instagram }
+        set { socialServiceValue = newValue }
+    }
+
+    var socialHandle: String {
+        get { socialHandleValue ?? "" }
+        set { socialHandleValue = newValue }
     }
 }
