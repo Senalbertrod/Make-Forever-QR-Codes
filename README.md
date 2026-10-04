@@ -31,7 +31,6 @@ Everything runs on the device. No account, no analytics, no network calls. The c
 
 - **Reminder before the App Store upload:** once the Apple Developer Program is joined, add a one-tap "Join Network" button for scanned Wi-Fi codes (needs the Hotspot Configuration permission, which free accounts can't use)
 - A "Make Forever QR Code" action in the Share menu (Safari and other apps)
-- Apple Watch: a watch face complication and Siri
 - iPad layout
 
 ## Requirements
