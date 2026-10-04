@@ -142,8 +142,6 @@ struct SocialProfilesSection: View {
             }
         } header: {
             Text("Social profiles")
-        } footer: {
-            Text("iPhones show these as social profiles. Some Android phones may not, so add the link under Website too if it must work everywhere.")
         }
     }
 }
