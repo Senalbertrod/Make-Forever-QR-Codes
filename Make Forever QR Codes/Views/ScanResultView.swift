@@ -36,30 +36,15 @@ struct ScanResultView: View {
                     content
                 }
 
-                if !warnings.isEmpty {
+                if isLink {
                     Section {
-                        ForEach(warnings) { warning in
-                            Label {
-                                VStack(alignment: .leading, spacing: 3) {
-                                    Text(warning.title).font(.subheadline.weight(.semibold))
-                                    Text(warning.detail).font(.footnote).foregroundStyle(.secondary)
-                                }
-                            } icon: {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .foregroundStyle(.orange)
-                            }
+                        if warnings.isEmpty {
+                            Label("No warning signs found", systemImage: "checkmark.shield")
+                                .foregroundStyle(.green)
+                        } else {
+                            Label("Warning: this could be a scam", systemImage: "xmark.shield.fill")
+                                .foregroundStyle(.red)
                         }
-                    } header: {
-                        Text("Be careful")
-                    } footer: {
-                        Text("Checked on your iPhone. Only open it if you trust where the code came from.")
-                    }
-                } else if isLink {
-                    Section {
-                        Label("No warning signs found", systemImage: "checkmark.shield")
-                            .foregroundStyle(.green)
-                    } footer: {
-                        Text("Checked on your iPhone for scam tricks. Safari also warns about known bad websites when it opens.")
                     }
                 }
 
@@ -131,6 +116,7 @@ struct ScanResultView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(parts.site)
                         .font(.title2.weight(.bold))
+                        .foregroundStyle(warnings.isEmpty ? Color.primary : Color.red)
                         .textSelection(.enabled)
                     Text(LinkSafety.visible(code.raw.trimmed))
                         .font(.footnote)

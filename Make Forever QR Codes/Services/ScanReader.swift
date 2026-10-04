@@ -77,8 +77,8 @@ struct ScannedCode: Identifiable {
     var warnings: [SafetyWarning] {
         switch kind {
         case .link(let url), .social(_, let url), .location(let url): LinkSafety.check(raw, opening: url)
-        case .appLink(let url, let app): LinkSafety.checkAppLink(scheme: url.scheme ?? "", appName: app)
-        case .wifi, .contact, .event, .text: []
+        // A code that opens another app isn't a scam sign; its title already says "Opens Phone".
+        case .appLink, .wifi, .contact, .event, .text: []
         }
     }
 
