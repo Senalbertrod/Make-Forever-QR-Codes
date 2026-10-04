@@ -115,12 +115,14 @@ struct ScanResultView: View {
             // The site name comes from the link that will really open.
             if let parts = LinkParts(url.absoluteString) {
                 VStack(alignment: .leading, spacing: 4) {
+                    // A font where I, l, 1, 0 and O all look different, so swapped
+                    // letters are easy to spot.
                     Text(parts.site)
-                        .font(.title2.weight(.bold))
+                        .font(.title2.weight(.bold).monospaced())
                         .foregroundStyle(warnings.isEmpty ? Color.primary : Color.red)
                         .textSelection(.enabled)
                     Text(LinkSafety.visible(code.raw.trimmed))
-                        .font(.footnote)
+                        .font(.footnote.monospaced())
                         .foregroundStyle(.secondary)
                         .textSelection(.enabled)
                 }
