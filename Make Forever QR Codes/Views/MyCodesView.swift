@@ -101,7 +101,7 @@ struct MyCodesView: View {
                 }
             }
             .sheet(isPresented: $showArrange) {
-                ArrangeTypesView(orderRaw: $typeOrderRaw)
+                ArrangeTypesView(orderRaw: $typeOrderRaw, inUse: Set(codes.map(\.type)))
             }
             .alert("This code is long", isPresented: $showWatchWarning) {
                 Button("OK", role: .cancel) {}
@@ -155,21 +155,29 @@ enum TypeOrder {
     }
 }
 
-/// Drag the kinds of codes into the order you want.
+/// Drag the kinds of codes into the order you want. Only kinds you have
+/// codes for are listed; the others keep their place for later.
 private struct ArrangeTypesView: View {
     @Binding var orderRaw: String
+    let inUse: Set<CodeType>
     @Environment(\.dismiss) private var dismiss
     @State private var order: [CodeType] = []
+
+    private var shown: [CodeType] { order.filter { inUse.contains($0) } }
 
     var body: some View {
         NavigationStack {
             List {
                 Section {
-                    ForEach(order) { type in
+                    ForEach(shown) { type in
                         Label(type.title, systemImage: type.symbol)
                     }
                     .onMove { from, to in
-                        order.move(fromOffsets: from, toOffset: to)
+                        var moved = shown
+                        moved.move(fromOffsets: from, toOffset: to)
+                        // Put the moved kinds back into the spots the shown kinds had.
+                        var next = moved.makeIterator()
+                        order = order.map { inUse.contains($0) ? (next.next() ?? $0) : $0 }
                         orderRaw = TypeOrder.encode(order)
                     }
                 } footer: {
