@@ -2,9 +2,9 @@
 //  LinkSafety.swift
 //  Make Forever QR Codes
 //
-//  Checks a scanned link for common scam tricks, entirely on the phone.
+//  Checks a scanned link for strong scam signs, entirely on the phone.
 //  No website, no list downloaded from anywhere: it only looks at the link
-//  itself. It can't know every bad website, so it warns about warning signs.
+//  itself. Safari's own Fraudulent Website Warning still runs when it opens.
 //
 
 import Foundation
@@ -70,63 +70,90 @@ struct LinkParts {
 
 enum LinkSafety {
     /// Warnings for a website link (empty when nothing looks wrong).
-    static func check(_ text: String) -> [SafetyWarning] {
-        guard let link = LinkParts(text) else { return [] }
+    /// `text` is the link as scanned; `url` is the link that will really open.
+    /// Only strong scam signs are checked. Things Safari and iPhone already
+    /// warn about (known bad sites, downloads, profiles, http, open Wi-Fi)
+    /// are left to them, so honest codes open without fuss.
+    static func check(_ text: String, opening url: URL) -> [SafetyWarning] {
         var warnings: [SafetyWarning] = []
-        let site = link.site
 
+        // 1. The address shown must be the one that opens.
+        if let shown = LinkParts(text)?.host, let real = openedHost(url),
+           shown.unicodeScalars.allSatisfy(\.isASCII), shown != real {
+            warnings.append(SafetyWarning(
+                title: "Written in an unusual way",
+                detail: "The link looks like it goes to \(shown), but it really opens \(real)."))
+        }
+
+        // 2. Invisible characters that hide or flip parts of the link.
+        if hasHiddenCharacters(text) {
+            warnings.append(SafetyWarning(
+                title: "Hidden characters",
+                detail: "This link contains invisible characters that can make it look like something else."))
+        }
+
+        // Look at both the scanned text and the link that will open.
+        for candidate in [text, url.absoluteString] {
+            guard let link = LinkParts(candidate) else { continue }
+            for warning in patternWarnings(link) where !warnings.contains(where: { $0.title == warning.title }) {
+                warnings.append(warning)
+            }
+        }
+        return warnings
+    }
+
+    private static func patternWarnings(_ link: LinkParts) -> [SafetyWarning] {
+        var warnings: [SafetyWarning] = []
         if let user = link.userInfo, !user.isEmpty {
             warnings.append(SafetyWarning(
                 title: "Hidden real address",
                 detail: "The part before the “@” is only decoration. This link really goes to \(link.host)."))
         }
-
         if link.host.contains("xn--") || link.host.unicodeScalars.contains(where: { !$0.isASCII }) {
             warnings.append(SafetyWarning(
                 title: "Look-alike letters",
                 detail: "The address uses letters from another alphabet that can look like normal English letters."))
         }
-
         if let brand = lookAlike(link) {
             warnings.append(brand)
         }
-
         if link.isNumberAddress {
             warnings.append(SafetyWarning(
                 title: "Number instead of a name",
                 detail: "Real businesses almost always use a website name, not a number address."))
         }
-
-        if shorteners.contains(site) || shorteners.contains(link.host) {
-            warnings.append(SafetyWarning(
-                title: "Short link",
-                detail: "Short links hide where they really go. You won't see the real website until it opens."))
-        }
-
-        if let tld = link.host.split(separator: ".").last, ["zip", "mov"].contains(String(tld)) {
-            warnings.append(SafetyWarning(
-                title: "Looks like a file name",
-                detail: "This website ends in “.\(tld)”, which can be mistaken for a file."))
-        }
-
-        let path = (link.path.split(whereSeparator: { "?#".contains($0) }).first.map(String.init) ?? "").lowercased()
-        if path.hasSuffix(".mobileconfig") {
-            warnings.append(SafetyWarning(
-                title: "iPhone profile",
-                detail: "This downloads a profile that can change your iPhone's settings. Only install profiles from your work or school."))
-        } else if let ext = riskyFiles.first(where: { path.hasSuffix("." + $0) }) {
-            warnings.append(SafetyWarning(
-                title: "Download",
-                detail: "This link downloads a “.\(ext)” file instead of opening a web page."))
-        }
-
-        if link.scheme == "http" {
-            warnings.append(SafetyWarning(
-                title: "Not secure",
-                detail: "This link uses “http” without the “s”, so anything you type there isn't protected."))
-        }
-
         return warnings
+    }
+
+    /// The website iPhone will really open.
+    private static func openedHost(_ url: URL) -> String? {
+        guard var host = url.host(percentEncoded: false)?.lowercased(), !host.isEmpty else { return nil }
+        while host.hasSuffix(".") { host.removeLast() }
+        if host.contains(":") && !host.hasPrefix("[") { host = "[\(host)]" }   // IPv6, as LinkParts writes it
+        return host
+    }
+
+    /// Invisible characters that have no place in a real web address.
+    private static let hiddenScalars: [ClosedRange<UInt32>] = [
+        0x200B...0x200F,   // zero-width spaces and direction marks
+        0x202A...0x202E,   // text direction overrides
+        0x2060...0x2064,   // invisible joiners
+        0x2066...0x2069,   // direction isolates
+        0xFEFF...0xFEFF,   // zero-width no-break space
+        0x00AD...0x00AD,   // soft hyphen
+    ]
+
+    private static func isHidden(_ scalar: Unicode.Scalar) -> Bool {
+        hiddenScalars.contains { $0.contains(scalar.value) }
+    }
+
+    static func hasHiddenCharacters(_ text: String) -> Bool {
+        text.unicodeScalars.contains(where: isHidden)
+    }
+
+    /// The text with invisible characters removed, for showing on screen.
+    static func visible(_ text: String) -> String {
+        String(text.unicodeScalars.filter { !isHidden($0) })
     }
 
     /// Spots names made to look like a well-known company.
@@ -166,19 +193,6 @@ enum LinkSafety {
             detail: "This code opens \(appName) instead of a website. Only continue if you trust where the code came from.")]
     }
 
-    static func check(wifi: WiFiInfo) -> [SafetyWarning] {
-        switch wifi.security {
-        case .none:
-            [SafetyWarning(title: "Open network",
-                           detail: "This network has no password. People nearby may be able to see what you send on it.")]
-        case .wep:
-            [SafetyWarning(title: "Old security",
-                           detail: "This network uses WEP, an old kind of security that is easy to break.")]
-        case .wpa:
-            []
-        }
-    }
-
     // MARK: - Built-in lists (part of the app, never downloaded)
 
     private static let brands: [(String, String)] = [
@@ -192,12 +206,4 @@ enum LinkSafety {
         ("venmo", "Venmo"), ("cashapp", "Cash App"), ("zelle", "Zelle"), ("walmart", "Walmart"),
         ("ebay", "eBay"), ("spotify", "Spotify"), ("dropbox", "Dropbox"),
     ]
-
-    private static let shorteners: Set<String> = [
-        "bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd", "buff.ly", "rebrand.ly",
-        "cutt.ly", "shorturl.at", "rb.gy", "tiny.cc", "bl.ink", "t.ly", "s.id", "v.gd", "qrco.de",
-        "short.io", "shorturl.com", "lnkd.in", "trib.al", "soo.gd", "clck.ru", "u.to", "x.co",
-    ]
-
-    private static let riskyFiles = ["apk", "ipa", "exe", "msi", "dmg", "pkg", "bat", "scr", "jar", "zip", "rar", "7z"]
 }

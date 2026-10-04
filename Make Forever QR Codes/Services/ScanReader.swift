@@ -76,10 +76,9 @@ struct ScannedCode: Identifiable {
     /// Safety warnings, all checked on the phone.
     var warnings: [SafetyWarning] {
         switch kind {
-        case .link, .social, .location: LinkSafety.check(raw)
+        case .link(let url), .social(_, let url), .location(let url): LinkSafety.check(raw, opening: url)
         case .appLink(let url, let app): LinkSafety.checkAppLink(scheme: url.scheme ?? "", appName: app)
-        case .wifi(let info): LinkSafety.check(wifi: info)
-        case .contact, .event, .text: []
+        case .wifi, .contact, .event, .text: []
         }
     }
 

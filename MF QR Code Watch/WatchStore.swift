@@ -44,7 +44,8 @@ final class WatchStore: NSObject, WCSessionDelegate {
         codes = list
         guard save else { return }
         try? FileManager.default.createDirectory(at: URL.applicationSupportDirectory, withIntermediateDirectories: true)
-        try? data.write(to: fileURL, options: .atomic)
+        // Locked whenever the watch is locked.
+        try? data.write(to: fileURL, options: [.atomic, .completeFileProtectionUnlessOpen])
     }
 
     /// With nothing saved yet, ask the iPhone for a copy.

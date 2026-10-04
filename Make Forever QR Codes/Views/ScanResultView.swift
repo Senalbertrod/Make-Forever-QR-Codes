@@ -59,7 +59,7 @@ struct ScanResultView: View {
                         Label("No warning signs found", systemImage: "checkmark.shield")
                             .foregroundStyle(.green)
                     } footer: {
-                        Text("Checked on your iPhone for common scam tricks. It can't know every bad website, so only open links you trust.")
+                        Text("Checked on your iPhone for scam tricks. Safari also warns about known bad websites when it opens.")
                     }
                 }
 
@@ -126,12 +126,13 @@ struct ScanResultView: View {
     private var content: some View {
         switch code.kind {
         case .link(let url), .social(_, let url), .location(let url), .appLink(let url, _):
-            if let parts = LinkParts(code.raw) {
+            // The site name comes from the link that will really open.
+            if let parts = LinkParts(url.absoluteString) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(parts.site)
                         .font(.title2.weight(.bold))
                         .textSelection(.enabled)
-                    Text(code.raw.trimmed)
+                    Text(LinkSafety.visible(code.raw.trimmed))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .textSelection(.enabled)
@@ -170,7 +171,7 @@ struct ScanResultView: View {
             if w.hidden { LabeledContent("Hidden network", value: "Yes") }
 
         case .text:
-            Text(code.raw)
+            Text(LinkSafety.visible(code.raw))
                 .textSelection(.enabled)
         }
     }

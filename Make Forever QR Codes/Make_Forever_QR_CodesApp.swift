@@ -11,6 +11,8 @@ import SwiftData
 @main
 struct Make_Forever_QR_CodesApp: App {
     init() {
+        // Lock saved codes whenever the phone is locked.
+        StoreProtection.apply()
         // Get ready to send favorites to the Apple Watch.
         WatchSync.shared.start()
     }

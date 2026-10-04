@@ -29,7 +29,7 @@ struct SettingsView: View {
                     InfoRow(symbol: "qrcode.viewfinder", title: "Scanned on your phone",
                             text: "The Scan tab reads codes with the camera or from a photo, right on your iPhone. Nothing is saved unless you tap Save.")
                     InfoRow(symbol: "exclamationmark.shield", title: "Safety checks",
-                            text: "Before anything opens, the app checks links for common scam tricks, like look-alike letters, hidden addresses and short links. It can't know every bad website, so only open links you trust.")
+                            text: "Before anything opens, the app checks links for scam tricks, like look-alike names, hidden addresses and invisible characters. Safari also warns about known bad websites when a link opens.")
                 }
                 Section("Privacy") {
                     InfoRow(symbol: "lock.shield", title: "Nothing leaves your phone",

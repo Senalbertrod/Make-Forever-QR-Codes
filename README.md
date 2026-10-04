@@ -21,7 +21,7 @@ Most QR services make "dynamic" codes that point to their own server, and the co
 - Light mode, dark mode and tinted app icons
 
 - **Scan tab:** scan with the camera or from a photo. It shows what's inside before anything opens, with buttons to open, add to Contacts or Calendar, or copy a Wi-Fi password. Save to My Codes only if you want
-- **Safety checks, all on the phone:** look-alike letters, hidden real addresses, short links, number addresses, risky downloads, "http" without the "s", open Wi-Fi. No website or downloaded list is used
+- **Safety checks, all on the phone:** only strong scam signs, so honest codes open without fuss: look-alike names, hidden real addresses, invisible characters, number addresses, and a link that would open a different site than it shows. No website or downloaded list is used; Safari's own Fraudulent Website Warning still runs when a link opens
 
 ## Privacy
 
