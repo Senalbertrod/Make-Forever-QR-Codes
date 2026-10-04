@@ -148,7 +148,7 @@ enum LinkSafety {
     }
 
     static func hasHiddenCharacters(_ text: String) -> Bool {
-        text.unicodeScalars.contains(where: isHidden)
+        text.unicodeScalars.contains { isHidden($0) }
     }
 
     /// The text with invisible characters removed, for showing on screen.
