@@ -156,24 +156,44 @@ enum LinkSafety {
         String(text.unicodeScalars.filter { !isHidden($0) })
     }
 
-    /// Spots names made to look like a well-known company.
+    /// Spots names made to look like a company on the built-in list.
+    /// - Look-alike letters (paypa1, app1e) are checked for every company.
+    /// - "Uses the name" (paypal-login.com) only for unique names. Everyday words
+    ///   like Apple or Discover are left alone, so apple-farm.com is fine.
     private static func lookAlike(_ link: LinkParts) -> SafetyWarning? {
-        let name = link.siteName
-        let tokens = link.host.split(whereSeparator: { $0 == "." || $0 == "-" }).map(String.init)
-        for (brand, title) in brands {
-            if name == brand { return nil }   // the real company
-            if normalized(name) == normalized(brand) {
-                return SafetyWarning(
-                    title: "Looks like \(title), but isn't",
-                    detail: "“\(link.site)” uses letters or numbers that look like “\(brand)”.")
+        let site = link.site
+        let words = wordsIn(link)
+        for known in knownSites {
+            if known.domains.contains(site) { continue }   // the company's real website
+            // Very short names (UPS, DHL, IRS) would match too many honest words.
+            if known.key.count > 3 {
+                let target = normalized(known.key)
+                if words.contains(where: { $0 != known.key && normalized($0) == target }) {
+                    return SafetyWarning(
+                        title: "Looks like \(known.title), but isn't",
+                        detail: "“\(site)” uses letters or numbers that look like “\(known.key)”.")
+                }
             }
-            if tokens.contains(brand) {
+            if known.kind == .unique && words.contains(known.key) {
                 return SafetyWarning(
-                    title: "Uses the name \(title)",
-                    detail: "The real website is \(link.site), which isn't \(title)'s own website.")
+                    title: "Uses the name \(known.title)",
+                    detail: "The real website is \(site), which isn't \(known.title)'s own website.")
             }
         }
         return nil
+    }
+
+    /// The words in an address, split at dots and dashes, plus 2 or 3 of them
+    /// joined (so "bank-of-america" also reads as "bankofamerica").
+    private static func wordsIn(_ link: LinkParts) -> [String] {
+        let parts = link.host.split(whereSeparator: { $0 == "." || $0 == "-" }).map(String.init)
+        var words = parts
+        for size in 2...3 where parts.count >= size {
+            for start in 0...(parts.count - size) {
+                words.append(parts[start..<(start + size)].joined())
+            }
+        }
+        return words
     }
 
     /// Turns look-alike characters into the letters they imitate.
@@ -190,7 +210,7 @@ enum LinkSafety {
     /// (like paypal.com). Only these get the green "No warning signs found".
     static func isKnownSite(_ url: URL) -> Bool {
         guard let link = LinkParts(url.absoluteString) else { return false }
-        return brands.contains { $0.0 == link.siteName }
+        return knownSites.contains { $0.domains.contains(link.site) }
     }
 
     /// Warnings for a code that opens another app instead of a website.
@@ -200,17 +220,140 @@ enum LinkSafety {
             detail: "This code opens \(appName) instead of a website. Only continue if you trust where the code came from.")]
     }
 
-    // MARK: - Built-in lists (part of the app, never downloaded)
+    // MARK: - Built-in list (part of the app, never downloaded)
 
-    private static let brands: [(String, String)] = [
-        ("apple", "Apple"), ("icloud", "iCloud"), ("paypal", "PayPal"), ("google", "Google"),
-        ("gmail", "Gmail"), ("amazon", "Amazon"), ("microsoft", "Microsoft"),
-        ("netflix", "Netflix"), ("facebook", "Facebook"), ("instagram", "Instagram"),
-        ("whatsapp", "WhatsApp"), ("tiktok", "TikTok"), ("linkedin", "LinkedIn"), ("youtube", "YouTube"),
-        ("chase", "Chase"), ("bankofamerica", "Bank of America"), ("wellsfargo", "Wells Fargo"),
-        ("citibank", "Citibank"), ("capitalone", "Capital One"), ("usps", "USPS"), ("fedex", "FedEx"),
-        ("dhl", "DHL"), ("irs", "IRS"), ("coinbase", "Coinbase"), ("binance", "Binance"),
-        ("venmo", "Venmo"), ("cashapp", "Cash App"), ("zelle", "Zelle"), ("walmart", "Walmart"),
-        ("ebay", "eBay"), ("spotify", "Spotify"), ("dropbox", "Dropbox"),
+    struct KnownSite {
+        enum Kind {
+            /// An invented name only that company uses (PayPal, Netflix).
+            case unique
+            /// A normal word other honest sites also use (Apple, Discover).
+            case everyday
+        }
+        let key: String
+        let title: String
+        let kind: Kind
+        /// The company's real website addresses.
+        let domains: [String]
+
+        init(_ key: String, _ title: String, _ kind: Kind, _ domains: [String]) {
+            self.key = key
+            self.title = title
+            self.kind = kind
+            self.domains = domains
+        }
+    }
+
+    /// 100 companies scammers copy most, from security reports (Check Point,
+    /// Guardio Labs) and the most-visited sites (Tranco).
+    static let knownSites: [KnownSite] = [
+        // Tech and email
+        KnownSite("apple", "Apple", .everyday, ["apple.com", "icloud.com"]),
+        KnownSite("icloud", "iCloud", .unique, ["icloud.com", "apple.com"]),
+        KnownSite("microsoft", "Microsoft", .unique, ["microsoft.com", "live.com", "office.com", "microsoftonline.com", "outlook.com", "xbox.com"]),
+        KnownSite("outlook", "Outlook", .everyday, ["outlook.com", "live.com", "office.com", "microsoft.com"]),
+        KnownSite("google", "Google", .unique, ["google.com", "gmail.com", "youtube.com"]),
+        KnownSite("gmail", "Gmail", .unique, ["gmail.com", "google.com"]),
+        KnownSite("yahoo", "Yahoo", .unique, ["yahoo.com"]),
+        KnownSite("aol", "AOL", .unique, ["aol.com"]),
+        KnownSite("chatgpt", "ChatGPT", .unique, ["chatgpt.com", "openai.com"]),
+        KnownSite("openai", "OpenAI", .unique, ["openai.com", "chatgpt.com"]),
+        KnownSite("adobe", "Adobe", .unique, ["adobe.com"]),
+        KnownSite("dropbox", "Dropbox", .unique, ["dropbox.com"]),
+        KnownSite("docusign", "DocuSign", .unique, ["docusign.com", "docusign.net"]),
+        KnownSite("zoom", "Zoom", .everyday, ["zoom.us", "zoom.com"]),
+        KnownSite("norton", "Norton", .everyday, ["norton.com"]),
+        KnownSite("mcafee", "McAfee", .unique, ["mcafee.com"]),
+        // Social and messaging
+        KnownSite("facebook", "Facebook", .unique, ["facebook.com", "fb.com", "meta.com", "messenger.com"]),
+        KnownSite("meta", "Meta", .everyday, ["meta.com", "facebook.com"]),
+        KnownSite("instagram", "Instagram", .unique, ["instagram.com"]),
+        KnownSite("whatsapp", "WhatsApp", .unique, ["whatsapp.com"]),
+        KnownSite("messenger", "Messenger", .everyday, ["messenger.com", "facebook.com"]),
+        KnownSite("tiktok", "TikTok", .unique, ["tiktok.com"]),
+        KnownSite("linkedin", "LinkedIn", .unique, ["linkedin.com"]),
+        KnownSite("snapchat", "Snapchat", .unique, ["snapchat.com"]),
+        KnownSite("telegram", "Telegram", .everyday, ["telegram.org", "t.me"]),
+        KnownSite("discord", "Discord", .everyday, ["discord.com", "discord.gg"]),
+        KnownSite("twitter", "X (Twitter)", .unique, ["twitter.com", "x.com"]),
+        KnownSite("reddit", "Reddit", .unique, ["reddit.com"]),
+        KnownSite("pinterest", "Pinterest", .unique, ["pinterest.com"]),
+        // Shopping
+        KnownSite("amazon", "Amazon", .unique, ["amazon.com", "amazon.ca", "amazon.co.uk", "amazon.com.mx", "primevideo.com"]),
+        KnownSite("walmart", "Walmart", .unique, ["walmart.com"]),
+        KnownSite("ebay", "eBay", .unique, ["ebay.com"]),
+        KnownSite("costco", "Costco", .unique, ["costco.com"]),
+        KnownSite("target", "Target", .everyday, ["target.com"]),
+        KnownSite("bestbuy", "Best Buy", .unique, ["bestbuy.com"]),
+        KnownSite("homedepot", "The Home Depot", .unique, ["homedepot.com"]),
+        KnownSite("lowes", "Lowe's", .unique, ["lowes.com"]),
+        KnownSite("etsy", "Etsy", .unique, ["etsy.com"]),
+        KnownSite("temu", "Temu", .unique, ["temu.com"]),
+        KnownSite("shein", "Shein", .unique, ["shein.com"]),
+        KnownSite("aliexpress", "AliExpress", .unique, ["aliexpress.com"]),
+        KnownSite("wayfair", "Wayfair", .unique, ["wayfair.com"]),
+        KnownSite("macys", "Macy's", .unique, ["macys.com"]),
+        KnownSite("shopify", "Shopify", .unique, ["shopify.com"]),
+        // Banks and payments
+        KnownSite("paypal", "PayPal", .unique, ["paypal.com", "paypal.me"]),
+        KnownSite("venmo", "Venmo", .unique, ["venmo.com"]),
+        KnownSite("cashapp", "Cash App", .unique, ["cash.app", "cashapp.com"]),
+        KnownSite("zelle", "Zelle", .unique, ["zellepay.com", "zelle.com"]),
+        KnownSite("chase", "Chase", .everyday, ["chase.com"]),
+        KnownSite("bankofamerica", "Bank of America", .unique, ["bankofamerica.com"]),
+        KnownSite("wellsfargo", "Wells Fargo", .unique, ["wellsfargo.com", "wf.com"]),
+        KnownSite("citibank", "Citibank", .unique, ["citibank.com", "citi.com"]),
+        KnownSite("capitalone", "Capital One", .unique, ["capitalone.com"]),
+        KnownSite("americanexpress", "American Express", .unique, ["americanexpress.com", "amex.com"]),
+        KnownSite("amex", "American Express", .unique, ["amex.com", "americanexpress.com"]),
+        KnownSite("discover", "Discover", .everyday, ["discover.com"]),
+        KnownSite("usbank", "U.S. Bank", .unique, ["usbank.com"]),
+        KnownSite("truist", "Truist", .unique, ["truist.com"]),
+        KnownSite("navyfederal", "Navy Federal", .unique, ["navyfederal.org"]),
+        KnownSite("schwab", "Charles Schwab", .unique, ["schwab.com"]),
+        KnownSite("fidelity", "Fidelity", .everyday, ["fidelity.com"]),
+        KnownSite("robinhood", "Robinhood", .everyday, ["robinhood.com"]),
+        KnownSite("mastercard", "Mastercard", .unique, ["mastercard.com"]),
+        KnownSite("visa", "Visa", .everyday, ["visa.com"]),
+        // Crypto
+        KnownSite("coinbase", "Coinbase", .unique, ["coinbase.com"]),
+        KnownSite("binance", "Binance", .unique, ["binance.com", "binance.us"]),
+        KnownSite("kraken", "Kraken", .everyday, ["kraken.com"]),
+        KnownSite("ledger", "Ledger", .everyday, ["ledger.com"]),
+        KnownSite("metamask", "MetaMask", .unique, ["metamask.io"]),
+        // Delivery
+        KnownSite("usps", "USPS", .unique, ["usps.com"]),
+        KnownSite("ups", "UPS", .everyday, ["ups.com"]),
+        KnownSite("fedex", "FedEx", .unique, ["fedex.com"]),
+        KnownSite("dhl", "DHL", .unique, ["dhl.com", "dhl.de"]),
+        // Phone and internet
+        KnownSite("xfinity", "Xfinity", .unique, ["xfinity.com", "comcast.com", "comcast.net"]),
+        KnownSite("comcast", "Comcast", .unique, ["comcast.com", "comcast.net", "xfinity.com"]),
+        KnownSite("verizon", "Verizon", .unique, ["verizon.com", "verizonwireless.com"]),
+        KnownSite("att", "AT&T", .everyday, ["att.com"]),
+        KnownSite("tmobile", "T-Mobile", .unique, ["t-mobile.com"]),
+        KnownSite("spectrum", "Spectrum", .everyday, ["spectrum.com", "spectrum.net"]),
+        // Streaming and games
+        KnownSite("netflix", "Netflix", .unique, ["netflix.com"]),
+        KnownSite("disneyplus", "Disney+", .unique, ["disneyplus.com"]),
+        KnownSite("hulu", "Hulu", .unique, ["hulu.com"]),
+        KnownSite("spotify", "Spotify", .unique, ["spotify.com"]),
+        KnownSite("youtube", "YouTube", .unique, ["youtube.com", "youtu.be"]),
+        KnownSite("steam", "Steam", .everyday, ["steampowered.com", "steamcommunity.com"]),
+        KnownSite("roblox", "Roblox", .unique, ["roblox.com"]),
+        KnownSite("playstation", "PlayStation", .unique, ["playstation.com"]),
+        KnownSite("xbox", "Xbox", .unique, ["xbox.com", "microsoft.com"]),
+        KnownSite("nintendo", "Nintendo", .unique, ["nintendo.com"]),
+        KnownSite("epicgames", "Epic Games", .unique, ["epicgames.com"]),
+        // Government and travel
+        KnownSite("irs", "IRS", .unique, ["irs.gov"]),
+        KnownSite("socialsecurity", "Social Security", .everyday, ["ssa.gov"]),
+        KnownSite("medicare", "Medicare", .everyday, ["medicare.gov"]),
+        KnownSite("ezpass", "E-ZPass", .unique, ["e-zpassny.com", "ezpassnj.com", "ezpassva.com", "ezpassmd.com", "e-zpassiag.com"]),
+        KnownSite("airbnb", "Airbnb", .unique, ["airbnb.com"]),
+        KnownSite("booking", "Booking.com", .everyday, ["booking.com"]),
+        KnownSite("expedia", "Expedia", .unique, ["expedia.com"]),
+        KnownSite("uber", "Uber", .everyday, ["uber.com"]),
+        KnownSite("doordash", "DoorDash", .unique, ["doordash.com"]),
+        KnownSite("delta", "Delta Air Lines", .everyday, ["delta.com"]),
     ]
 }
