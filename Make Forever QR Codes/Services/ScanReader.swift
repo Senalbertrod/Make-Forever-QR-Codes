@@ -157,6 +157,7 @@ enum ScanReader {
         if upper.hasPrefix("BEGIN:VCARD") { return .contact(contact(from: text)) }
         if upper.contains("BEGIN:VEVENT"), let e = event(from: text) { return .event(e) }
         if upper.hasPrefix("GEO:"), let url = mapsLink(fromGeo: text) { return .location(url) }
+        if upper.hasPrefix("SMSTO:"), let url = messageLink(fromSMSTO: text) { return .appLink(url, appName: "Messages") }
 
         guard !text.contains(where: \.isWhitespace), let url = makeURL(from: text),
               let scheme = url.scheme?.lowercased() else { return .text }
@@ -350,6 +351,22 @@ enum ScanReader {
         let numbers = body.split(separator: ";").first?.split(separator: ",").compactMap { Double($0) } ?? []
         guard numbers.count >= 2 else { return nil }
         return URL(string: "https://maps.apple.com/?ll=\(numbers[0]),\(numbers[1])")
+    }
+
+    // MARK: Text message
+
+    /// "SMSTO:+15551234567:Hello" becomes a link iPhone's Messages app opens.
+    private static func messageLink(fromSMSTO text: String) -> URL? {
+        let body = text.dropFirst(6)
+        let parts = body.split(separator: ":", maxSplits: 1, omittingEmptySubsequences: false)
+        let number = String(parts.first ?? "").filter { "+0123456789*#".contains($0) }
+        guard !number.isEmpty else { return nil }
+        var link = "sms:" + number
+        if parts.count > 1, !parts[1].isEmpty,
+           let message = String(parts[1]).addingPercentEncoding(withAllowedCharacters: .alphanumerics) {
+            link += "&body=" + message
+        }
+        return URL(string: link)
     }
 
     // MARK: Photos

@@ -8,7 +8,7 @@ Most QR services make "dynamic" codes that point to their own server, and the co
 
 ## What it does
 
-- **7 kinds of codes:** link, contact, social profile, Wi-Fi, text, map location, calendar event
+- **10 kinds of codes:** link, contact, social profile, Wi-Fi, text, phone call, text message, email, map location, calendar event
 - **Icon in the middle** (optional): a small icon for the kind of code, drawn by the app
 - **Live preview** while you type, with optional colors (and a warning if they're hard to scan)
 - **My Codes:** every code saved with a name, favorites, search, rename, duplicate, delete

@@ -243,6 +243,34 @@ struct CodeFormSections: View {
                     .lineLimit(4...12)
             }
 
+        case .phone:
+            Section("Phone number") {
+                TextField("+1 555 123 4567", text: $fields.phoneNumber)
+                    .keyboardType(.phonePad)
+                    .textContentType(.telephoneNumber)
+            }
+
+        case .message:
+            Section("Text message") {
+                TextField("Phone number", text: $fields.messageNumber)
+                    .keyboardType(.phonePad)
+                    .textContentType(.telephoneNumber)
+                TextField("Message (optional)", text: $fields.messageText, axis: .vertical)
+                    .lineLimit(2...6)
+            }
+
+        case .email:
+            Section("Email") {
+                TextField("To", text: $fields.emailTo)
+                    .keyboardType(.emailAddress)
+                    .textContentType(.emailAddress)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                TextField("Subject (optional)", text: $fields.emailSubject)
+                TextField("Message (optional)", text: $fields.emailBody, axis: .vertical)
+                    .lineLimit(2...6)
+            }
+
         case .location:
             Section {
                 Picker("Find by", selection: $fields.locationMode) {

@@ -20,6 +20,9 @@ enum QRIcons {
         case .social: c.thumbsUp()
         case .wifi: c.wifi()
         case .text: c.bubble()
+        case .phone: c.handset()
+        case .message: c.chat()
+        case .email: c.envelope()
         case .location: c.pin()
         case .event: c.calendar()
         }
@@ -159,6 +162,42 @@ private struct IconCanvas {
         tail.fill()
         line(0.28, 0.35, 0.72, 0.35, width: 0.08, paper)
         line(0.28, 0.51, 0.58, 0.51, width: 0.08, paper)
+    }
+
+    /// A mobile phone.
+    func handset() {
+        strokeRounded(0.27, 0.07, 0.73, 0.93, radius: 0.11, width: 0.08)
+        line(0.43, 0.19, 0.57, 0.19, width: 0.06)
+        dot(0.5, 0.80, 0.05)
+    }
+
+    /// A message bubble with three dots ("typing").
+    func chat() {
+        fillRounded(0.06, 0.14, 0.94, 0.72, radius: 0.29)
+        let tail = UIBezierPath()
+        tail.move(to: p(0.20, 0.62))
+        tail.addLine(to: p(0.12, 0.92))
+        tail.addLine(to: p(0.44, 0.68))
+        tail.close()
+        ink.setFill()
+        tail.fill()
+        for x: CGFloat in [0.30, 0.5, 0.70] {
+            dot(x, 0.43, 0.065, paper)
+        }
+    }
+
+    /// An envelope.
+    func envelope() {
+        strokeRounded(0.08, 0.22, 0.92, 0.78, radius: 0.08, width: 0.08)
+        let flap = UIBezierPath()
+        flap.move(to: p(0.13, 0.28))
+        flap.addLine(to: p(0.5, 0.56))
+        flap.addLine(to: p(0.87, 0.28))
+        flap.lineWidth = s(0.08)
+        flap.lineCapStyle = .round
+        flap.lineJoinStyle = .round
+        ink.setStroke()
+        flap.stroke()
     }
 
     /// A map pin with a hole.

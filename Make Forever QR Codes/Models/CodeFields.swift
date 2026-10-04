@@ -62,6 +62,14 @@ struct CodeFields: Codable, Equatable {
     var socialServiceValue: SocialService? = nil
     var socialHandleValue: String? = nil
 
+    // Phone, message and email (optional so codes saved without them still load)
+    var phoneNumberValue: String? = nil
+    var messageNumberValue: String? = nil
+    var messageTextValue: String? = nil
+    var emailToValue: String? = nil
+    var emailSubjectValue: String? = nil
+    var emailBodyValue: String? = nil
+
     // Wi-Fi
     var ssid = ""
     var password = ""
@@ -85,6 +93,31 @@ struct CodeFields: Codable, Equatable {
     var eventAllDay = false
     var eventLocation = ""
     var eventNotes = ""
+
+    var phoneNumber: String {
+        get { phoneNumberValue ?? "" }
+        set { phoneNumberValue = newValue }
+    }
+    var messageNumber: String {
+        get { messageNumberValue ?? "" }
+        set { messageNumberValue = newValue }
+    }
+    var messageText: String {
+        get { messageTextValue ?? "" }
+        set { messageTextValue = newValue }
+    }
+    var emailTo: String {
+        get { emailToValue ?? "" }
+        set { emailToValue = newValue }
+    }
+    var emailSubject: String {
+        get { emailSubjectValue ?? "" }
+        set { emailSubjectValue = newValue }
+    }
+    var emailBody: String {
+        get { emailBodyValue ?? "" }
+        set { emailBodyValue = newValue }
+    }
 
     func encoded() -> Data {
         (try? JSONEncoder().encode(self)) ?? Data()
