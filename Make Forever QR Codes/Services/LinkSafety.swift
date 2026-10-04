@@ -186,6 +186,13 @@ enum LinkSafety {
         return out
     }
 
+    /// True when the link opens the real website of a company on the built-in list
+    /// (like paypal.com). Only these get the green "No warning signs found".
+    static func isKnownSite(_ url: URL) -> Bool {
+        guard let link = LinkParts(url.absoluteString) else { return false }
+        return brands.contains { $0.0 == link.siteName }
+    }
+
     /// Warnings for a code that opens another app instead of a website.
     static func checkAppLink(scheme: String, appName: String) -> [SafetyWarning] {
         [SafetyWarning(

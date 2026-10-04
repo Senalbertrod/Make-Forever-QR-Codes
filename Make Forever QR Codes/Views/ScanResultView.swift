@@ -101,8 +101,9 @@ struct ScanResultView: View {
         }
     }
 
+    /// Green only for the real website of a company on the built-in list.
     private var isWebsite: Bool {
-        if case .link = code.kind { return true }
+        if case .link(let url) = code.kind { return LinkSafety.isKnownSite(url) }
         return false
     }
 
