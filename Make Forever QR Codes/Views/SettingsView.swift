@@ -32,7 +32,7 @@ struct SettingsView: View {
                             text: "Before anything opens, the app checks links for scam tricks, like look-alike names, hidden addresses and invisible characters. Safari also warns about known bad websites when a link opens.")
                 }
                 Section("Privacy") {
-                    InfoRow(symbol: "lock.shield", title: "Data Not Collected",
+                    InfoRow(symbol: "lock.shield", title: "Nothing leaves your phone",
                             text: "No account, no ads, no tracking. Your codes are saved only on this device.")
                 }
                 Section {
