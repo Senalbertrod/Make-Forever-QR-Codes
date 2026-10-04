@@ -33,7 +33,7 @@ struct SettingsView: View {
                 }
                 Section("Privacy") {
                     InfoRow(symbol: "lock.shield", title: "Nothing leaves your phone",
-                            text: "No account, no ads, no tracking. The camera is only used to read codes, and nothing it sees is saved or sent. Your codes are saved only on this device.")
+                            text: "No account, no ads, no tracking. Your codes are saved only on this device.")
                 }
                 Section {
                     LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0")
