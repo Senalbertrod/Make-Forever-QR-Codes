@@ -1,6 +1,6 @@
 # Make Forever QR Codes
 
-Shown on the Home Screen as **MF QR Code**.
+Shown on the Home Screen as **Make Forever QR**.
 
 Free QR codes that never expire. No account, no ads, no tracking, no subscription. Free and open source.
 

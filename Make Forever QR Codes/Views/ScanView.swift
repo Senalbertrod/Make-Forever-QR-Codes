@@ -104,7 +104,7 @@ struct ScanView: View {
                     .background(Color(.secondarySystemBackground))
             default:
                 VStack(spacing: 12) {
-                    unavailable("Camera is off for MF QR Code", symbol: "camera.fill",
+                    unavailable("Camera is off for Make Forever QR", symbol: "camera.fill",
                                 text: "Turn on the camera in Settings to scan, or scan from a photo.")
                     Button("Open Settings") {
                         if let url = URL(string: UIApplication.openSettingsURLString) {

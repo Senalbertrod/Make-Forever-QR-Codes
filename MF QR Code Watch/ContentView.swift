@@ -19,7 +19,7 @@ struct ContentView: View {
                     ContentUnavailableView {
                         Label("No favorites yet", systemImage: "star")
                     } description: {
-                        Text("On your iPhone, open MF QR Code and tap the star on a code.")
+                        Text("On your iPhone, open Make Forever QR and tap the star on a code.")
                     }
                 } else {
                     List(store.codes) { code in
@@ -32,7 +32,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationTitle("MF QR Code")
+            .navigationTitle("Make Forever QR")
         }
         .fullScreenCover(item: $shown) { code in
             CodeScreen(code: code)
