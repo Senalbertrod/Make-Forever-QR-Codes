@@ -184,6 +184,9 @@ struct ScanResultView: View {
             Button("Add to Calendar", systemImage: "calendar.badge.plus") { showAddEvent = true }
 
         case .wifi(let w):
+            // REMINDER: when the Apple Developer Program is joined (before the App Store
+            // upload), add a one-tap "Join Network" button here with NEHotspotConfiguration.
+            // It needs the Hotspot Configuration permission, which free accounts can't use.
             if !w.password.isEmpty {
                 Button("Copy Password", systemImage: "key") { copy(w.password) }
             }
