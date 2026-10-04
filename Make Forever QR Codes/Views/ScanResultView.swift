@@ -24,6 +24,8 @@ struct ScanResultView: View {
     @State private var name = ""
     @State private var saved = false
     @State private var copied: String?
+    @State private var joinMessage: String?
+    @State private var joining = false
 
     private var warnings: [SafetyWarning] { code.warnings }
 
@@ -184,16 +186,29 @@ struct ScanResultView: View {
             Button("Add to Calendar", systemImage: "calendar.badge.plus") { showAddEvent = true }
 
         case .wifi(let w):
-            // REMINDER: when the Apple Developer Program is joined (before the App Store
-            // upload), add a one-tap "Join Network" button here with NEHotspotConfiguration.
-            // It needs the Hotspot Configuration permission, which free accounts can't use.
+            Button("Join Network", systemImage: "wifi") {
+                joining = true
+                joinMessage = nil
+                Task {
+                    let result = await WiFiJoiner.join(w)
+                    joining = false
+                    switch result {
+                    case .joined: joinMessage = "Joined \(w.ssid)"
+                    case .cancelled: joinMessage = nil
+                    case .failed(let message): joinMessage = message
+                    }
+                }
+            }
+            .disabled(joining || w.ssid.isEmpty)
+            if let joinMessage {
+                Text(joinMessage)
+                    .font(.footnote)
+                    .foregroundStyle(joinMessage.hasPrefix("Joined") ? Color.green : Color.secondary)
+            }
             if !w.password.isEmpty {
                 Button("Copy Password", systemImage: "key") { copy(w.password) }
             }
             Button("Copy Network Name", systemImage: "doc.on.doc") { copy(w.ssid) }
-            Text("To join, go to Settings › Wi-Fi, pick the network and paste the password.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
 
         case .text:
             Button("Copy", systemImage: "doc.on.doc") { copy(code.raw) }
