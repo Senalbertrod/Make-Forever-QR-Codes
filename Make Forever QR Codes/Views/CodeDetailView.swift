@@ -19,6 +19,7 @@ struct CodeDetailView: View {
     @State private var newName = ""
     @State private var confirmDelete = false
     @State private var savedToPhotos = false
+    @State private var showWatchWarning = false
 
     private var image: UIImage? { code.image(size: 1024) }
 
@@ -52,9 +53,15 @@ struct CodeDetailView: View {
                 Button(code.isFavorite ? "Unfavorite" : "Favorite",
                        systemImage: code.isFavorite ? "star.fill" : "star") {
                     code.isFavorite.toggle()
+                    if code.isFavorite && code.isDenseForWatch && WatchSync.shared.hasWatch { showWatchWarning = true }
                 }
                 .tint(.yellow)
             }
+        }
+        .alert("This code is long", isPresented: $showWatchWarning) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Favorites also show on your Apple Watch. This code holds a lot of information, so it may be hard to scan from the small watch screen. It works fine from your iPhone.")
         }
         .fullScreenCover(isPresented: $showFullScreen) {
             FullScreenCodeView(code: code)

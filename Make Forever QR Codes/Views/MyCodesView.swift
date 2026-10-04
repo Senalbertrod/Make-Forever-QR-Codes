@@ -13,6 +13,7 @@ struct MyCodesView: View {
     @Query(sort: \SavedCode.createdAt, order: .reverse) private var codes: [SavedCode]
     @State private var search = ""
     @State private var codeToDelete: SavedCode?
+    @State private var showWatchWarning = false
 
     private var shown: [SavedCode] {
         let filtered = search.trimmed.isEmpty ? codes : codes.filter {
@@ -45,6 +46,7 @@ struct MyCodesView: View {
                                 Button(code.isFavorite ? "Unfavorite" : "Favorite",
                                        systemImage: code.isFavorite ? "star.slash" : "star") {
                                     code.isFavorite.toggle()
+                                    if code.isFavorite && code.isDenseForWatch && WatchSync.shared.hasWatch { showWatchWarning = true }
                                 }
                                 .tint(.yellow)
                             }
@@ -54,6 +56,11 @@ struct MyCodesView: View {
                 }
             }
             .navigationTitle("My Codes")
+            .alert("This code is long", isPresented: $showWatchWarning) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Favorites also show on your Apple Watch. This code holds a lot of information, so it may be hard to scan from the small watch screen. It works fine from your iPhone.")
+            }
             .confirmationDialog("Delete this code?", isPresented: Binding(
                 get: { codeToDelete != nil }, set: { if !$0 { codeToDelete = nil } }
             ), titleVisibility: .visible) {

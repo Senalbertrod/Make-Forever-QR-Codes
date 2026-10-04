@@ -38,6 +38,9 @@ final class SavedCode {
     var foreground: UIColor { UIColor(hex: foregroundHex) ?? .black }
     var background: UIColor { UIColor(hex: backgroundHex) ?? .white }
 
+    /// Long codes have tiny squares that are hard to scan from a watch screen.
+    var isDenseForWatch: Bool { Data(payload.utf8).count > QRRenderer.denseBytes }
+
     func image(size: CGFloat) -> UIImage? {
         QRRenderer.image(for: payload, size: size, foreground: foreground, background: background)
     }

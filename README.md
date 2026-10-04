@@ -16,6 +16,7 @@ Most QR services make "dynamic" codes that point to their own server, and the co
 - **Full-screen mode** for someone to scan, with the screen kept awake
 - **Business cards** with up to 3 phones, 3 emails, 3 websites, 3 social profiles and 2 addresses, each with a label
 - **Fill from my contact card** for business cards (the app only sees the one contact you pick)
+- **Apple Watch:** your favorite codes on your wrist, full screen with a tap. They come straight from your iPhone (no iCloud) and stay on the watch
 - Light mode, dark mode and tinted app icons
 
 Scanning is left to the iPhone's own Camera app, which already does it perfectly.

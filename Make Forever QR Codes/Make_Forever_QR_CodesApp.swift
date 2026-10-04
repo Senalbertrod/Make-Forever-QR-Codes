@@ -10,6 +10,11 @@ import SwiftData
 
 @main
 struct Make_Forever_QR_CodesApp: App {
+    init() {
+        // Get ready to send favorites to the Apple Watch.
+        WatchSync.shared.start()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
