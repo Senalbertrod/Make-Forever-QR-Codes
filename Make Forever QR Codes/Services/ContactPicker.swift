@@ -51,15 +51,50 @@ extension CodeFields {
         if has(CNContactFamilyNameKey) { lastName = c.familyName }
         if has(CNContactOrganizationNameKey) { company = c.organizationName }
         if has(CNContactJobTitleKey) { jobTitle = c.jobTitle }
-        if has(CNContactPhoneNumbersKey), let p = c.phoneNumbers.first { phone = p.value.stringValue }
-        if has(CNContactEmailAddressesKey), let e = c.emailAddresses.first { email = e.value as String }
-        if has(CNContactUrlAddressesKey), let u = c.urlAddresses.first { website = u.value as String }
-        if has(CNContactPostalAddressesKey), let a = c.postalAddresses.first?.value {
-            street = a.street
-            city = a.city
-            state = a.state
-            postalCode = a.postalCode
-            country = a.country
+        if has(CNContactPhoneNumbersKey), !c.phoneNumbers.isEmpty {
+            phones = c.phoneNumbers.prefix(ContactLimits.phones).map { item in
+                let label: String
+                switch item.label ?? "" {
+                case CNLabelWork: label = "Work"
+                case CNLabelHome: label = "Home"
+                default: label = "Mobile"
+                }
+                return LabeledValue(label: label, value: item.value.stringValue)
+            }
+        }
+        if has(CNContactEmailAddressesKey), !c.emailAddresses.isEmpty {
+            emails = c.emailAddresses.prefix(ContactLimits.emails).map { item in
+                let label: String
+                switch item.label ?? "" {
+                case CNLabelWork: label = "Work"
+                case CNLabelHome: label = "Personal"
+                default: label = "Other"
+                }
+                return LabeledValue(label: label, value: item.value as String)
+            }
+        }
+        if has(CNContactUrlAddressesKey), !c.urlAddresses.isEmpty {
+            websites = c.urlAddresses.prefix(ContactLimits.websites).map {
+                LabeledValue(label: "Website", value: $0.value as String)
+            }
+        }
+        if has(CNContactPostalAddressesKey), !c.postalAddresses.isEmpty {
+            addresses = c.postalAddresses.prefix(ContactLimits.addresses).map { item in
+                let a = item.value
+                return PostalAddress(label: item.label == CNLabelHome ? "Home" : "Work",
+                                     street: a.street, city: a.city, state: a.state,
+                                     postalCode: a.postalCode, country: a.country)
+            }
+        }
+        if has(CNContactSocialProfilesKey), !c.socialProfiles.isEmpty {
+            socials = c.socialProfiles.prefix(ContactLimits.socials).map { item in
+                let p = item.value
+                let name = p.service.lowercased()
+                let named = SocialService.allCases.first { $0 != .x && $0 != .other && name.contains($0.rawValue) }
+                let service = named ?? ((name == "x" || name.contains("twitter")) ? .x : .other)
+                let handle = p.username.isEmpty ? p.urlString : p.username
+                return SocialProfile(service: service, handle: handle)
+            }
         }
     }
 }

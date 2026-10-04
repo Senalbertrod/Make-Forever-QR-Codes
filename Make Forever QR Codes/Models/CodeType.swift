@@ -65,12 +65,29 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
             lines.append("FN:\((fullName.isEmpty ? f.company.trimmed : fullName).vcard)")
             if !f.company.trimmed.isEmpty { lines.append("ORG:\(f.company.vcard)") }
             if !f.jobTitle.trimmed.isEmpty { lines.append("TITLE:\(f.jobTitle.vcard)") }
-            if !f.phone.trimmed.isEmpty { lines.append("TEL;TYPE=CELL:\(f.phone.trimmed)") }
-            if !f.email.trimmed.isEmpty { lines.append("EMAIL:\(f.email.trimmed)") }
-            if !f.website.trimmed.isEmpty { lines.append("URL:\(f.website.vcard)") }
-            let address = [f.street, f.city, f.state, f.postalCode, f.country].map(\.trimmed)
-            if address.contains(where: { !$0.isEmpty }) {
-                lines.append("ADR;TYPE=WORK:;;\(f.street.vcard);\(f.city.vcard);\(f.state.vcard);\(f.postalCode.vcard);\(f.country.vcard)")
+            for p in f.phones where !p.value.trimmed.isEmpty {
+                let type = ["Work": "WORK", "Home": "HOME"][p.label] ?? "CELL"
+                lines.append("TEL;TYPE=\(type):\(p.value.trimmed)")
+            }
+            for e in f.emails where !e.value.trimmed.isEmpty {
+                let type = ["Work": "WORK", "Personal": "HOME"][e.label] ?? "INTERNET"
+                lines.append("EMAIL;TYPE=\(type):\(e.value.trimmed)")
+            }
+            var item = 0
+            for w in f.websites where !w.value.trimmed.isEmpty {
+                // Grouped so iPhone shows the label; other phones still read the link.
+                item += 1
+                lines.append("item\(item).URL:\(w.value.vcard)")
+                lines.append("item\(item).X-ABLabel:\(w.label.vcard)")
+            }
+            for a in f.addresses where !a.isEmpty {
+                let type = a.label == "Home" ? "HOME" : "WORK"
+                lines.append("ADR;TYPE=\(type):;;\(a.street.vcard);\(a.city.vcard);\(a.state.vcard);\(a.postalCode.vcard);\(a.country.vcard)")
+            }
+            for s in f.socials where !s.handle.trimmed.isEmpty {
+                var line = "X-SOCIALPROFILE;TYPE=\(s.service.rawValue)"
+                if let user = s.service.username(from: s.handle), !user.isEmpty { line += ";X-USER=\(user.vcard)" }
+                lines.append(line + ":\(s.service.link(for: s.handle).vcard)")
             }
             lines.append("END:VCARD")
             return lines.joined(separator: "\n")

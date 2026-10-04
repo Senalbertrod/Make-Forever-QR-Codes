@@ -14,6 +14,7 @@ Most QR services make "dynamic" codes that point to their own server, and the co
 - **Share or save** the code as an image
 - **Print right from the app:** one large code, a code with a caption, or a sheet of small codes, in three sizes, or save a PDF for a print shop
 - **Full-screen mode** for someone to scan, with the screen kept awake
+- **Business cards** with up to 3 phones, 3 emails, 3 websites, 3 social profiles and 2 addresses, each with a label
 - **Fill from my contact card** for business cards (the app only sees the one contact you pick)
 - Light mode, dark mode and tinted app icons
 

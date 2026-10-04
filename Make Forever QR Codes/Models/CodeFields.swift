@@ -51,6 +51,12 @@ struct CodeFields: Codable, Equatable {
     var state = ""
     var postalCode = ""
     var country = ""
+    // Lists for the + button (nil in codes saved before lists existed).
+    var phoneList: [LabeledValue]? = nil
+    var emailList: [LabeledValue]? = nil
+    var websiteList: [LabeledValue]? = nil
+    var addressList: [PostalAddress]? = nil
+    var socialList: [SocialProfile]? = nil
 
     // Wi-Fi
     var ssid = ""

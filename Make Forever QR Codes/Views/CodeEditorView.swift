@@ -164,25 +164,17 @@ struct CodeFormSections: View {
                 TextField("Job title", text: $fields.jobTitle)
                     .textContentType(.jobTitle)
             }
-            Section("Contact") {
-                TextField("Phone", text: $fields.phone)
-                    .keyboardType(.phonePad)
-                    .textContentType(.telephoneNumber)
-                TextField("Email", text: $fields.email)
-                    .keyboardType(.emailAddress)
-                    .textContentType(.emailAddress)
-                    .textInputAutocapitalization(.never)
-                TextField("Website", text: $fields.website)
-                    .keyboardType(.URL)
-                    .textInputAutocapitalization(.never)
-            }
-            Section("Address") {
-                TextField("Street", text: $fields.street)
-                TextField("City", text: $fields.city)
-                TextField("State", text: $fields.state)
-                TextField("ZIP / Postal code", text: $fields.postalCode)
-                TextField("Country", text: $fields.country)
-            }
+            LabeledLinesSection(title: "Phone", addTitle: "Add phone", placeholder: "Phone",
+                                lines: $fields.phones, labels: ContactLimits.phoneLabels,
+                                max: ContactLimits.phones, kind: .phone)
+            LabeledLinesSection(title: "Email", addTitle: "Add email", placeholder: "Email",
+                                lines: $fields.emails, labels: ContactLimits.emailLabels,
+                                max: ContactLimits.emails, kind: .email)
+            LabeledLinesSection(title: "Website", addTitle: "Add website", placeholder: "example.com",
+                                lines: $fields.websites, labels: ContactLimits.websiteLabels,
+                                max: ContactLimits.websites, kind: .link)
+            AddressesSection(addresses: $fields.addresses)
+            SocialProfilesSection(profiles: $fields.socials)
 
         case .wifi:
             Section {
