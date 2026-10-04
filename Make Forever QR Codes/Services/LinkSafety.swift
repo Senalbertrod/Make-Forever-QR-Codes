@@ -278,7 +278,7 @@ enum LinkSafety {
         KnownSite("reddit", "Reddit", .unique, ["reddit.com"]),
         KnownSite("pinterest", "Pinterest", .unique, ["pinterest.com"]),
         // Shopping
-        KnownSite("amazon", "Amazon", .unique, ["amazon.com", "amazon.ca", "amazon.co.uk", "amazon.com.mx", "primevideo.com"]),
+        KnownSite("amazon", "Amazon", .everyday, ["amazon.com", "amazon.ca", "amazon.co.uk", "amazon.com.mx", "primevideo.com"]),
         KnownSite("walmart", "Walmart", .unique, ["walmart.com"]),
         KnownSite("ebay", "eBay", .unique, ["ebay.com"]),
         KnownSite("costco", "Costco", .unique, ["costco.com"]),
