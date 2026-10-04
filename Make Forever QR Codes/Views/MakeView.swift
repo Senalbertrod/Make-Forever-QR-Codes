@@ -10,6 +10,7 @@ import SwiftUI
 struct MakeView: View {
     var onSaved: () -> Void = {}
     @State private var showSettings = false
+    @State private var showAbout = false
 
     private let columns = [GridItem(.adaptive(minimum: 100), spacing: 12)]
 
@@ -36,11 +37,15 @@ struct MakeView: View {
             }
             .navigationTitle("Make a Code")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("About", systemImage: "info.circle") { showAbout = true }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Settings", systemImage: "gearshape") { showSettings = true }
                 }
             }
             .sheet(isPresented: $showSettings) { SettingsView() }
+            .sheet(isPresented: $showAbout) { AboutView() }
         }
     }
 }
