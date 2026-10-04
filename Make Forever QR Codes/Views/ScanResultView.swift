@@ -36,15 +36,18 @@ struct ScanResultView: View {
                     content
                 }
 
-                if isLink {
+                // Only where a scam is possible: red whenever there are warning
+                // signs, green only for website links (not maps, profiles, apps,
+                // Wi-Fi, contacts, events or text).
+                if !warnings.isEmpty {
                     Section {
-                        if warnings.isEmpty {
-                            Label("No warning signs found", systemImage: "checkmark.shield")
-                                .foregroundStyle(.green)
-                        } else {
-                            Label("Warning: this could be a scam", systemImage: "xmark.shield.fill")
-                                .foregroundStyle(.red)
-                        }
+                        Label("Warning: this could be a scam", systemImage: "xmark.shield.fill")
+                            .foregroundStyle(.red)
+                    }
+                } else if isWebsite {
+                    Section {
+                        Label("No warning signs found", systemImage: "checkmark.shield")
+                            .foregroundStyle(.green)
                     }
                 }
 
@@ -98,11 +101,9 @@ struct ScanResultView: View {
         }
     }
 
-    private var isLink: Bool {
-        switch code.kind {
-        case .link, .social, .location: true
-        default: false
-        }
+    private var isWebsite: Bool {
+        if case .link = code.kind { return true }
+        return false
     }
 
     // MARK: What's inside
