@@ -75,7 +75,8 @@ struct CodeDetailView: View {
             Button("Save") { if !newName.trimmed.isEmpty { code.name = newName.trimmed } }
             Button("Cancel", role: .cancel) {}
         }
-        .confirmationDialog("Delete this code?", isPresented: $confirmDelete, titleVisibility: .visible) {
+        .alert("Delete this code?", isPresented: $confirmDelete) {
+            Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
                 // Leave the screen first, then delete, so nothing shows a deleted code.
                 let context = modelContext
@@ -85,8 +86,6 @@ struct CodeDetailView: View {
                     context.delete(toDelete)
                 }
             }
-        } message: {
-            Text("It's removed from this list only. Printed or shared copies keep working.")
         }
         .alert("Saved to Photos", isPresented: $savedToPhotos) {
             Button("OK", role: .cancel) {}

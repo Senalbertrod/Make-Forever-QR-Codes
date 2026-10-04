@@ -61,15 +61,13 @@ struct MyCodesView: View {
             } message: {
                 Text("Favorites also show on your Apple Watch. This code holds a lot of information, so it may be hard to scan from the small watch screen. It works fine from your iPhone.")
             }
-            .confirmationDialog("Delete this code?", isPresented: Binding(
+            .alert("Delete this code?", isPresented: Binding(
                 get: { codeToDelete != nil }, set: { if !$0 { codeToDelete = nil } }
-            ), titleVisibility: .visible) {
+            ), presenting: codeToDelete) { code in
+                Button("Cancel", role: .cancel) {}
                 Button("Delete", role: .destructive) {
-                    if let codeToDelete { modelContext.delete(codeToDelete) }
-                    codeToDelete = nil
+                    modelContext.delete(code)
                 }
-            } message: {
-                Text("It's removed from this list only. Printed or shared copies keep working.")
             }
         }
     }
