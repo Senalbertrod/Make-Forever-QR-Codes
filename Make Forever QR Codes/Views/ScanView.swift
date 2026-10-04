@@ -9,6 +9,7 @@
 import AVFoundation
 import PhotosUI
 import SwiftUI
+import Vision
 import VisionKit
 
 struct ScanView: View {
