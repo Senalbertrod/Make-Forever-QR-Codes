@@ -107,8 +107,10 @@ struct MyCodesView: View {
             ), presenting: codeToDelete) { code in
                 Button("Cancel", role: .cancel) {}
                 Button("Delete", role: .destructive) {
-                    modelContext.delete(code)
+                    withAnimation { modelContext.delete(code) }
                 }
+            } message: { _ in
+                Text("Printed or shared copies still work.")
             }
         }
     }
@@ -120,9 +122,11 @@ struct MyCodesView: View {
             CodeRow(code: code)
         }
         .swipeActions(edge: .trailing) {
-            Button("Delete", systemImage: "trash", role: .destructive) {
+            // Not marked destructive, so the row stays put until the person confirms.
+            Button("Delete", systemImage: "trash") {
                 codeToDelete = code
             }
+            .tint(.red)
         }
         .swipeActions(edge: .leading) {
             Button(code.isFavorite ? "Unfavorite" : "Favorite",

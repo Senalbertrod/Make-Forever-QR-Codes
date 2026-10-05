@@ -98,6 +98,8 @@ struct CodeDetailView: View {
                     context.delete(toDelete)
                 }
             }
+        } message: {
+            Text("Printed or shared copies still work.")
         }
         .alert("Saved to Photos", isPresented: $savedToPhotos) {
             Button("OK", role: .cancel) {}
