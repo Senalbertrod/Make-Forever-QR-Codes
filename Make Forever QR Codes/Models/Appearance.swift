@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 enum Appearance: String, CaseIterable, Identifiable {
     case device, light, dark
@@ -19,12 +20,21 @@ enum Appearance: String, CaseIterable, Identifiable {
         }
     }
 
-    /// nil means: follow the device.
-    var colorScheme: ColorScheme? {
+    private var style: UIUserInterfaceStyle {
         switch self {
-        case .device: nil
+        case .device: .unspecified
         case .light: .light
         case .dark: .dark
+        }
+    }
+
+    /// Applies the look to every window of the app, including open sheets.
+    func apply() {
+        for scene in UIApplication.shared.connectedScenes {
+            guard let windowScene = scene as? UIWindowScene else { continue }
+            for window in windowScene.windows {
+                window.overrideUserInterfaceStyle = style
+            }
         }
     }
 }

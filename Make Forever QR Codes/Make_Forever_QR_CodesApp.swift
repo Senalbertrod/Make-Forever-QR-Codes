@@ -22,7 +22,11 @@ struct Make_Forever_QR_CodesApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .preferredColorScheme(appearance.colorScheme)
+                // Set on the window itself, so open screens (like Settings)
+                // switch right away, and Match Device switches back correctly.
+                .onChange(of: appearance, initial: true) {
+                    appearance.apply()
+                }
         }
         // Saved codes stay on this device.
         .modelContainer(for: SavedCode.self)
