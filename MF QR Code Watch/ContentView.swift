@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  MF QR Code Watch
 //
-//  The list of favorites. Tap one to show it full screen.
+//  The codes sent from the iPhone with the watch button. Tap one to show it full screen.
 //
 
 import SwiftUI
@@ -17,9 +17,9 @@ struct ContentView: View {
             Group {
                 if store.codes.isEmpty {
                     ContentUnavailableView {
-                        Label("No favorites yet", systemImage: "star")
+                        Label("No codes yet", systemImage: "applewatch")
                     } description: {
-                        Text("On your iPhone, open Make Forever QR and tap the star on a code.")
+                        Text("On your iPhone, open Make Forever QR and tap the watch button on a code.")
                     }
                 } else {
                     List(store.codes) { code in

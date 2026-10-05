@@ -20,6 +20,7 @@ struct CodeDetailView: View {
     @State private var confirmDelete = false
     @State private var savedToPhotos = false
     @State private var showWatchWarning = false
+    @State private var hasWatch = false
 
     private var image: UIImage? { code.image(size: 1024) }
 
@@ -50,19 +51,30 @@ struct CodeDetailView: View {
         .navigationTitle(code.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            // Only when an Apple Watch is paired with this iPhone.
+            if hasWatch {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(code.onWatch ? "Remove from Watch" : "Send to Watch",
+                           systemImage: code.onWatch ? "applewatch.watchface" : "applewatch") {
+                        code.onWatch.toggle()
+                        if code.onWatch && code.isDenseForWatch { showWatchWarning = true }
+                    }
+                    .tint(code.onWatch ? .green : .primary)
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button(code.isFavorite ? "Unfavorite" : "Favorite",
                        systemImage: code.isFavorite ? "star.fill" : "star") {
                     code.isFavorite.toggle()
-                    if code.isFavorite && code.isDenseForWatch && WatchSync.shared.hasWatch { showWatchWarning = true }
                 }
                 .tint(.yellow)
             }
         }
+        .onAppear { hasWatch = WatchSync.shared.hasWatch }
         .alert("This code is long", isPresented: $showWatchWarning) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("Favorites also show on your Apple Watch. This code holds a lot of information, so it may be hard to scan from the small watch screen. It works fine from your iPhone.")
+            Text("This code holds a lot of information, so it may be hard to scan from the small watch screen. It works fine from your iPhone.")
         }
         .fullScreenCover(isPresented: $showFullScreen) {
             FullScreenCodeView(code: code)

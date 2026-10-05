@@ -17,7 +17,6 @@ struct MyCodesView: View {
     @AppStorage("typeOrder") private var typeOrderRaw = ""
     @State private var search = ""
     @State private var codeToDelete: SavedCode?
-    @State private var showWatchWarning = false
     @State private var showArrange = false
 
     private var filtered: [SavedCode] {
@@ -103,11 +102,6 @@ struct MyCodesView: View {
             .sheet(isPresented: $showArrange) {
                 ArrangeTypesView(orderRaw: $typeOrderRaw, inUse: Set(codes.map(\.type)))
             }
-            .alert("This code is long", isPresented: $showWatchWarning) {
-                Button("OK", role: .cancel) {}
-            } message: {
-                Text("Favorites also show on your Apple Watch. This code holds a lot of information, so it may be hard to scan from the small watch screen. It works fine from your iPhone.")
-            }
             .alert("Delete this code?", isPresented: Binding(
                 get: { codeToDelete != nil }, set: { if !$0 { codeToDelete = nil } }
             ), presenting: codeToDelete) { code in
@@ -134,7 +128,6 @@ struct MyCodesView: View {
             Button(code.isFavorite ? "Unfavorite" : "Favorite",
                    systemImage: code.isFavorite ? "star.slash" : "star") {
                 code.isFavorite.toggle()
-                if code.isFavorite && code.isDenseForWatch && WatchSync.shared.hasWatch { showWatchWarning = true }
             }
             .tint(.yellow)
         }
@@ -214,6 +207,10 @@ private struct CodeRow: View {
                     Text(code.name).font(.headline).lineLimit(1)
                     if code.isFavorite {
                         Image(systemName: "star.fill").font(.caption).foregroundStyle(.yellow)
+                    }
+                    if code.onWatch {
+                        Image(systemName: "applewatch").font(.caption).foregroundStyle(.green)
+                            .accessibilityLabel("On Apple Watch")
                     }
                 }
                 Label(code.type.title, systemImage: code.type.symbol)

@@ -17,7 +17,7 @@ Most QR services make "dynamic" codes that point to their own server, and the co
 - **Full-screen mode** for someone to scan, with the screen kept awake
 - **Contacts** with up to 3 phones, 3 emails, 3 websites, 3 social profiles and 2 addresses, each with a label
 - **Fill from my contact card** for contacts (the app only sees the one contact you pick)
-- **Apple Watch:** your favorite codes on your wrist, full screen with a tap. They come straight from your iPhone (no iCloud) and stay on the watch
+- **Apple Watch:** tap the watch button on a code to put it on your wrist, full screen with a tap. The button only shows when a watch is paired. They come straight from your iPhone (no iCloud) and stay on the watch
 - Light mode, dark mode and tinted app icons
 
 - **Scan tab:** scan with the camera or from a photo. It shows what's inside before anything opens, with buttons to open, add to Contacts or Calendar, or copy a Wi-Fi password. Save to My Codes only if you want

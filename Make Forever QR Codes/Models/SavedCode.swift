@@ -20,6 +20,8 @@ final class SavedCode {
     var foregroundHex: String = "#000000"
     var backgroundHex: String = "#FFFFFF"
     var isFavorite: Bool = false
+    /// Sent to the Apple Watch (the watch button), separate from favorites.
+    var onWatch: Bool = false
     /// Show the kind's icon in the middle of the code.
     var showIcon: Bool = false
     /// Saved from the Scan tab (exactly as scanned).
