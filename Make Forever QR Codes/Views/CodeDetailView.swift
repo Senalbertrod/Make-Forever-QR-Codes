@@ -56,8 +56,11 @@ struct CodeDetailView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(code.onWatch ? "Remove from Watch" : "Send to Watch",
                            systemImage: code.onWatch ? "applewatch.watchface" : "applewatch") {
-                        code.onWatch.toggle()
-                        if code.onWatch && code.isDenseForWatch { showWatchWarning = true }
+                        if !code.onWatch && !code.fitsWatch {
+                            showWatchWarning = true   // too big: not sent
+                        } else {
+                            code.onWatch.toggle()
+                        }
                     }
                     .tint(code.onWatch ? .green : .primary)
                 }
@@ -71,10 +74,10 @@ struct CodeDetailView: View {
             }
         }
         .onAppear { hasWatch = WatchSync.shared.hasWatch }
-        .alert("This code is long", isPresented: $showWatchWarning) {
+        .alert("Too big for Apple Watch", isPresented: $showWatchWarning) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("This code holds a lot of information, so it may be hard to scan from the small watch screen. It works fine from your iPhone.")
+            Text("This code has too much information to scan from the watch screen.")
         }
         .fullScreenCover(isPresented: $showFullScreen) {
             FullScreenCodeView(code: code)

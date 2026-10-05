@@ -31,6 +31,29 @@ final class WatchSync: NSObject, WCSessionDelegate {
         WCSession.isSupported() && WCSession.default.activationState == .activated && WCSession.default.isPaired
     }
 
+    // MARK: - Does a code fit on the watch?
+
+    /// Width of the paired watch's screen in pixels, as the watch app reported it.
+    /// 0 until the watch app has been opened once.
+    private var watchScreenPixels: Int {
+        get { UserDefaults.standard.integer(forKey: "watchScreenPixels") }
+        set { UserDefaults.standard.set(newValue, forKey: "watchScreenPixels") }
+    }
+
+    /// The most squares across a code can have and still scan from the watch.
+    /// Each square must be at least 0.3 mm on the screen. Before the watch app
+    /// has reported its size, the smallest Apple Watch (about 25 mm wide) is used.
+    var maxWatchModules: Int {
+        let pixels = watchScreenPixels
+        let widthMM = pixels > 0 ? Double(pixels) / 330.0 * 25.4 : 25.0   // watch screens are about 330 pixels per inch
+        let squares = Int(widthMM / 0.3)
+        return squares - 6   // minus the white border around the code
+    }
+
+    private func remember(_ context: [String: Any]) {
+        if let pixels = context["screenPixels"] as? Int, pixels > 0 { watchScreenPixels = pixels }
+    }
+
     func start() {
         guard WCSession.isSupported() else { return }
         WCSession.default.delegate = self
@@ -72,7 +95,12 @@ final class WatchSync: NSObject, WCSessionDelegate {
 
     nonisolated func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState,
                              error: Error?) {
-        Task { @MainActor in self.sendIfReady() }
+        // The last screen size the watch sent, even if it arrived while the app was closed.
+        let pixels = session.receivedApplicationContext["screenPixels"] as? Int
+        Task { @MainActor in
+            self.remember(["screenPixels": pixels ?? 0])
+            self.sendIfReady()
+        }
     }
 
     nonisolated func sessionWatchStateDidChange(_ session: WCSession) {
@@ -89,6 +117,11 @@ final class WatchSync: NSObject, WCSessionDelegate {
             self.lastSent = nil
             self.sendIfReady()
         }
+    }
+
+    nonisolated func session(_ session: WCSession, didReceiveApplicationContext context: [String: Any]) {
+        let pixels = context["screenPixels"] as? Int
+        Task { @MainActor in self.remember(["screenPixels": pixels ?? 0]) }
     }
 
     nonisolated func sessionDidBecomeInactive(_ session: WCSession) {}

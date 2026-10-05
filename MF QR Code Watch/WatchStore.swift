@@ -9,6 +9,7 @@
 import Foundation
 import Observation
 import WatchConnectivity
+import WatchKit
 
 /// One favorite, already drawn as a picture by the iPhone.
 struct WatchCode: Codable, Identifiable, Hashable {
@@ -59,7 +60,18 @@ final class WatchStore: NSObject, WCSessionDelegate {
 
     nonisolated func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState,
                              error: Error?) {
-        Task { @MainActor in self.askIfEmpty() }
+        Task { @MainActor in
+            self.reportScreenSize()
+            self.askIfEmpty()
+        }
+    }
+
+    /// Tells the iPhone how wide this watch's screen is (in pixels), so it can
+    /// check whether a code is small enough to scan from this watch.
+    private func reportScreenSize() {
+        let device = WKInterfaceDevice.current()
+        let pixels = Int((device.screenBounds.width * device.screenScale).rounded())
+        try? WCSession.default.updateApplicationContext(["screenPixels": pixels])
     }
 
     nonisolated func sessionReachabilityDidChange(_ session: WCSession) {

@@ -51,8 +51,12 @@ final class SavedCode {
     /// Scanned codes can be edited only when the form rebuilds exactly the same code.
     var canEdit: Bool { !isScanned || type.payload(from: fields) == payload }
 
-    /// Long codes have tiny squares that are hard to scan from a watch screen.
-    var isDenseForWatch: Bool { Data(payload.utf8).count > QRRenderer.denseBytes }
+    /// True when the code's squares are big enough to scan from the paired watch.
+    var fitsWatch: Bool {
+        let withIcon = showIcon && QRRenderer.fitsIcon(payload)
+        guard let squares = QRRenderer.matrix(for: payload, strong: withIcon)?.size else { return false }
+        return squares <= WatchSync.shared.maxWatchModules
+    }
 
     func image(size: CGFloat) -> UIImage? {
         QRRenderer.image(for: payload, size: size, foreground: foreground, background: background, icon: icon)
