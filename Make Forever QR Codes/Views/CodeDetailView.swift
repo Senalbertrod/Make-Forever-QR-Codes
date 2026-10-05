@@ -135,13 +135,6 @@ struct CodeDetailView: View {
             }
             .buttonStyle(.bordered)
             .padding(.top, 4)
-
-            Text(code.canEdit
-                 ? "Editing changes this saved code. Copies you already printed or shared stay the same."
-                 : "This code was saved from a scan exactly as it was, so it can be renamed but not edited.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
         }
         .buttonStyle(.plain)
     }

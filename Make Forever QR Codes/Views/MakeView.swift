@@ -18,10 +18,6 @@ struct MakeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("Codes that never expire. Nothing is uploaded.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-
                     LazyVGrid(columns: columns, spacing: 12) {
                         ForEach(CodeType.allCases) { type in
                             NavigationLink {
