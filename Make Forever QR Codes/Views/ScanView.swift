@@ -34,13 +34,7 @@ struct ScanView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.large)
                 .padding(.horizontal)
-
-                Text("Checked on your iPhone before anything opens. Nothing is saved unless you tap Save.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                    .padding(.bottom, 8)
+                .padding(.bottom, 8)
             }
             .navigationTitle("Scan")
             .navigationBarTitleDisplayMode(.inline)
