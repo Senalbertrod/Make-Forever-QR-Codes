@@ -21,6 +21,8 @@ struct SettingsView: View {
                     }
                     .pickerStyle(.segmented)
                     .labelsHidden()
+                    // Switch right away, including this open screen.
+                    .onChange(of: appearance) { appearance.apply() }
                 }
 
                 // Keep this section last.

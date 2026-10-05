@@ -28,12 +28,18 @@ enum Appearance: String, CaseIterable, Identifiable {
         }
     }
 
-    /// Applies the look to every window of the app, including open sheets.
+    /// Applies the look to every window of the app and to every screen
+    /// shown on top (like Settings), so everything switches right away.
     func apply() {
         for scene in UIApplication.shared.connectedScenes {
             guard let windowScene = scene as? UIWindowScene else { continue }
             for window in windowScene.windows {
                 window.overrideUserInterfaceStyle = style
+                var screen = window.rootViewController
+                while let current = screen {
+                    current.overrideUserInterfaceStyle = style
+                    screen = current.presentedViewController
+                }
             }
         }
     }
