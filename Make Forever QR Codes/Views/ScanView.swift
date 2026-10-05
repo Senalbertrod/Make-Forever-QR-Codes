@@ -34,7 +34,8 @@ struct ScanView: View {
                 .buttonStyle(.bordered)
                 .controlSize(.large)
                 .padding(.horizontal)
-                .padding(.bottom, 8)
+                // Keeps the same layout as when there was a line of text here.
+                .padding(.bottom, 60)
             }
             .navigationTitle("Scan")
             .navigationBarTitleDisplayMode(.inline)
