@@ -57,7 +57,7 @@ struct CodeDetailView: View {
                     Button(code.onWatch ? "Remove from Watch" : "Send to Watch",
                            systemImage: code.onWatch ? "applewatch.watchface" : "applewatch") {
                         if !code.onWatch && !code.fitsWatch {
-                            showWatchWarning = true   // too big: not sent
+                            showWatchWarning = true   // too big: ask first
                         } else {
                             code.onWatch.toggle()
                         }
@@ -75,7 +75,8 @@ struct CodeDetailView: View {
         }
         .onAppear { hasWatch = WatchSync.shared.hasWatch }
         .alert("Too big for Apple Watch", isPresented: $showWatchWarning) {
-            Button("OK", role: .cancel) {}
+            Button("Cancel", role: .cancel) {}
+            Button("Send Anyway") { code.onWatch = true }
         } message: {
             Text("This code has too much information to scan from the watch screen.")
         }
