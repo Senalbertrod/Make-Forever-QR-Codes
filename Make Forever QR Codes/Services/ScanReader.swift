@@ -73,15 +73,6 @@ struct ScannedCode: Identifiable {
         }
     }
 
-    /// Safety warnings, all checked on the phone.
-    var warnings: [SafetyWarning] {
-        switch kind {
-        case .link(let url), .social(_, let url), .location(let url): LinkSafety.check(raw, opening: url)
-        // A code that opens another app isn't a scam sign; its title already says "Opens Phone".
-        case .appLink, .wifi, .contact, .event, .text: []
-        }
-    }
-
     // MARK: Saving to My Codes
 
     var savedType: CodeType {

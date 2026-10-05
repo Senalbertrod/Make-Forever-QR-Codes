@@ -20,8 +20,7 @@ Most QR services make "dynamic" codes that point to their own server, and the co
 - **Apple Watch:** tap the watch button on a code to put it on your wrist, full screen with a tap. The button only shows when a watch is paired. They come straight from your iPhone (no iCloud) and stay on the watch
 - Light mode, dark mode and tinted app icons
 
-- **Scan tab:** scan with the camera or from a photo. It shows what's inside before anything opens, with buttons to open, add to Contacts or Calendar, or copy a Wi-Fi password. Save to My Codes only if you want
-- **Safety checks, all on the phone:** only strong scam signs, so honest codes open without fuss: look-alike names, hidden real addresses, invisible characters, number addresses, and a link that would open a different site than it shows. No website or downloaded list is used; Safari's own Fraudulent Website Warning still runs when a link opens
+- **Scan tab:** scan with the camera or from a photo. It shows what's inside before anything opens, with the website name in a clear font so look-alike letters stand out. Buttons to open, add to Contacts or Calendar, or copy a Wi-Fi password. Save to My Codes only if you want
 
 ## Privacy
 

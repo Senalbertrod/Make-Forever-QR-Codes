@@ -2,7 +2,7 @@
 //  ScanResultView.swift
 //  Make Forever QR Codes
 //
-//  What a scanned code holds, any safety warnings, and what to do with it.
+//  What a scanned code holds and what to do with it.
 //  Nothing opens by itself, and nothing is kept unless the person taps Save.
 //
 
@@ -17,15 +17,12 @@ struct ScanResultView: View {
     @Environment(\.openURL) private var openURL
     @Environment(\.modelContext) private var modelContext
 
-    @State private var confirmOpen = false
     @State private var showAddContact = false
     @State private var showAddEvent = false
     @State private var askName = false
     @State private var name = ""
     @State private var saved = false
     @State private var copied: String?
-
-    private var warnings: [SafetyWarning] { code.warnings }
 
     var body: some View {
         NavigationStack {
@@ -34,21 +31,6 @@ struct ScanResultView: View {
                     Label(code.title, systemImage: code.symbol)
                         .font(.headline)
                     content
-                }
-
-                // Only where a scam is possible: red whenever there are warning
-                // signs, green only for website links (not maps, profiles, apps,
-                // Wi-Fi, contacts, events or text).
-                if !warnings.isEmpty {
-                    Section {
-                        Label("Warning: this could be a scam", systemImage: "xmark.shield.fill")
-                            .foregroundStyle(.red)
-                    }
-                } else if isWebsite {
-                    Section {
-                        Label("No warning signs found", systemImage: "checkmark.shield")
-                            .foregroundStyle(.green)
-                    }
                 }
 
                 Section { actions }
@@ -79,12 +61,6 @@ struct ScanResultView: View {
                 Button("Save") { save() }
                 Button("Cancel", role: .cancel) {}
             }
-            .confirmationDialog("Open anyway?", isPresented: $confirmOpen, titleVisibility: .visible) {
-                Button("Open", role: .destructive) { openLink() }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This code has warning signs. Only open it if you trust where it came from.")
-            }
             .sheet(isPresented: $showAddContact) {
                 if case .contact(let contact?) = code.kind {
                     ContactAdder(contact: contact) { showAddContact = false }
@@ -101,12 +77,6 @@ struct ScanResultView: View {
         }
     }
 
-    /// Green only for the real website of a company on the built-in list.
-    private var isWebsite: Bool {
-        if case .link(let url) = code.kind { return LinkSafety.isKnownSite(url) }
-        return false
-    }
-
     // MARK: What's inside
 
     @ViewBuilder
@@ -120,7 +90,6 @@ struct ScanResultView: View {
                     // letters are easy to spot.
                     Text(parts.site)
                         .font(.title2.weight(.bold).monospaced())
-                        .foregroundStyle(warnings.isEmpty ? Color.primary : Color.red)
                         .textSelection(.enabled)
                     Text(LinkSafety.visible(code.raw.trimmed))
                         .font(.footnote.monospaced())
@@ -173,7 +142,7 @@ struct ScanResultView: View {
         switch code.kind {
         case .link, .social, .location, .appLink:
             Button(openTitle, systemImage: "arrow.up.forward.square") {
-                if warnings.isEmpty { openLink() } else { confirmOpen = true }
+                openLink()
             }
             Button("Copy Link", systemImage: "doc.on.doc") { copy(code.raw.trimmed) }
 
