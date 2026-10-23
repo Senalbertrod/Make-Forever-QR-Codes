@@ -15,6 +15,35 @@
 import SwiftUI
 import SwiftData
 
+/// Screens My Codes can open: a saved code, and the editor for it.
+enum CodeRoute: Hashable {
+    case detail(SavedCode)
+    case edit(SavedCode)
+
+    var code: SavedCode {
+        switch self {
+        case .detail(let code), .edit(let code): code
+        }
+    }
+}
+
+/// What's typed on an open Edit screen, kept while the iPad turns.
+private final class EditDrafts {
+    private var drafts: [PersistentIdentifier: EditDraft] = [:]
+
+    func draft(for code: SavedCode) -> EditDraft {
+        if let draft = drafts[code.persistentModelID] { return draft }
+        let draft = EditDraft()
+        drafts[code.persistentModelID] = draft
+        return draft
+    }
+
+    /// Forgets drafts for Edit screens that are closed.
+    func keepOnly(_ open: Set<PersistentIdentifier>) {
+        drafts = drafts.filter { open.contains($0.key) }
+    }
+}
+
 struct MyCodesView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -26,10 +55,13 @@ struct MyCodesView: View {
 
     /// Wider than tall (iPad sideways, or a big window).
     @State private var isLandscape = false
-    /// The code open in the list (standing up) ...
-    @State private var path: [SavedCode] = []
-    /// ... or picked on the left (sideways). Kept when the iPad turns.
+    /// What's open, standing up: the code, and maybe its Edit screen.
+    @State private var path: [CodeRoute] = []
+    /// Sideways: the code picked on the left ...
     @State private var picked: PersistentIdentifier?
+    /// ... and maybe its Edit screen on the right.
+    @State private var sidePath: [CodeRoute] = []
+    @State private var drafts = EditDrafts()
     /// Codes on their way out (hidden first, then deleted, so nothing shows a deleted code).
     @State private var removing: Set<PersistentIdentifier> = []
 
@@ -96,10 +128,11 @@ struct MyCodesView: View {
                         .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 460)
                         .toolbar(removing: .sidebarToggle)
                 } detail: {
-                    NavigationStack {
+                    NavigationStack(path: $sidePath) {
                         if let code = shownCode {
                             CodeDetailView(code: code, stacked: true, onDelete: remove)
                                 .id(code.persistentModelID)
+                                .navigationDestination(for: CodeRoute.self, destination: screen)
                         } else {
                             ContentUnavailableView("Pick a code", systemImage: "qrcode",
                                                    description: Text("It shows here, big enough to scan."))
@@ -110,22 +143,30 @@ struct MyCodesView: View {
             } else {
                 NavigationStack(path: $path) {
                     codeList
-                        .navigationDestination(for: SavedCode.self) { code in
-                            CodeDetailView(code: code)
-                        }
+                        .navigationDestination(for: CodeRoute.self, destination: screen)
                 }
             }
         }
         .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
-        // Turning the iPad keeps the code you had open.
+        // Turning the iPad keeps the code you had open, and its Edit screen if open.
         .onChange(of: sideBySide) { _, nowSideBySide in
             if nowSideBySide {
-                if let open = path.first { picked = open.persistentModelID }
+                if let open = path.first {
+                    picked = open.code.persistentModelID
+                    sidePath = Array(path.dropFirst())
+                }
                 path = []
-            } else if let picked, let code = codes.first(where: { $0.persistentModelID == picked }) {
-                path = [code]
+            } else {
+                let open = picked.flatMap { id in codes.first { $0.persistentModelID == id } }
+                    ?? (sidePath.isEmpty ? nil : shownCode)
+                if let open {
+                    path = [.detail(open)] + sidePath
+                }
+                sidePath = []
             }
         }
+        .onChange(of: path) { forgetClosedDrafts() }
+        .onChange(of: sidePath) { forgetClosedDrafts() }
         .sheet(isPresented: $showArrange) {
             ArrangeTypesView(orderRaw: $typeOrderRaw, inUse: Set(codes.map(\.type)))
         }
@@ -139,13 +180,32 @@ struct MyCodesView: View {
         }
     }
 
+    @ViewBuilder
+    private func screen(_ route: CodeRoute) -> some View {
+        switch route {
+        case .detail(let code):
+            CodeDetailView(code: code)
+        case .edit(let code):
+            CodeEditorView(type: code.type, existing: code, draft: drafts.draft(for: code))
+        }
+    }
+
+    private func forgetClosedDrafts() {
+        var open = Set<PersistentIdentifier>()
+        for route in path + sidePath {
+            if case .edit(let code) = route { open.insert(code.persistentModelID) }
+        }
+        drafts.keepOnly(open)
+    }
+
     /// Stops showing a code, then deletes it.
     private func remove(_ code: SavedCode) {
         let id = code.persistentModelID
         withAnimation {
             removing.insert(id)
-            if picked == id { picked = nil }
-            path.removeAll { $0 == code }
+            if picked == id { picked = nil; sidePath = [] }
+            path.removeAll { $0.code == code }
+            sidePath.removeAll { $0.code == code }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             modelContext.delete(code)
@@ -187,7 +247,11 @@ struct MyCodesView: View {
                     if sideBySide {
                         // Sideways: the picked code is highlighted and shows on the right.
                         List(selection: Binding(get: { shownCode?.persistentModelID },
-                                                set: { picked = $0 })) {
+                                                set: { id in
+                                                    // Picking another code closes the Edit screen on the right.
+                                                    if id != shownCode?.persistentModelID { sidePath = [] }
+                                                    picked = id
+                                                })) {
                             sections
                         }
                     } else {
@@ -215,7 +279,7 @@ struct MyCodesView: View {
                 .tag(code.persistentModelID)
                 .modifier(RowActions(code: code, codeToDelete: $codeToDelete))
         } else {
-            NavigationLink(value: code) {
+            NavigationLink(value: CodeRoute.detail(code)) {
                 CodeRow(code: code, big: bigRows)
             }
             .modifier(RowActions(code: code, codeToDelete: $codeToDelete))

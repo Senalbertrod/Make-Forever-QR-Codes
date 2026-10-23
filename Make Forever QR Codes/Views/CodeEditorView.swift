@@ -11,6 +11,16 @@
 import SwiftUI
 import SwiftData
 
+/// What's typed in the editor: the form, the colors and the icon switch.
+@Observable
+final class EditDraft {
+    var fields = CodeFields()
+    var foreground: Color = .black
+    var background: Color = .white
+    var showIcon = false
+    var loaded = false
+}
+
 struct CodeEditorView: View {
     let type: CodeType
     var existing: SavedCode? = nil
@@ -21,19 +31,20 @@ struct CodeEditorView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var isLandscape = false
 
-    // (Kept here, so turning the iPad or resizing the window never loses what you typed.)
-    @State private var fields = CodeFields()
-    @State private var foreground: Color = .black
-    @State private var background: Color = .white
-    @State private var showIcon = false
+    /// What you typed. My Codes can hand one in, so turning the iPad
+    /// (which rebuilds My Codes) keeps you on Edit with everything you typed.
+    var draft: EditDraft? = nil
+    @State private var ownDraft = EditDraft()
+    private var d: EditDraft { draft ?? ownDraft }
+    private var dd: Bindable<EditDraft> { Bindable(d) }
+
     @State private var askName = false
     @State private var name = ""
     @State private var showContactPicker = false
-    @State private var loaded = false
 
-    private var payload: String? { type.payload(from: fields) }
-    private var fg: UIColor { UIColor(foreground) }
-    private var bg: UIColor { UIColor(background) }
+    private var payload: String? { type.payload(from: d.fields) }
+    private var fg: UIColor { UIColor(d.foreground) }
+    private var bg: UIColor { UIColor(d.background) }
     private var byteCount: Int { payload.map { Data($0.utf8).count } ?? 0 }
     private var tooLong: Bool { byteCount > QRRenderer.maxBytes }
 
@@ -90,7 +101,7 @@ struct CodeEditorView: View {
         }
         .background(
             ContactPicker(isPresented: $showContactPicker) { contact in
-                fields.fill(from: contact)
+                d.fields.fill(from: contact)
             }
             .frame(width: 0, height: 0)
         )
@@ -99,7 +110,7 @@ struct CodeEditorView: View {
 
     private var preview: some View {
         QRCodeImage(payload: tooLong ? "" : payload, foreground: fg, background: bg,
-                    icon: showIcon ? type : nil)
+                    icon: d.showIcon ? type : nil)
     }
 
     private var previewNotes: some View {
@@ -108,7 +119,7 @@ struct CodeEditorView: View {
             if tooLong {
                 Text("Too much text for one QR code. Make it shorter.")
                     .foregroundStyle(.red)
-            } else if showIcon && byteCount > QRRenderer.maxBytesWithIcon {
+            } else if d.showIcon && byteCount > QRRenderer.maxBytesWithIcon {
                 Text("This code is too long for an icon, so it's shown without one.")
                     .foregroundStyle(.orange)
             } else if byteCount > QRRenderer.denseBytes {
@@ -121,21 +132,21 @@ struct CodeEditorView: View {
     /// The form: what goes in the code, the icon and the colors.
     @ViewBuilder
     private var settings: some View {
-        CodeFormSections(type: type, fields: $fields, showContactPicker: $showContactPicker)
+        CodeFormSections(type: type, fields: dd.fields, showContactPicker: $showContactPicker)
 
         Section {
-            Toggle("Icon in the middle", isOn: $showIcon)
+            Toggle("Icon in the middle", isOn: dd.showIcon)
         } footer: {
             Text("Adds a small \(type.title.lowercased()) icon. The code still scans, it just gets a little denser.")
         }
 
         Section {
-            ColorPicker("Code color", selection: $foreground, supportsOpacity: false)
-            ColorPicker("Background", selection: $background, supportsOpacity: false)
-            if foreground != .black || background != .white {
+            ColorPicker("Code color", selection: dd.foreground, supportsOpacity: false)
+            ColorPicker("Background", selection: dd.background, supportsOpacity: false)
+            if d.foreground != .black || d.background != .white {
                 Button("Back to black and white") {
-                    foreground = .black
-                    background = .white
+                    d.foreground = .black
+                    d.background = .white
                 }
             }
         } header: {
@@ -150,35 +161,35 @@ struct CodeEditorView: View {
     }
 
     private func loadExisting() {
-        guard !loaded else { return }
-        loaded = true
+        guard !d.loaded else { return }
+        d.loaded = true
         guard let existing else { return }
-        fields = existing.fields
-        foreground = Color(uiColor: existing.foreground)
-        background = Color(uiColor: existing.background)
-        showIcon = existing.showIcon
+        d.fields = existing.fields
+        d.foreground = Color(uiColor: existing.foreground)
+        d.background = Color(uiColor: existing.background)
+        d.showIcon = existing.showIcon
     }
 
     private func save() {
         guard let payload, !tooLong else { return }
         if let existing {
             existing.payload = payload
-            existing.fieldsData = fields.encoded()
+            existing.fieldsData = d.fields.encoded()
             existing.foregroundHex = fg.hexString
             existing.backgroundHex = bg.hexString
-            existing.showIcon = showIcon
+            existing.showIcon = d.showIcon
             dismiss()
         } else {
-            name = type.suggestedName(from: fields)
+            name = type.suggestedName(from: d.fields)
             askName = true
         }
     }
 
     private func insertNew() {
         guard let payload else { return }
-        let finalName = name.trimmed.isEmpty ? type.suggestedName(from: fields) : name.trimmed
-        let code = SavedCode(name: finalName, type: type, payload: payload, fields: fields,
-                             foregroundHex: fg.hexString, backgroundHex: bg.hexString, showIcon: showIcon)
+        let finalName = name.trimmed.isEmpty ? type.suggestedName(from: d.fields) : name.trimmed
+        let code = SavedCode(name: finalName, type: type, payload: payload, fields: d.fields,
+                             foregroundHex: fg.hexString, backgroundHex: bg.hexString, showIcon: d.showIcon)
         modelContext.insert(code)
         dismiss()
         onSaved()

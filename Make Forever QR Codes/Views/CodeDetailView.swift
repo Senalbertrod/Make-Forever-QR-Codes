@@ -169,9 +169,8 @@ struct CodeDetailView: View {
             }
             HStack(spacing: 12) {
                 if code.canEdit {
-                    NavigationLink {
-                        CodeEditorView(type: code.type, existing: code)
-                    } label: {
+                    // (My Codes opens the editor, so it can keep you there when the iPad turns.)
+                    NavigationLink(value: CodeRoute.edit(code)) {
                         ActionLabel(title: "Edit", symbol: "pencil")
                     }
                 }

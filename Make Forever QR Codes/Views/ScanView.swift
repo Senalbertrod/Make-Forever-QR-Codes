@@ -4,8 +4,9 @@
 //
 //  Tab 2: scan a code with the camera or from a photo. Uses Apple's
 //  on-device scanner; nothing the camera sees is saved or sent.
-//  On iPad: the camera is big in the middle. When a code is found, the camera
-//  slides to the left and the result shows on the right.
+//  On iPad sideways: the camera is big in the middle. When a code is found,
+//  the camera slides to the left and the result shows on the right.
+//  On iPad standing up: like iPhone (the result slides up from the bottom).
 //
 
 import AVFoundation
@@ -23,7 +24,9 @@ struct ScanView: View {
     @State private var noCodeInPhoto = false
     @Environment(\.horizontalSizeClass) private var sizeClass
 
-    private var wide: Bool { WideLayout.isOn(sizeClass) }
+    @State private var isLandscape = false
+
+    private var wide: Bool { WideLayout.isOn(sizeClass) && isLandscape }
 
     var body: some View {
         NavigationStack {
@@ -43,6 +46,7 @@ struct ScanView: View {
             }
         }
         .onDisappear { isVisible = false }
+        .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
         // iPhone: the result slides up. (On iPad it shows beside the camera instead.)
         .sheet(item: Binding(get: { wide ? nil : result },
                              set: { if !wide { result = $0 } }),
