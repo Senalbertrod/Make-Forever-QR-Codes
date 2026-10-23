@@ -7,15 +7,19 @@
 //  and the rest go under All Codes. The order of the type groups is chosen
 //  with Arrange and applies to both parts. Newest first inside each group.
 //
-//  iPad standing up: the same list as iPhone, filling the screen.
-//  iPad sideways: the list on the left; the code you pick shows big on the
-//  right (ready to be scanned), with its details and buttons under it.
+//  One screen that changes shape by itself (Apple's split view):
+//  - Narrow (iPhone, iPhone Duo closed, iPad standing up): one column. Tap a
+//    code and it opens on top of the list.
+//  - Wide and sideways (iPad sideways, Duo open), or the Duo half-closed:
+//    the list on the left, the code you pick big on the right.
+//  Because it's always the same screen, opening, closing or turning the device
+//  keeps your place: the code you had open, and Edit with what you typed.
 //
 
 import SwiftUI
 import SwiftData
 
-/// Screens My Codes can open: a saved code, and the editor for it.
+/// Screens My Codes can open on top of a saved code: its editor.
 enum CodeRoute: Hashable {
     case detail(SavedCode)
     case edit(SavedCode)
@@ -27,7 +31,7 @@ enum CodeRoute: Hashable {
     }
 }
 
-/// What's typed on an open Edit screen, kept while the iPad turns.
+/// What's typed on an open Edit screen, kept while the device turns or folds.
 private final class EditDrafts {
     private var drafts: [PersistentIdentifier: EditDraft] = [:]
 
@@ -44,13 +48,6 @@ private final class EditDrafts {
     }
 }
 
-/// Which version of My Codes is on screen right now (one list, or side by side).
-/// When the phone opens or closes, the old version is thrown away and, as it
-/// goes, says "nothing is open". Checking this lets the app ignore that.
-private final class OnScreen {
-    var sideBySide = false
-}
-
 struct MyCodesView: View {
     @Environment(\.modelContext) private var modelContext
     /// The screen's shape and the Duo's fold, decided once for the whole app.
@@ -61,16 +58,17 @@ struct MyCodesView: View {
     @State private var codeToDelete: SavedCode?
     @State private var showArrange = false
 
-    /// What's open: the code you picked, and whether its Edit screen is open.
-    /// Both layouts (one list, or list and code side by side) read these same
-    /// two things, so switching layouts never has to move anything around.
-    @State private var picked: PersistentIdentifier?
-    @State private var editing = false
+    /// The code you picked (nil: none, the list shows on its own when narrow).
+    @State private var selection: PersistentIdentifier?
+    /// What's open on top of that code: its Edit screen, or nothing.
+    @State private var detailPath: [CodeRoute] = []
+    /// When narrow: show the list, or the picked code on top of it.
+    @State private var compactColumn: NavigationSplitViewColumn = .sidebar
     @State private var drafts = EditDrafts()
-    @State private var onScreen = OnScreen()
     /// Codes on their way out (hidden first, then deleted, so nothing shows a deleted code).
     @State private var removing: Set<PersistentIdentifier> = []
 
+    /// Two sides (list and code), or one column.
     private var sideBySide: Bool { layout.sideBySide }
     private var bigRows: Bool { layout.isWide }
     /// iPhone Duo half-closed: the list and the code each get a page.
@@ -78,32 +76,8 @@ struct MyCodesView: View {
 
     /// The code you picked (nil if none, or it's being deleted).
     private var pickedCode: SavedCode? {
-        guard let picked, !removing.contains(picked) else { return nil }
-        return codes.first { $0.persistentModelID == picked }
-    }
-
-    /// One list (iPhone, standing up): the screens open on top of the list.
-    private var path: Binding<[CodeRoute]> {
-        Binding {
-            guard let code = pickedCode else { return [] }
-            return editing ? [.detail(code), .edit(code)] : [.detail(code)]
-        } set: { routes in
-            guard !onScreen.sideBySide else { return }   // (not on screen: ignore)
-            picked = routes.first?.code.persistentModelID
-            editing = routes.contains { if case .edit = $0 { true } else { false } }
-        }
-    }
-
-    /// Side by side: the Edit screen, if open, on the right.
-    private var sidePath: Binding<[CodeRoute]> {
-        Binding {
-            guard editing, let code = shownCode else { return [] }
-            return [.edit(code)]
-        } set: { routes in
-            guard onScreen.sideBySide else { return }   // (not on screen: ignore)
-            if !routes.isEmpty, picked == nil { picked = shownCode?.persistentModelID }
-            editing = !routes.isEmpty
-        }
+        guard let selection, !removing.contains(selection) else { return nil }
+        return codes.first { $0.persistentModelID == selection }
     }
 
     private var filtered: [SavedCode] {
@@ -148,61 +122,67 @@ struct MyCodesView: View {
         return result
     }
 
-    /// Sideways: the code shown on the right. The one you picked, or else
-    /// the first one in the list (your first favorite, if you have any).
+    /// The code on the right: the one you picked, or else (side by side, so the
+    /// right isn't empty) the first one in the list, your first favorite if any.
     private var shownCode: SavedCode? {
-        pickedCode ?? groups.first?.codes.first
+        pickedCode ?? (sideBySide ? groups.first?.codes.first : nil)
     }
 
     var body: some View {
-        // Note which version is on screen before drawing it.
-        let _ = (onScreen.sideBySide = sideBySide)
-        Group {
-            if sideBySide {
-                NavigationSplitView(columnVisibility: .constant(.all)) {
-                    Group {
-                        if let fold {
-                            // Half-closed: the list fills the left page, up to the middle of the fold.
-                            codeList
-                                .safeAreaPadding(.trailing, fold.gap / 2)
-                                .navigationSplitViewColumnWidth(fold.center)
-                        } else {
-                            codeList
-                                .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 460)
-                        }
-                    }
-                    .toolbar(removing: .sidebarToggle)
-                } detail: {
-                    NavigationStack(path: sidePath) {
-                        Group {
-                            if let code = shownCode {
-                                CodeDetailView(code: code, stacked: true, onDelete: remove)
-                                    .id(code.persistentModelID)
-                                    .navigationDestination(for: CodeRoute.self, destination: screen)
-                            } else {
-                                ContentUnavailableView("Pick a code", systemImage: "qrcode",
-                                                       description: Text("It shows here, big enough to scan."))
-                            }
-                        }
-                        // Half-closed: the code starts after the fold, on the right page.
-                        .safeAreaPadding(.leading, (fold?.gap ?? 0) / 2)
-                    }
-                }
-                .navigationSplitViewStyle(.balanced)
-                // Always wide: when the Duo starts closing, the screen narrows a moment
-                // before the app switches to the one list. Without this, the side-by-side
-                // view would fold itself into one column first and forget what was open.
-                .environment(\.horizontalSizeClass, .regular)
-            } else {
-                NavigationStack(path: path) {
+        NavigationSplitView(columnVisibility: .constant(.all), preferredCompactColumn: $compactColumn) {
+            Group {
+                if let fold {
+                    // Half-closed: the list fills the left page, up to the middle of the fold.
                     codeList
-                        .navigationDestination(for: CodeRoute.self, destination: screen)
+                        .safeAreaPadding(.trailing, fold.gap / 2)
+                        .navigationSplitViewColumnWidth(fold.center)
+                } else {
+                    codeList
+                        .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 460)
                 }
             }
+            .toolbar(removing: .sidebarToggle)
+        } detail: {
+            NavigationStack(path: $detailPath) {
+                Group {
+                    if let code = shownCode {
+                        CodeDetailView(code: code, stacked: sideBySide, onDelete: remove)
+                            .id(code.persistentModelID)
+                    } else {
+                        ContentUnavailableView("Pick a code", systemImage: "qrcode",
+                                               description: Text("It shows here, big enough to scan."))
+                    }
+                }
+                .navigationDestination(for: CodeRoute.self) { route in
+                    CodeEditorView(type: route.code.type, existing: route.code, inColumn: sideBySide,
+                                   draft: drafts.draft(for: route.code))
+                }
+                // Half-closed: the code starts after the fold, on the right page.
+                .safeAreaPadding(.leading, (fold?.gap ?? 0) / 2)
+            }
         }
-        // A closed Edit screen forgets what was typed in it.
-        .onChange(of: editing) { if !editing { drafts.keepOnly([]) } }
-        .onChange(of: picked) { if let picked { drafts.keepOnly([picked]) } else { drafts.keepOnly([]) } }
+        .navigationSplitViewStyle(.balanced)
+        // The split view changes shape by itself: two sides when there's room,
+        // one column otherwise. (It's always the same screen, so nothing is lost.)
+        .environment(\.horizontalSizeClass, sideBySide ? .regular : .compact)
+        .onChange(of: selection) { old, new in
+            // Narrow: show the code you picked on top of the list (or the list).
+            compactColumn = new == nil ? .sidebar : .detail
+            // Picking another code (or going back to the list) closes the Edit
+            // screen of the old one.
+            if old != nil, old != new { detailPath = [] }
+        }
+        .onChange(of: detailPath) {
+            // Editing the code shown on its own (side by side, nothing picked):
+            // count it as picked, so closing the phone stays on it.
+            if !detailPath.isEmpty, selection == nil {
+                selection = shownCode?.persistentModelID
+            }
+            // A closed Edit screen forgets what was typed in it.
+            var open = Set<PersistentIdentifier>()
+            for route in detailPath { open.insert(route.code.persistentModelID) }
+            drafts.keepOnly(open)
+        }
         .sheet(isPresented: $showArrange) {
             ArrangeTypesView(orderRaw: $typeOrderRaw, inUse: Set(codes.map(\.type)))
         }
@@ -216,26 +196,15 @@ struct MyCodesView: View {
         }
     }
 
-    @ViewBuilder
-    private func screen(_ route: CodeRoute) -> some View {
-        switch route {
-        case .detail(let code):
-            CodeDetailView(code: code)
-        case .edit(let code):
-            CodeEditorView(type: code.type, existing: code, inColumn: sideBySide,
-                           draft: drafts.draft(for: code))
-        }
-    }
-
     /// Stops showing a code, then deletes it.
     private func remove(_ code: SavedCode) {
         let id = code.persistentModelID
         withAnimation {
             removing.insert(id)
-            if picked == id || picked == nil {
-                picked = nil
-                editing = false
+            if selection == id || shownCode == nil || selection == nil {
+                detailPath = []
             }
+            if selection == id { selection = nil }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             modelContext.delete(code)
@@ -273,24 +242,10 @@ struct MyCodesView: View {
                                        systemImage: "qrcode",
                                        description: Text("Codes you make are saved here."))
             } else {
-                Group {
-                    if sideBySide {
-                        // Sideways: the picked code is highlighted and shows on the right.
-                        List(selection: Binding(get: { shownCode?.persistentModelID },
-                                                set: { id in
-                                                    guard onScreen.sideBySide else { return }
-                                                    // Tapping a code never un-picks it here, so "nothing picked"
-                                                    // only comes from the screen changing size: ignore it.
-                                                    guard let id else { return }
-                                                    // Picking another code closes the Edit screen on the right.
-                                                    if id != shownCode?.persistentModelID { editing = false }
-                                                    picked = id
-                                                })) {
-                            sections
-                        }
-                    } else {
-                        List { sections }
-                    }
+                // Side by side, the code on the right is highlighted.
+                List(selection: Binding(get: { selection ?? (sideBySide ? shownCode?.persistentModelID : nil) },
+                                        set: { selection = $0 })) {
+                    sections
                 }
                 .searchable(text: $search, prompt: "Search codes")
             }
@@ -305,19 +260,11 @@ struct MyCodesView: View {
         }
     }
 
-    @ViewBuilder
     private func row(_ code: SavedCode) -> some View {
-        if sideBySide {
-            // Sideways: tapping shows the code on the right.
+        NavigationLink(value: code.persistentModelID) {
             CodeRow(code: code, big: bigRows)
-                .tag(code.persistentModelID)
-                .modifier(RowActions(code: code, codeToDelete: $codeToDelete))
-        } else {
-            NavigationLink(value: CodeRoute.detail(code)) {
-                CodeRow(code: code, big: bigRows)
-            }
-            .modifier(RowActions(code: code, codeToDelete: $codeToDelete))
         }
+        .modifier(RowActions(code: code, codeToDelete: $codeToDelete))
     }
 }
 
