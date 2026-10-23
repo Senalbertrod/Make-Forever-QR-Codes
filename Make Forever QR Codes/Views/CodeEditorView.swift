@@ -3,6 +3,7 @@
 //  Make Forever QR Codes
 //
 //  The form for one kind of code, with a live preview at the top.
+//  On iPad: the preview on the left and the form on the right.
 //  Used both to make a new code and to edit a saved one.
 //
 
@@ -16,7 +17,9 @@ struct CodeEditorView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
+    // (Kept here, so turning the iPad or resizing the window never loses what you typed.)
     @State private var fields = CodeFields()
     @State private var foreground: Color = .black
     @State private var background: Color = .white
@@ -33,53 +36,37 @@ struct CodeEditorView: View {
     private var tooLong: Bool { byteCount > QRRenderer.maxBytes }
 
     var body: some View {
-        Form {
-            Section {
-                QRCodeImage(payload: tooLong ? "" : payload, foreground: fg, background: bg,
-                            icon: showIcon ? type : nil)
-                    .frame(maxWidth: 260)
+        Group {
+            if WideLayout.isOn(sizeClass) {
+                // iPad: the code on the left, the settings on the right
+                HStack(alignment: .top, spacing: 0) {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 16) {
+                            preview
+                                .frame(maxWidth: 460)
+                                .frame(maxWidth: .infinity)
+                            previewNotes
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(32)
+                    }
                     .frame(maxWidth: .infinity)
-                    .listRowBackground(Color.clear)
-            } footer: {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("When scanned: \(type.scanResult.lowercased()).")
-                    if tooLong {
-                        Text("Too much text for one QR code. Make it shorter.")
-                            .foregroundStyle(.red)
-                    } else if showIcon && byteCount > QRRenderer.maxBytesWithIcon {
-                        Text("This code is too long for an icon, so it's shown without one.")
-                            .foregroundStyle(.orange)
-                    } else if byteCount > QRRenderer.denseBytes {
-                        Text("This code is getting dense. It may be hard to scan from a small screen; keep it shorter if you can.")
-                            .foregroundStyle(.orange)
-                    }
+                    Form { settings }
+                        .frame(maxWidth: .infinity)
                 }
-            }
-
-            CodeFormSections(type: type, fields: $fields, showContactPicker: $showContactPicker)
-
-            Section {
-                Toggle("Icon in the middle", isOn: $showIcon)
-            } footer: {
-                Text("Adds a small \(type.title.lowercased()) icon. The code still scans, it just gets a little denser.")
-            }
-
-            Section {
-                ColorPicker("Code color", selection: $foreground, supportsOpacity: false)
-                ColorPicker("Background", selection: $background, supportsOpacity: false)
-                if foreground != .black || background != .white {
-                    Button("Back to black and white") {
-                        foreground = .black
-                        background = .white
+                .background(Color(.systemGroupedBackground))
+            } else {
+                Form {
+                    Section {
+                        preview
+                            .frame(maxWidth: 260)
+                            .frame(maxWidth: .infinity)
+                            .listRowBackground(Color.clear)
+                    } footer: {
+                        previewNotes
                     }
-                }
-            } header: {
-                Text("Colors")
-            } footer: {
-                if let warning = QRRenderer.colorWarning(foreground: fg, background: bg) {
-                    Text(warning).foregroundStyle(.orange)
-                } else {
-                    Text("Black on white always scans best.")
+                    settings
                 }
             }
         }
@@ -105,6 +92,58 @@ struct CodeEditorView: View {
             .frame(width: 0, height: 0)
         )
         .onAppear(perform: loadExisting)
+    }
+
+    private var preview: some View {
+        QRCodeImage(payload: tooLong ? "" : payload, foreground: fg, background: bg,
+                    icon: showIcon ? type : nil)
+    }
+
+    private var previewNotes: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("When scanned: \(type.scanResult.lowercased()).")
+            if tooLong {
+                Text("Too much text for one QR code. Make it shorter.")
+                    .foregroundStyle(.red)
+            } else if showIcon && byteCount > QRRenderer.maxBytesWithIcon {
+                Text("This code is too long for an icon, so it's shown without one.")
+                    .foregroundStyle(.orange)
+            } else if byteCount > QRRenderer.denseBytes {
+                Text("This code is getting dense. It may be hard to scan from a small screen; keep it shorter if you can.")
+                    .foregroundStyle(.orange)
+            }
+        }
+    }
+
+    /// The form: what goes in the code, the icon and the colors.
+    @ViewBuilder
+    private var settings: some View {
+        CodeFormSections(type: type, fields: $fields, showContactPicker: $showContactPicker)
+
+        Section {
+            Toggle("Icon in the middle", isOn: $showIcon)
+        } footer: {
+            Text("Adds a small \(type.title.lowercased()) icon. The code still scans, it just gets a little denser.")
+        }
+
+        Section {
+            ColorPicker("Code color", selection: $foreground, supportsOpacity: false)
+            ColorPicker("Background", selection: $background, supportsOpacity: false)
+            if foreground != .black || background != .white {
+                Button("Back to black and white") {
+                    foreground = .black
+                    background = .white
+                }
+            }
+        } header: {
+            Text("Colors")
+        } footer: {
+            if let warning = QRRenderer.colorWarning(foreground: fg, background: bg) {
+                Text(warning).foregroundStyle(.orange)
+            } else {
+                Text("Black on white always scans best.")
+            }
+        }
     }
 
     private func loadExisting() {

@@ -4,6 +4,8 @@
 //
 //  Tab 2: scan a code with the camera or from a photo. Uses Apple's
 //  on-device scanner; nothing the camera sees is saved or sent.
+//  On iPad: the camera is big in the middle. When a code is found, the camera
+//  slides to the left and the result shows on the right.
 //
 
 import AVFoundation
@@ -19,23 +21,14 @@ struct ScanView: View {
     @State private var cameraStatus = AVCaptureDevice.authorizationStatus(for: .video)
     @State private var photoItem: PhotosPickerItem?
     @State private var noCodeInPhoto = false
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var wide: Bool { WideLayout.isOn(sizeClass) }
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 16) {
-                camera
-                    .clipShape(RoundedRectangle(cornerRadius: 24))
-                    .padding(.horizontal)
-
-                PhotosPicker(selection: $photoItem, matching: .images) {
-                    Label("Scan from a photo", systemImage: "photo.on.rectangle")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.large)
-                .padding(.horizontal)
-                // Keeps the same layout as when there was a line of text here.
-                .padding(.bottom, 60)
+            Group {
+                if wide { wideScan } else { phoneScan }
             }
             .navigationTitle("Scan")
             .navigationBarTitleDisplayMode(.inline)
@@ -50,7 +43,10 @@ struct ScanView: View {
             }
         }
         .onDisappear { isVisible = false }
-        .sheet(item: $result, onDismiss: pauseBriefly) { code in
+        // iPhone: the result slides up. (On iPad it shows beside the camera instead.)
+        .sheet(item: Binding(get: { wide ? nil : result },
+                             set: { if !wide { result = $0 } }),
+               onDismiss: { if !wide { pauseBriefly() } }) { code in
             ScanResultView(code: code)
         }
         .sensoryFeedback(.success, trigger: result?.id)
@@ -70,6 +66,61 @@ struct ScanView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text("Try a picture where the code is clear and not cut off.")
+        }
+    }
+
+    private var photoButton: some View {
+        PhotosPicker(selection: $photoItem, matching: .images) {
+            Label("Scan from a photo", systemImage: "photo.on.rectangle")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .controlSize(.large)
+    }
+
+    /// iPad: the camera in the middle; once a code is found, camera left and result right.
+    private var wideScan: some View {
+        GeometryReader { geo in
+            let cameraWidth = result == nil
+                ? min(geo.size.width - 64, 720)
+                : (geo.size.width - 72) * 0.5
+            HStack(alignment: .top, spacing: 24) {
+                VStack(spacing: 16) {
+                    camera
+                        .clipShape(RoundedRectangle(cornerRadius: 24))
+                    photoButton
+                }
+                .frame(width: cameraWidth)
+
+                if let result {
+                    ScanResultView(code: result) {
+                        withAnimation(.spring(duration: 0.45)) { self.result = nil }
+                        pauseBriefly()
+                    }
+                    .id(result.id)
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 8)
+            .padding(.bottom, 24)
+            .frame(width: geo.size.width, height: geo.size.height)
+        }
+        .animation(.spring(duration: 0.45), value: result?.id)
+    }
+
+    private var phoneScan: some View {
+        VStack(spacing: 16) {
+            camera
+                .clipShape(RoundedRectangle(cornerRadius: 24))
+                .padding(.horizontal)
+
+            photoButton
+                .padding(.horizontal)
+                // Keeps the same layout as when there was a line of text here.
+                .padding(.bottom, 60)
         }
     }
 

@@ -7,6 +7,11 @@
 //  and the rest go under All Codes. The order of the type groups is chosen
 //  with Arrange and applies to both parts. Newest first inside each group.
 //
+//  On iPad (when there's room):
+//  - Favorites and other codes: Favorites on the left, All Codes on the right.
+//  - Only favorites, or no favorites: one part using both sides, the kinds
+//    side by side in the Arrange order (first kind on the left).
+//
 
 import SwiftUI
 import SwiftData
@@ -18,6 +23,7 @@ struct MyCodesView: View {
     @State private var search = ""
     @State private var codeToDelete: SavedCode?
     @State private var showArrange = false
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     private var filtered: [SavedCode] {
         search.trimmed.isEmpty ? codes : codes.filter {
@@ -67,6 +73,9 @@ struct MyCodesView: View {
                     ContentUnavailableView("No codes yet",
                                            systemImage: "qrcode",
                                            description: Text("Codes you make are saved here."))
+                } else if WideLayout.isOn(sizeClass) {
+                    wideList
+                        .searchable(text: $search, prompt: "Search codes")
                 } else {
                     List {
                         ForEach(groups) { group in
@@ -114,6 +123,118 @@ struct MyCodesView: View {
             }
         }
     }
+
+    // MARK: iPad
+
+    /// The kinds of codes in the Arrange order, each with its codes.
+    private struct TypeGroup: Identifiable {
+        let type: CodeType
+        let codes: [SavedCode]
+        var id: CodeType { type }
+    }
+
+    private func byType(_ list: [SavedCode]) -> [TypeGroup] {
+        typeOrder.compactMap { type in
+            let inType = list.filter { $0.type == type }
+            return inType.isEmpty ? nil : TypeGroup(type: type, codes: inType)
+        }
+    }
+
+    @ViewBuilder
+    private var wideList: some View {
+        let list = filtered
+        let favorites = list.filter(\.isFavorite)
+        let others = list.filter { !$0.isFavorite }
+        if list.isEmpty {
+            ContentUnavailableView.search(text: search)
+        } else {
+            ScrollView {
+                Group {
+                    if !favorites.isEmpty && !others.isEmpty {
+                        // Favorites on the left, All Codes on the right
+                        HStack(alignment: .top, spacing: 32) {
+                            column("Favorites", favorites)
+                            column("All Codes", others)
+                        }
+                    } else {
+                        // One part, using both sides
+                        let title = hasFavorites ? (favorites.isEmpty ? "All Codes" : "Favorites") : ""
+                        VStack(alignment: .leading, spacing: 12) {
+                            if !title.isEmpty { partTitle(title) }
+                            LazyVGrid(columns: [GridItem(.flexible(), spacing: 32, alignment: .top),
+                                                GridItem(.flexible(), spacing: 32, alignment: .top)],
+                                      alignment: .leading, spacing: 24) {
+                                ForEach(byType(list)) { group in
+                                    typeGroup(group.type, group.codes)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 16)
+            }
+            .background(Color(.systemGroupedBackground))
+        }
+    }
+
+    private func column(_ title: String, _ list: [SavedCode]) -> some View {
+        VStack(alignment: .leading, spacing: 24) {
+            partTitle(title)
+            ForEach(byType(list)) { group in
+                typeGroup(group.type, group.codes)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+
+    private func partTitle(_ title: String) -> some View {
+        Text(title)
+            .font(.title2.weight(.bold))
+            .padding(.bottom, -12)
+    }
+
+    private func typeGroup(_ type: CodeType, _ list: [SavedCode]) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(type.title, systemImage: type.symbol)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
+            ForEach(list) { code in
+                card(code)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+    }
+
+    /// One code as a card. Hold it (or right-click) to favorite or delete.
+    private func card(_ code: SavedCode) -> some View {
+        NavigationLink {
+            CodeDetailView(code: code)
+        } label: {
+            HStack {
+                CodeRow(code: code)
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(12)
+            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 16))
+            .contentShape(RoundedRectangle(cornerRadius: 16))
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            Button(code.isFavorite ? "Unfavorite" : "Favorite",
+                   systemImage: code.isFavorite ? "star.slash" : "star") {
+                withAnimation { code.isFavorite.toggle() }
+            }
+            Button("Delete", systemImage: "trash", role: .destructive) {
+                codeToDelete = code
+            }
+        }
+    }
+
+    // MARK: iPhone
 
     private func row(_ code: SavedCode) -> some View {
         NavigationLink {

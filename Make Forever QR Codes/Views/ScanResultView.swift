@@ -4,6 +4,7 @@
 //
 //  What a scanned code holds and what to do with it.
 //  Nothing opens by itself, and nothing is kept unless the person taps Save.
+//  On iPhone it slides up as a sheet; on iPad it shows beside the camera.
 //
 
 import Contacts
@@ -12,6 +13,8 @@ import SwiftUI
 
 struct ScanResultView: View {
     let code: ScannedCode
+    /// Set when shown beside the camera (iPad) instead of as a sheet.
+    var onDone: (() -> Void)? = nil
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
@@ -25,56 +28,76 @@ struct ScanResultView: View {
     @State private var copied: String?
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    Label(code.title, systemImage: code.symbol)
-                        .font(.headline)
-                    content
+        if let onDone {
+            // Beside the camera: its own title and Done button on top
+            VStack(spacing: 0) {
+                HStack {
+                    Text("Scanned Code").font(.headline)
+                    Spacer()
+                    Button("Done", action: onDone)
+                        .fontWeight(.semibold)
                 }
-
-                Section { actions }
-
-                Section {
-                    if saved {
-                        Label("Saved to My Codes", systemImage: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
-                    } else {
-                        Button("Save to My Codes", systemImage: "square.and.arrow.down") {
-                            name = code.suggestedName
-                            askName = true
+                .padding(.horizontal, 20)
+                .padding(.vertical, 14)
+                details
+            }
+            .background(Color(.systemGroupedBackground))
+        } else {
+            NavigationStack {
+                details
+                    .navigationTitle("Scanned Code")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Done") { dismiss() }
                         }
                     }
-                } footer: {
-                    if !saved { Text("Not saved unless you tap Save.") }
-                }
             }
-            .navigationTitle("Scanned Code")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
-                }
-            }
-            .alert("Name this code", isPresented: $askName) {
-                TextField("Name", text: $name)
-                Button("Save") { save() }
-                Button("Cancel", role: .cancel) {}
-            }
-            .sheet(isPresented: $showAddContact) {
-                if case .contact(let contact?) = code.kind {
-                    ContactAdder(contact: contact) { showAddContact = false }
-                        .ignoresSafeArea()
-                }
-            }
-            .sheet(isPresented: $showAddEvent) {
-                if case .event(let info) = code.kind {
-                    EventAdder(info: info) { showAddEvent = false }
-                        .ignoresSafeArea()
-                }
-            }
-            .sensoryFeedback(.success, trigger: copied)
         }
+    }
+
+    private var details: some View {
+        List {
+            Section {
+                Label(code.title, systemImage: code.symbol)
+                    .font(.headline)
+                content
+            }
+
+            Section { actions }
+
+            Section {
+                if saved {
+                    Label("Saved to My Codes", systemImage: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                } else {
+                    Button("Save to My Codes", systemImage: "square.and.arrow.down") {
+                        name = code.suggestedName
+                        askName = true
+                    }
+                }
+            } footer: {
+                if !saved { Text("Not saved unless you tap Save.") }
+            }
+        }
+        .alert("Name this code", isPresented: $askName) {
+            TextField("Name", text: $name)
+            Button("Save") { save() }
+            Button("Cancel", role: .cancel) {}
+        }
+        .sheet(isPresented: $showAddContact) {
+            if case .contact(let contact?) = code.kind {
+                ContactAdder(contact: contact) { showAddContact = false }
+                    .ignoresSafeArea()
+            }
+        }
+        .sheet(isPresented: $showAddEvent) {
+            if case .event(let info) = code.kind {
+                EventAdder(info: info) { showAddEvent = false }
+                    .ignoresSafeArea()
+            }
+        }
+        .sensoryFeedback(.success, trigger: copied)
     }
 
     // MARK: What's inside

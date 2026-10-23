@@ -3,6 +3,7 @@
 //  Make Forever QR Codes
 //
 //  One saved code: show it big, share it, save it, print it, edit it.
+//  On iPad: the code on the left and the buttons on the right.
 //
 
 import SwiftUI
@@ -12,6 +13,7 @@ struct CodeDetailView: View {
     @Bindable var code: SavedCode
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
     @State private var showFullScreen = false
     @State private var showPrint = false
@@ -26,27 +28,27 @@ struct CodeDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
-                Button { showFullScreen = true } label: {
-                    QRCodeImage(payload: code.payload, foreground: code.foreground, background: code.background,
-                                icon: code.icon)
-                        .frame(maxWidth: 320)
-                        .shadow(color: .black.opacity(0.12), radius: 8, y: 2)
+            if WideLayout.isOn(sizeClass) {
+                // iPad: the code on the left, the buttons on the right
+                HStack(alignment: .center, spacing: 40) {
+                    VStack(spacing: 20) {
+                        codeImage(maxWidth: 460)
+                        info
+                    }
+                    .frame(maxWidth: .infinity)
+                    actions
+                        .frame(maxWidth: 420)
+                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.plain)
-                .accessibilityHint("Shows the code full screen")
-
-                VStack(spacing: 4) {
-                    Label(code.type.title, systemImage: code.type.symbol)
-                        .foregroundStyle(.secondary)
-                    Text("When scanned: \(code.type.scanResult.lowercased()).")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                .padding(32)
+            } else {
+                VStack(spacing: 20) {
+                    codeImage(maxWidth: 320)
+                    info
+                    actions
                 }
-
-                actions
+                .padding()
             }
-            .padding()
         }
         .navigationTitle(code.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -107,6 +109,27 @@ struct CodeDetailView: View {
         }
         .alert("Saved to Photos", isPresented: $savedToPhotos) {
             Button("OK", role: .cancel) {}
+        }
+    }
+
+    private func codeImage(maxWidth: CGFloat) -> some View {
+        Button { showFullScreen = true } label: {
+            QRCodeImage(payload: code.payload, foreground: code.foreground, background: code.background,
+                        icon: code.icon)
+                .frame(maxWidth: maxWidth)
+                .shadow(color: .black.opacity(0.12), radius: 8, y: 2)
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint("Shows the code full screen")
+    }
+
+    private var info: some View {
+        VStack(spacing: 4) {
+            Label(code.type.title, systemImage: code.type.symbol)
+                .foregroundStyle(.secondary)
+            Text("When scanned: \(code.type.scanResult.lowercased()).")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
     }
 
