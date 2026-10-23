@@ -26,8 +26,12 @@ struct ScanView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     @State private var isLandscape = false
+    /// iPhone Duo half-closed: the fold, so the camera and the result each get a page.
+    @State private var fold: Fold?
 
-    private var wide: Bool { WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape }
+    private var wide: Bool {
+        (WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape) || fold != nil
+    }
 
     var body: some View {
         NavigationStack {
@@ -48,6 +52,7 @@ struct ScanView: View {
         }
         .onDisappear { isVisible = false }
         .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
+        .readFold($fold)
         // iPhone: the result slides up. (On iPad it shows beside the camera instead.)
         .sheet(item: Binding(get: { wide ? nil : result },
                              set: { if !wide { result = $0 } }),
@@ -84,7 +89,52 @@ struct ScanView: View {
     }
 
     /// iPad: the camera in the middle; once a code is found, camera left and result right.
+    @ViewBuilder
     private var wideScan: some View {
+        if let fold {
+            foldScan(fold)
+        } else {
+            middleScan
+        }
+    }
+
+    /// iPhone Duo half-closed: the camera on the left page; the result on the right page.
+    private func foldScan(_ fold: Fold) -> some View {
+        HStack(alignment: .top, spacing: 0) {
+            VStack(spacing: 16) {
+                camera
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                photoButton
+            }
+            .padding(16)
+            .frame(width: fold.leftWidth)
+
+            Color.clear.frame(width: fold.gap, height: 1)
+
+            Group {
+                if let result {
+                    ScanResultView(code: result) {
+                        withAnimation(.spring(duration: 0.45)) { self.result = nil }
+                        pauseBriefly()
+                    }
+                    .id(result.id)
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                } else {
+                    ContentUnavailableView("Point the camera at a QR code",
+                                           systemImage: "qrcode.viewfinder",
+                                           description: Text("What's inside shows up here."))
+                }
+            }
+            .frame(maxHeight: .infinity)
+            .padding(16)
+            .frame(width: fold.rightWidth)
+        }
+        .padding(.bottom, 8)
+        .animation(.spring(duration: 0.45), value: result?.id)
+    }
+
+    private var middleScan: some View {
         GeometryReader { geo in
             // (Never below zero: for a split second the screen can measure as tiny.)
             let cameraWidth = max(0, result == nil

@@ -33,6 +33,8 @@ struct CodeEditorView: View {
     @State private var isLandscape = false
     /// Sideways: how tall the settings are, so both sides scroll as one page.
     @State private var settingsHeight: CGFloat = 1000
+    /// iPhone Duo half-closed: the fold, to split the screen exactly on it.
+    @State private var fold: Fold?
 
     /// What you typed. My Codes can hand one in, so turning the iPad
     /// (which rebuilds My Codes) keeps you on Edit with everything you typed.
@@ -53,27 +55,27 @@ struct CodeEditorView: View {
 
     var body: some View {
         Group {
-            if WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape {
+            if let fold {
+                // iPhone Duo half-closed: the code on the left page, the settings on the
+                // right page, on one page: both move together when you scroll.
+                ScrollView {
+                    HStack(alignment: .top, spacing: 0) {
+                        previewColumn
+                            .frame(width: fold.leftWidth)
+                        Color.clear.frame(width: fold.gap, height: 1)
+                        settingsColumn
+                            .frame(width: fold.rightWidth)
+                    }
+                }
+                .background(Color(.systemGroupedBackground))
+            } else if WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape {
                 // iPad sideways: the code on the left, the settings on the right,
                 // on one page: both sides move together when you scroll.
                 ScrollView {
                     HStack(alignment: .top, spacing: 0) {
-                        VStack(alignment: .leading, spacing: 16) {
-                            preview
-                                .frame(maxWidth: 460)
-                                .frame(maxWidth: .infinity)
-                            previewNotes
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(32)
-                        .frame(maxWidth: .infinity)
-                        Form { settings }
-                            .scrollDisabled(true)
-                            .onScrollGeometryChange(for: CGFloat.self) { $0.contentSize.height } action: { _, height in
-                                if height > 0 { settingsHeight = height }
-                            }
-                            .frame(height: settingsHeight)
+                        previewColumn
+                            .frame(maxWidth: .infinity)
+                        settingsColumn
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -93,6 +95,7 @@ struct CodeEditorView: View {
             }
         }
         .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
+        .readFold($fold)
         .navigationTitle(existing == nil ? type.title : "Edit \(type.title)")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -115,6 +118,29 @@ struct CodeEditorView: View {
             .frame(width: 0, height: 0)
         )
         .onAppear(perform: loadExisting)
+    }
+
+    /// Sideways or half-closed: the code and its notes, as one column.
+    private var previewColumn: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            preview
+                .frame(maxWidth: 460)
+                .frame(maxWidth: .infinity)
+            previewNotes
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+        .padding(32)
+    }
+
+    /// Sideways or half-closed: the settings, sized to fit so the whole page scrolls as one.
+    private var settingsColumn: some View {
+        Form { settings }
+            .scrollDisabled(true)
+            .onScrollGeometryChange(for: CGFloat.self) { $0.contentSize.height } action: { _, height in
+                if height > 0 { settingsHeight = height }
+            }
+            .frame(height: settingsHeight)
     }
 
     private var preview: some View {

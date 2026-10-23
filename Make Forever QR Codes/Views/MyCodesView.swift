@@ -63,10 +63,14 @@ struct MyCodesView: View {
     /// ... and maybe its Edit screen on the right.
     @State private var sidePath: [CodeRoute] = []
     @State private var drafts = EditDrafts()
+    /// iPhone Duo half-closed: the fold, so the list and the code each get a page.
+    @State private var fold: Fold?
     /// Codes on their way out (hidden first, then deleted, so nothing shows a deleted code).
     @State private var removing: Set<PersistentIdentifier> = []
 
-    private var sideBySide: Bool { WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape }
+    private var sideBySide: Bool {
+        (WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape) || fold != nil
+    }
     private var bigRows: Bool { WideLayout.isOn(sizeClass, verticalSizeClass) }
 
     private var filtered: [SavedCode] {
@@ -125,19 +129,32 @@ struct MyCodesView: View {
         Group {
             if sideBySide {
                 NavigationSplitView(columnVisibility: .constant(.all)) {
-                    codeList
-                        .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 460)
-                        .toolbar(removing: .sidebarToggle)
+                    Group {
+                        if let fold {
+                            // Half-closed: the list fills the left page, up to the middle of the fold.
+                            codeList
+                                .safeAreaPadding(.trailing, fold.gap / 2)
+                                .navigationSplitViewColumnWidth(fold.center)
+                        } else {
+                            codeList
+                                .navigationSplitViewColumnWidth(min: 340, ideal: 400, max: 460)
+                        }
+                    }
+                    .toolbar(removing: .sidebarToggle)
                 } detail: {
                     NavigationStack(path: $sidePath) {
-                        if let code = shownCode {
-                            CodeDetailView(code: code, stacked: true, onDelete: remove)
-                                .id(code.persistentModelID)
-                                .navigationDestination(for: CodeRoute.self, destination: screen)
-                        } else {
-                            ContentUnavailableView("Pick a code", systemImage: "qrcode",
-                                                   description: Text("It shows here, big enough to scan."))
+                        Group {
+                            if let code = shownCode {
+                                CodeDetailView(code: code, stacked: true, onDelete: remove)
+                                    .id(code.persistentModelID)
+                                    .navigationDestination(for: CodeRoute.self, destination: screen)
+                            } else {
+                                ContentUnavailableView("Pick a code", systemImage: "qrcode",
+                                                       description: Text("It shows here, big enough to scan."))
+                            }
                         }
+                        // Half-closed: the code starts after the fold, on the right page.
+                        .safeAreaPadding(.leading, (fold?.gap ?? 0) / 2)
                     }
                 }
                 .navigationSplitViewStyle(.balanced)
@@ -149,6 +166,7 @@ struct MyCodesView: View {
             }
         }
         .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
+        .readFold($fold)
         // Turning the iPad keeps the code you had open, and its Edit screen if open.
         .onChange(of: sideBySide) { _, nowSideBySide in
             if nowSideBySide {

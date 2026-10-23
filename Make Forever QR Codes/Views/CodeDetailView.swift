@@ -21,6 +21,8 @@ struct CodeDetailView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var isLandscape = false
+    /// iPhone Duo half-closed: the fold, to split the screen exactly on it.
+    @State private var fold: Fold?
 
     @State private var showFullScreen = false
     @State private var showPrint = false
@@ -37,7 +39,22 @@ struct CodeDetailView: View {
 
     var body: some View {
         ScrollView {
-            if WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape && !stacked {
+            if let fold, !stacked {
+                // iPhone Duo half-closed: the code on the left page, the buttons on the right page
+                HStack(alignment: .top, spacing: 0) {
+                    VStack(spacing: 20) {
+                        codeImage(maxWidth: 460)
+                        info
+                    }
+                    .padding(24)
+                    .frame(width: fold.leftWidth)
+                    Color.clear.frame(width: fold.gap, height: 1)
+                    actions
+                        .padding(24)
+                        .padding(.top, 40)
+                        .frame(width: fold.rightWidth)
+                }
+            } else if WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape && !stacked {
                 // iPad sideways: the code on the left, the buttons on the right
                 HStack(alignment: .center, spacing: 40) {
                     VStack(spacing: 20) {
@@ -64,6 +81,7 @@ struct CodeDetailView: View {
             }
         }
         .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
+        .readFold($fold)
         .navigationTitle(code.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
