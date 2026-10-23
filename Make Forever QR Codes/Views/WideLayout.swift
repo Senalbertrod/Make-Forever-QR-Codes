@@ -16,3 +16,11 @@ enum WideLayout {
         sizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
     }
 }
+
+/// What to call this device in the app's text: "iPad" on iPad, "iPhone" on iPhone.
+enum Device {
+    @MainActor
+    static var name: String {
+        UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone"
+    }
+}

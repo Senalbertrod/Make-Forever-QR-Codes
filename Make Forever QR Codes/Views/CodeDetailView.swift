@@ -11,6 +11,10 @@ import SwiftData
 
 struct CodeDetailView: View {
     @Bindable var code: SavedCode
+    /// Code on top with everything under it, even on iPad (My Codes sideways).
+    var stacked = false
+    /// When set, deleting hands the code to this instead of leaving the screen.
+    var onDelete: ((SavedCode) -> Void)? = nil
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -28,7 +32,7 @@ struct CodeDetailView: View {
 
     var body: some View {
         ScrollView {
-            if WideLayout.isOn(sizeClass) {
+            if WideLayout.isOn(sizeClass) && !stacked {
                 // iPad: the code on the left, the buttons on the right
                 HStack(alignment: .center, spacing: 40) {
                     VStack(spacing: 20) {
@@ -43,11 +47,12 @@ struct CodeDetailView: View {
                 .padding(32)
             } else {
                 VStack(spacing: 20) {
-                    codeImage(maxWidth: 320)
+                    codeImage(maxWidth: stacked ? 420 : 320)
                     info
                     actions
                 }
                 .padding()
+                .padding(.vertical, stacked ? 12 : 0)
             }
         }
         .navigationTitle(code.name)
@@ -96,6 +101,10 @@ struct CodeDetailView: View {
         .alert("Delete this code?", isPresented: $confirmDelete) {
             Button("Cancel", role: .cancel) {}
             Button("Delete", role: .destructive) {
+                if let onDelete {
+                    onDelete(code)
+                    return
+                }
                 // Leave the screen first, then delete, so nothing shows a deleted code.
                 let context = modelContext
                 let toDelete = code

@@ -18,7 +18,7 @@ Most QR services make "dynamic" codes that point to their own server, and the co
 - **Contacts** with up to 3 phones, 3 emails, 3 websites, 3 social profiles and 2 addresses, each with a label
 - **Fill from my contact card** for contacts (the app only sees the one contact you pick)
 - **Apple Watch:** tap the watch button on a code to put it on your wrist, full screen with a tap. The button only shows when a watch is paired. They come straight from your iPhone (no iCloud) and stay on the watch
-- **iPad layout:** uses the whole screen. Five tiles per row on Make; the code on the left and the settings or buttons on the right; Favorites on the left and All Codes on the right in My Codes; and when scanning, the camera slides left with the result on the right. In a narrow split screen it uses the iPhone layout
+- **iPad layout:** uses the whole screen, with the tabs at the bottom like on iPhone. Five tiles per row on Make; the code on the left and the settings or buttons on the right; when scanning, the camera slides left with the result on the right. My Codes looks like iPhone standing up; sideways, the list is on the left and the code you pick shows big on the right, ready to scan. In a narrow split screen it uses the iPhone layout
 - Light mode, dark mode and tinted app icons
 
 - **Scan tab:** scan with the camera or from a photo. It shows what's inside before anything opens, with the website name in a clear font so look-alike letters stand out. Buttons to open, add to Contacts or Calendar, or copy a Wi-Fi password. Save to My Codes only if you want

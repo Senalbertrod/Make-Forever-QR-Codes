@@ -26,11 +26,11 @@ struct AboutView: View {
                             text: "Printed a code with the wrong information? Fix it in the app and print it again.")
                 }
                 Section("Scanning") {
-                    InfoRow(symbol: "qrcode.viewfinder", title: "Scanned on your phone",
-                            text: "The Scan tab reads codes with the camera or from a photo, right on your iPhone. Nothing is saved unless you tap Save.")
+                    InfoRow(symbol: "qrcode.viewfinder", title: "Scanned on your \(Device.name)",
+                            text: "The Scan tab reads codes with the camera or from a photo, right on your \(Device.name). Nothing is saved unless you tap Save.")
                 }
                 Section("Privacy") {
-                    InfoRow(symbol: "lock.shield", title: "Nothing leaves your phone",
+                    InfoRow(symbol: "lock.shield", title: "Nothing leaves your \(Device.name)",
                             text: "No account, no ads, no tracking. Your codes are saved only on this device.")
                 }
             }
