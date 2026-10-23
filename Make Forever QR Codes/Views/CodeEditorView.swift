@@ -3,7 +3,8 @@
 //  Make Forever QR Codes
 //
 //  The form for one kind of code, with a live preview at the top.
-//  On iPad: the preview on the left and the form on the right.
+//  On iPad sideways: the preview on the left and the form on the right.
+//  On iPad standing up: like iPhone (the code on top, the form under it), just bigger.
 //  Used both to make a new code and to edit a saved one.
 //
 
@@ -18,6 +19,7 @@ struct CodeEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @State private var isLandscape = false
 
     // (Kept here, so turning the iPad or resizing the window never loses what you typed.)
     @State private var fields = CodeFields()
@@ -37,8 +39,8 @@ struct CodeEditorView: View {
 
     var body: some View {
         Group {
-            if WideLayout.isOn(sizeClass) {
-                // iPad: the code on the left, the settings on the right
+            if WideLayout.isOn(sizeClass) && isLandscape {
+                // iPad sideways: the code on the left, the settings on the right
                 HStack(alignment: .top, spacing: 0) {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 16) {
@@ -60,7 +62,7 @@ struct CodeEditorView: View {
                 Form {
                     Section {
                         preview
-                            .frame(maxWidth: 260)
+                            .frame(maxWidth: WideLayout.isOn(sizeClass) ? 400 : 260)
                             .frame(maxWidth: .infinity)
                             .listRowBackground(Color.clear)
                     } footer: {
@@ -70,6 +72,7 @@ struct CodeEditorView: View {
                 }
             }
         }
+        .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
         .navigationTitle(existing == nil ? type.title : "Edit \(type.title)")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

@@ -3,7 +3,8 @@
 //  Make Forever QR Codes
 //
 //  One saved code: show it big, share it, save it, print it, edit it.
-//  On iPad: the code on the left and the buttons on the right.
+//  On iPad sideways: the code on the left and the buttons on the right.
+//  On iPad standing up: like iPhone (the code on top, the buttons under it), just bigger.
 //
 
 import SwiftUI
@@ -18,6 +19,7 @@ struct CodeDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @State private var isLandscape = false
 
     @State private var showFullScreen = false
     @State private var showPrint = false
@@ -29,11 +31,13 @@ struct CodeDetailView: View {
     @State private var hasWatch = false
 
     private var image: UIImage? { code.image(size: 1024) }
+    /// iPad (standing up, or beside the list): everything a bit bigger.
+    private var big: Bool { stacked || WideLayout.isOn(sizeClass) }
 
     var body: some View {
         ScrollView {
-            if WideLayout.isOn(sizeClass) && !stacked {
-                // iPad: the code on the left, the buttons on the right
+            if WideLayout.isOn(sizeClass) && isLandscape && !stacked {
+                // iPad sideways: the code on the left, the buttons on the right
                 HStack(alignment: .center, spacing: 40) {
                     VStack(spacing: 20) {
                         codeImage(maxWidth: 460)
@@ -47,14 +51,16 @@ struct CodeDetailView: View {
                 .padding(32)
             } else {
                 VStack(spacing: 20) {
-                    codeImage(maxWidth: stacked ? 420 : 320)
+                    codeImage(maxWidth: big ? 460 : 320)
                     info
                     actions
+                        .frame(maxWidth: big ? 560 : .infinity)
                 }
                 .padding()
-                .padding(.vertical, stacked ? 12 : 0)
+                .padding(.vertical, big ? 12 : 0)
             }
         }
+        .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
         .navigationTitle(code.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
