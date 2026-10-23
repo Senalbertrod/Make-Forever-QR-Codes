@@ -189,6 +189,10 @@ struct MyCodesView: View {
                     }
                 }
                 .navigationSplitViewStyle(.balanced)
+                // Always wide: when the Duo starts closing, the screen narrows a moment
+                // before the app switches to the one list. Without this, the side-by-side
+                // view would fold itself into one column first and forget what was open.
+                .environment(\.horizontalSizeClass, .regular)
             } else {
                 NavigationStack(path: path) {
                     codeList
@@ -275,6 +279,9 @@ struct MyCodesView: View {
                         List(selection: Binding(get: { shownCode?.persistentModelID },
                                                 set: { id in
                                                     guard onScreen.sideBySide else { return }
+                                                    // Tapping a code never un-picks it here, so "nothing picked"
+                                                    // only comes from the screen changing size: ignore it.
+                                                    guard let id else { return }
                                                     // Picking another code closes the Edit screen on the right.
                                                     if id != shownCode?.persistentModelID { editing = false }
                                                     picked = id
