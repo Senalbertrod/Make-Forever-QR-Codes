@@ -23,10 +23,11 @@ struct ScanView: View {
     @State private var photoItem: PhotosPickerItem?
     @State private var noCodeInPhoto = false
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     @State private var isLandscape = false
 
-    private var wide: Bool { WideLayout.isOn(sizeClass) && isLandscape }
+    private var wide: Bool { WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape }
 
     var body: some View {
         NavigationStack {

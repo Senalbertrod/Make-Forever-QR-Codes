@@ -19,6 +19,7 @@ struct CodeDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var isLandscape = false
 
     @State private var showFullScreen = false
@@ -32,11 +33,11 @@ struct CodeDetailView: View {
 
     private var image: UIImage? { code.image(size: 1024) }
     /// iPad (standing up, or beside the list): everything a bit bigger.
-    private var big: Bool { stacked || WideLayout.isOn(sizeClass) }
+    private var big: Bool { stacked || WideLayout.isOn(sizeClass, verticalSizeClass) }
 
     var body: some View {
         ScrollView {
-            if WideLayout.isOn(sizeClass) && isLandscape && !stacked {
+            if WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape && !stacked {
                 // iPad sideways: the code on the left, the buttons on the right
                 HStack(alignment: .center, spacing: 40) {
                     VStack(spacing: 20) {

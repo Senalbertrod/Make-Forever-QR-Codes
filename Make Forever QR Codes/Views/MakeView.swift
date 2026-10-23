@@ -12,9 +12,10 @@ struct MakeView: View {
     @State private var showSettings = false
     @State private var showAbout = false
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     private var columns: [GridItem] {
-        WideLayout.isOn(sizeClass)
+        WideLayout.isOn(sizeClass, verticalSizeClass)
             ? Array(repeating: GridItem(.flexible(), spacing: 16), count: 5)
             : [GridItem(.adaptive(minimum: 100), spacing: 12)]
     }
@@ -23,12 +24,12 @@ struct MakeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    LazyVGrid(columns: columns, spacing: WideLayout.isOn(sizeClass) ? 16 : 12) {
+                    LazyVGrid(columns: columns, spacing: WideLayout.isOn(sizeClass, verticalSizeClass) ? 16 : 12) {
                         ForEach(CodeType.allCases) { type in
                             NavigationLink {
                                 CodeEditorView(type: type, onSaved: onSaved)
                             } label: {
-                                TypeTile(type: type, tall: WideLayout.isOn(sizeClass))
+                                TypeTile(type: type, tall: WideLayout.isOn(sizeClass, verticalSizeClass))
                             }
                             .buttonStyle(.plain)
                         }

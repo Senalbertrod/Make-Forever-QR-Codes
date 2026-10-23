@@ -2,18 +2,19 @@
 //  WideLayout.swift
 //  Make Forever QR Codes
 //
-//  When to use the wide layouts: on iPad, whenever the app has room
-//  (full screen, either way up). In a narrow split screen, and on iPhone,
-//  the app keeps its regular one-column layout.
+//  When to use the wide layouts: whenever the screen is big in both
+//  directions. That's an iPad (unless in a narrow split screen) and an
+//  iPhone Duo when it's open. A closed Duo, or any other iPhone (even a big
+//  one turned sideways, which is short top to bottom), keeps the iPhone layout.
+//  Opening or closing the Duo switches right away, keeping your place.
 //
 
 import SwiftUI
 import UIKit
 
 enum WideLayout {
-    @MainActor
-    static func isOn(_ sizeClass: UserInterfaceSizeClass?) -> Bool {
-        sizeClass == .regular && UIDevice.current.userInterfaceIdiom == .pad
+    static func isOn(_ width: UserInterfaceSizeClass?, _ height: UserInterfaceSizeClass?) -> Bool {
+        width == .regular && height == .regular
     }
 }
 

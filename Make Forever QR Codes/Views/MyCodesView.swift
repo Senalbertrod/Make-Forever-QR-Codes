@@ -47,6 +47,7 @@ private final class EditDrafts {
 struct MyCodesView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Query(sort: \SavedCode.createdAt, order: .reverse) private var codes: [SavedCode]
     @AppStorage("typeOrder") private var typeOrderRaw = ""
     @State private var search = ""
@@ -65,8 +66,8 @@ struct MyCodesView: View {
     /// Codes on their way out (hidden first, then deleted, so nothing shows a deleted code).
     @State private var removing: Set<PersistentIdentifier> = []
 
-    private var sideBySide: Bool { WideLayout.isOn(sizeClass) && isLandscape }
-    private var bigRows: Bool { WideLayout.isOn(sizeClass) }
+    private var sideBySide: Bool { WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape }
+    private var bigRows: Bool { WideLayout.isOn(sizeClass, verticalSizeClass) }
 
     private var filtered: [SavedCode] {
         let codes = self.codes.filter { !removing.contains($0.persistentModelID) }

@@ -29,6 +29,7 @@ struct CodeEditorView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var isLandscape = false
     /// Sideways: how tall the settings are, so both sides scroll as one page.
     @State private var settingsHeight: CGFloat = 1000
@@ -52,7 +53,7 @@ struct CodeEditorView: View {
 
     var body: some View {
         Group {
-            if WideLayout.isOn(sizeClass) && isLandscape {
+            if WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape {
                 // iPad sideways: the code on the left, the settings on the right,
                 // on one page: both sides move together when you scroll.
                 ScrollView {
@@ -81,7 +82,7 @@ struct CodeEditorView: View {
                 Form {
                     Section {
                         preview
-                            .frame(maxWidth: WideLayout.isOn(sizeClass) ? 400 : 260)
+                            .frame(maxWidth: WideLayout.isOn(sizeClass, verticalSizeClass) ? 400 : 260)
                             .frame(maxWidth: .infinity)
                             .listRowBackground(Color.clear)
                     } footer: {
