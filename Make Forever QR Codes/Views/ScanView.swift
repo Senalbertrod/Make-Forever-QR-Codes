@@ -85,9 +85,10 @@ struct ScanView: View {
     /// iPad: the camera in the middle; once a code is found, camera left and result right.
     private var wideScan: some View {
         GeometryReader { geo in
-            let cameraWidth = result == nil
+            // (Never below zero: for a split second the screen can measure as tiny.)
+            let cameraWidth = max(0, result == nil
                 ? min(geo.size.width - 64, 720)
-                : (geo.size.width - 72) * 0.5
+                : (geo.size.width - 72) * 0.5)
             HStack(alignment: .top, spacing: 24) {
                 VStack(spacing: 16) {
                     camera
