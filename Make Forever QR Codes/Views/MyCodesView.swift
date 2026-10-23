@@ -62,8 +62,6 @@ struct MyCodesView: View {
     @State private var selection: PersistentIdentifier?
     /// What's open on top of that code: its Edit screen, or nothing.
     @State private var detailPath: [CodeRoute] = []
-    /// When narrow: show the list, or the picked code on top of it.
-    @State private var compactColumn: NavigationSplitViewColumn = .sidebar
     @State private var drafts = EditDrafts()
     /// Codes on their way out (hidden first, then deleted, so nothing shows a deleted code).
     @State private var removing: Set<PersistentIdentifier> = []
@@ -129,7 +127,7 @@ struct MyCodesView: View {
     }
 
     var body: some View {
-        NavigationSplitView(columnVisibility: .constant(.all), preferredCompactColumn: $compactColumn) {
+        NavigationSplitView(columnVisibility: .constant(.all)) {
             Group {
                 if let fold {
                     // Half-closed: the list fills the left page, up to the middle of the fold.
@@ -165,9 +163,9 @@ struct MyCodesView: View {
         // The split view changes shape by itself: two sides when there's room,
         // one column otherwise. (It's always the same screen, so nothing is lost.)
         .environment(\.horizontalSizeClass, sideBySide ? .regular : .compact)
+        // (Narrow: Apple's split view shows the list when no code is picked, and
+        // the code on top of it when one is. Back un-picks it.)
         .onChange(of: selection) { old, new in
-            // Narrow: show the code you picked on top of the list (or the list).
-            compactColumn = new == nil ? .sidebar : .detail
             // Picking another code (or going back to the list) closes the Edit
             // screen of the old one.
             if old != nil, old != new { detailPath = [] }
