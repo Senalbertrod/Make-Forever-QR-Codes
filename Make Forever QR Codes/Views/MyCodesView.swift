@@ -44,6 +44,13 @@ private final class EditDrafts {
     }
 }
 
+/// Which version of My Codes is on screen right now (one list, or side by side).
+/// When the phone opens or closes, the old version is thrown away and, as it
+/// goes, says "nothing is open". Checking this lets the app ignore that.
+private final class OnScreen {
+    var sideBySide = false
+}
+
 struct MyCodesView: View {
     @Environment(\.modelContext) private var modelContext
     /// The screen's shape and the Duo's fold, decided once for the whole app.
@@ -60,6 +67,7 @@ struct MyCodesView: View {
     @State private var picked: PersistentIdentifier?
     @State private var editing = false
     @State private var drafts = EditDrafts()
+    @State private var onScreen = OnScreen()
     /// Codes on their way out (hidden first, then deleted, so nothing shows a deleted code).
     @State private var removing: Set<PersistentIdentifier> = []
 
@@ -80,6 +88,7 @@ struct MyCodesView: View {
             guard let code = pickedCode else { return [] }
             return editing ? [.detail(code), .edit(code)] : [.detail(code)]
         } set: { routes in
+            guard !onScreen.sideBySide else { return }   // (not on screen: ignore)
             picked = routes.first?.code.persistentModelID
             editing = routes.contains { if case .edit = $0 { true } else { false } }
         }
@@ -91,6 +100,7 @@ struct MyCodesView: View {
             guard editing, let code = shownCode else { return [] }
             return [.edit(code)]
         } set: { routes in
+            guard onScreen.sideBySide else { return }   // (not on screen: ignore)
             if !routes.isEmpty, picked == nil { picked = shownCode?.persistentModelID }
             editing = !routes.isEmpty
         }
@@ -145,6 +155,8 @@ struct MyCodesView: View {
     }
 
     var body: some View {
+        // Note which version is on screen before drawing it.
+        let _ = (onScreen.sideBySide = sideBySide)
         Group {
             if sideBySide {
                 NavigationSplitView(columnVisibility: .constant(.all)) {
@@ -262,6 +274,7 @@ struct MyCodesView: View {
                         // Sideways: the picked code is highlighted and shows on the right.
                         List(selection: Binding(get: { shownCode?.persistentModelID },
                                                 set: { id in
+                                                    guard onScreen.sideBySide else { return }
                                                     // Picking another code closes the Edit screen on the right.
                                                     if id != shownCode?.persistentModelID { editing = false }
                                                     picked = id
