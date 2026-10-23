@@ -30,6 +30,8 @@ struct CodeEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var isLandscape = false
+    /// Sideways: how tall the settings are, so both sides scroll as one page.
+    @State private var settingsHeight: CGFloat = 1000
 
     /// What you typed. My Codes can hand one in, so turning the iPad
     /// (which rebuilds My Codes) keeps you on Edit with everything you typed.
@@ -51,9 +53,10 @@ struct CodeEditorView: View {
     var body: some View {
         Group {
             if WideLayout.isOn(sizeClass) && isLandscape {
-                // iPad sideways: the code on the left, the settings on the right
-                HStack(alignment: .top, spacing: 0) {
-                    ScrollView {
+                // iPad sideways: the code on the left, the settings on the right,
+                // on one page: both sides move together when you scroll.
+                ScrollView {
+                    HStack(alignment: .top, spacing: 0) {
                         VStack(alignment: .leading, spacing: 16) {
                             preview
                                 .frame(maxWidth: 460)
@@ -63,10 +66,15 @@ struct CodeEditorView: View {
                                 .foregroundStyle(.secondary)
                         }
                         .padding(32)
-                    }
-                    .frame(maxWidth: .infinity)
-                    Form { settings }
                         .frame(maxWidth: .infinity)
+                        Form { settings }
+                            .scrollDisabled(true)
+                            .onScrollGeometryChange(for: CGFloat.self) { $0.contentSize.height } action: { _, height in
+                                if height > 0 { settingsHeight = height }
+                            }
+                            .frame(height: settingsHeight)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
                 .background(Color(.systemGroupedBackground))
             } else {

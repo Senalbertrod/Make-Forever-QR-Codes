@@ -49,6 +49,7 @@ struct CodeDetailView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .padding(32)
+                .frame(maxWidth: .infinity)   // scroll from anywhere, edge to edge
             } else {
                 VStack(spacing: 20) {
                     codeImage(maxWidth: big ? 460 : 320)
@@ -58,6 +59,7 @@ struct CodeDetailView: View {
                 }
                 .padding()
                 .padding(.vertical, big ? 12 : 0)
+                .frame(maxWidth: .infinity)   // scroll from anywhere, edge to edge
             }
         }
         .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
