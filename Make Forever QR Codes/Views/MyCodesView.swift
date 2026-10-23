@@ -46,32 +46,55 @@ private final class EditDrafts {
 
 struct MyCodesView: View {
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.horizontalSizeClass) private var sizeClass
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    /// The screen's shape and the Duo's fold, decided once for the whole app.
+    @Environment(\.screenLayout) private var layout
     @Query(sort: \SavedCode.createdAt, order: .reverse) private var codes: [SavedCode]
     @AppStorage("typeOrder") private var typeOrderRaw = ""
     @State private var search = ""
     @State private var codeToDelete: SavedCode?
     @State private var showArrange = false
 
-    /// Wider than tall (iPad sideways, or a big window).
-    @State private var isLandscape = false
-    /// What's open, standing up: the code, and maybe its Edit screen.
-    @State private var path: [CodeRoute] = []
-    /// Sideways: the code picked on the left ...
+    /// What's open: the code you picked, and whether its Edit screen is open.
+    /// Both layouts (one list, or list and code side by side) read these same
+    /// two things, so switching layouts never has to move anything around.
     @State private var picked: PersistentIdentifier?
-    /// ... and maybe its Edit screen on the right.
-    @State private var sidePath: [CodeRoute] = []
+    @State private var editing = false
     @State private var drafts = EditDrafts()
-    /// iPhone Duo half-closed: the fold, so the list and the code each get a page.
-    @State private var fold: Fold?
     /// Codes on their way out (hidden first, then deleted, so nothing shows a deleted code).
     @State private var removing: Set<PersistentIdentifier> = []
 
-    private var sideBySide: Bool {
-        (WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape) || fold != nil
+    private var sideBySide: Bool { layout.sideBySide }
+    private var bigRows: Bool { layout.isWide }
+    /// iPhone Duo half-closed: the list and the code each get a page.
+    private var fold: Fold? { layout.fold }
+
+    /// The code you picked (nil if none, or it's being deleted).
+    private var pickedCode: SavedCode? {
+        guard let picked, !removing.contains(picked) else { return nil }
+        return codes.first { $0.persistentModelID == picked }
     }
-    private var bigRows: Bool { WideLayout.isOn(sizeClass, verticalSizeClass) }
+
+    /// One list (iPhone, standing up): the screens open on top of the list.
+    private var path: Binding<[CodeRoute]> {
+        Binding {
+            guard let code = pickedCode else { return [] }
+            return editing ? [.detail(code), .edit(code)] : [.detail(code)]
+        } set: { routes in
+            picked = routes.first?.code.persistentModelID
+            editing = routes.contains { if case .edit = $0 { true } else { false } }
+        }
+    }
+
+    /// Side by side: the Edit screen, if open, on the right.
+    private var sidePath: Binding<[CodeRoute]> {
+        Binding {
+            guard editing, let code = shownCode else { return [] }
+            return [.edit(code)]
+        } set: { routes in
+            if !routes.isEmpty, picked == nil { picked = shownCode?.persistentModelID }
+            editing = !routes.isEmpty
+        }
+    }
 
     private var filtered: [SavedCode] {
         let codes = self.codes.filter { !removing.contains($0.persistentModelID) }
@@ -118,11 +141,7 @@ struct MyCodesView: View {
     /// Sideways: the code shown on the right. The one you picked, or else
     /// the first one in the list (your first favorite, if you have any).
     private var shownCode: SavedCode? {
-        if let picked, !removing.contains(picked),
-           let code = codes.first(where: { $0.persistentModelID == picked }) {
-            return code
-        }
-        return groups.first?.codes.first
+        pickedCode ?? groups.first?.codes.first
     }
 
     var body: some View {
@@ -142,7 +161,7 @@ struct MyCodesView: View {
                     }
                     .toolbar(removing: .sidebarToggle)
                 } detail: {
-                    NavigationStack(path: $sidePath) {
+                    NavigationStack(path: sidePath) {
                         Group {
                             if let code = shownCode {
                                 CodeDetailView(code: code, stacked: true, onDelete: remove)
@@ -159,33 +178,15 @@ struct MyCodesView: View {
                 }
                 .navigationSplitViewStyle(.balanced)
             } else {
-                NavigationStack(path: $path) {
+                NavigationStack(path: path) {
                     codeList
                         .navigationDestination(for: CodeRoute.self, destination: screen)
                 }
             }
         }
-        .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
-        .readFold($fold)
-        // Turning the iPad keeps the code you had open, and its Edit screen if open.
-        .onChange(of: sideBySide) { _, nowSideBySide in
-            if nowSideBySide {
-                if let open = path.first {
-                    picked = open.code.persistentModelID
-                    sidePath = Array(path.dropFirst())
-                }
-                path = []
-            } else {
-                let open = picked.flatMap { id in codes.first { $0.persistentModelID == id } }
-                    ?? (sidePath.isEmpty ? nil : shownCode)
-                if let open {
-                    path = [.detail(open)] + sidePath
-                }
-                sidePath = []
-            }
-        }
-        .onChange(of: path) { forgetClosedDrafts() }
-        .onChange(of: sidePath) { forgetClosedDrafts() }
+        // A closed Edit screen forgets what was typed in it.
+        .onChange(of: editing) { if !editing { drafts.keepOnly([]) } }
+        .onChange(of: picked) { if let picked { drafts.keepOnly([picked]) } else { drafts.keepOnly([]) } }
         .sheet(isPresented: $showArrange) {
             ArrangeTypesView(orderRaw: $typeOrderRaw, inUse: Set(codes.map(\.type)))
         }
@@ -205,16 +206,9 @@ struct MyCodesView: View {
         case .detail(let code):
             CodeDetailView(code: code)
         case .edit(let code):
-            CodeEditorView(type: code.type, existing: code, draft: drafts.draft(for: code))
+            CodeEditorView(type: code.type, existing: code, inColumn: sideBySide,
+                           draft: drafts.draft(for: code))
         }
-    }
-
-    private func forgetClosedDrafts() {
-        var open = Set<PersistentIdentifier>()
-        for route in path + sidePath {
-            if case .edit(let code) = route { open.insert(code.persistentModelID) }
-        }
-        drafts.keepOnly(open)
     }
 
     /// Stops showing a code, then deletes it.
@@ -222,9 +216,10 @@ struct MyCodesView: View {
         let id = code.persistentModelID
         withAnimation {
             removing.insert(id)
-            if picked == id { picked = nil; sidePath = [] }
-            path.removeAll { $0.code == code }
-            sidePath.removeAll { $0.code == code }
+            if picked == id || picked == nil {
+                picked = nil
+                editing = false
+            }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             modelContext.delete(code)
@@ -268,7 +263,7 @@ struct MyCodesView: View {
                         List(selection: Binding(get: { shownCode?.persistentModelID },
                                                 set: { id in
                                                     // Picking another code closes the Edit screen on the right.
-                                                    if id != shownCode?.persistentModelID { sidePath = [] }
+                                                    if id != shownCode?.persistentModelID { editing = false }
                                                     picked = id
                                                 })) {
                             sections

@@ -28,13 +28,16 @@ struct CodeEditorView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.horizontalSizeClass) private var sizeClass
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
-    @State private var isLandscape = false
+    /// The screen's shape and the Duo's fold, decided once for the whole app.
+    @Environment(\.screenLayout) private var layout
+    /// Shown in My Codes' right column (sideways or half-closed), not on its own.
+    var inColumn = false
     /// Sideways: how tall the settings are, so both sides scroll as one page.
     @State private var settingsHeight: CGFloat = 1000
-    /// iPhone Duo half-closed: the fold, to split the screen exactly on it.
-    @State private var fold: Fold?
+    /// iPhone Duo half-closed: split exactly on the fold (only when on its own).
+    private var fold: Fold? { inColumn ? nil : layout.fold }
+    /// Sideways on a wide screen: the code on the left, the settings on the right.
+    private var sideways: Bool { layout.isWide && layout.isLandscape && !(inColumn && layout.fold != nil) }
 
     /// What you typed. My Codes can hand one in, so turning the iPad
     /// (which rebuilds My Codes) keeps you on Edit with everything you typed.
@@ -68,7 +71,7 @@ struct CodeEditorView: View {
                     }
                 }
                 .background(Color(.systemGroupedBackground))
-            } else if WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape {
+            } else if sideways {
                 // iPad sideways: the code on the left, the settings on the right,
                 // on one page: both sides move together when you scroll.
                 ScrollView {
@@ -84,7 +87,7 @@ struct CodeEditorView: View {
                 Form {
                     Section {
                         preview
-                            .frame(maxWidth: WideLayout.isOn(sizeClass, verticalSizeClass) ? 400 : 260)
+                            .frame(maxWidth: layout.isWide ? 400 : 260)
                             .frame(maxWidth: .infinity)
                             .listRowBackground(Color.clear)
                     } footer: {
@@ -94,8 +97,6 @@ struct CodeEditorView: View {
                 }
             }
         }
-        .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
-        .readFold($fold)
         .navigationTitle(existing == nil ? type.title : "Edit \(type.title)")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

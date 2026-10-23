@@ -25,21 +25,24 @@ struct ContentView: View {
     }
 
     var body: some View {
-        TabView(selection: $selection) {
-            Tab("Make", systemImage: "qrcode", value: 0) {
-                MakeView(onSaved: { selection = 2 })
-                    .environment(\.horizontalSizeClass, sizeClass)
+        // The layout is decided once, here, for every screen (see WideLayout.swift).
+        ScreenLayoutReader {
+            TabView(selection: $selection) {
+                Tab("Make", systemImage: "qrcode", value: 0) {
+                    MakeView(onSaved: { selection = 2 })
+                        .environment(\.horizontalSizeClass, sizeClass)
+                }
+                Tab("Scan", systemImage: "qrcode.viewfinder", value: 1) {
+                    ScanView()
+                        .environment(\.horizontalSizeClass, sizeClass)
+                }
+                Tab("My Codes", systemImage: "square.grid.2x2", value: 2) {
+                    MyCodesView()
+                        .environment(\.horizontalSizeClass, sizeClass)
+                }
             }
-            Tab("Scan", systemImage: "qrcode.viewfinder", value: 1) {
-                ScanView()
-                    .environment(\.horizontalSizeClass, sizeClass)
-            }
-            Tab("My Codes", systemImage: "square.grid.2x2", value: 2) {
-                MyCodesView()
-                    .environment(\.horizontalSizeClass, sizeClass)
-            }
+            .environment(\.horizontalSizeClass, .compact)
         }
-        .environment(\.horizontalSizeClass, .compact)
         .onAppear {
             WatchSync.shared.update(watchCodes)
         }

@@ -11,11 +11,11 @@ struct MakeView: View {
     var onSaved: () -> Void = {}
     @State private var showSettings = false
     @State private var showAbout = false
-    @Environment(\.horizontalSizeClass) private var sizeClass
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    /// The screen's shape and the Duo's fold, decided once for the whole app.
+    @Environment(\.screenLayout) private var layout
 
     private var columns: [GridItem] {
-        WideLayout.isOn(sizeClass, verticalSizeClass)
+        layout.isWide
             ? Array(repeating: GridItem(.flexible(), spacing: 16), count: 5)
             : [GridItem(.adaptive(minimum: 100), spacing: 12)]
     }
@@ -24,12 +24,12 @@ struct MakeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    LazyVGrid(columns: columns, spacing: WideLayout.isOn(sizeClass, verticalSizeClass) ? 16 : 12) {
+                    LazyVGrid(columns: columns, spacing: layout.isWide ? 16 : 12) {
                         ForEach(CodeType.allCases) { type in
                             NavigationLink {
                                 CodeEditorView(type: type, onSaved: onSaved)
                             } label: {
-                                TypeTile(type: type, tall: WideLayout.isOn(sizeClass, verticalSizeClass))
+                                TypeTile(type: type, tall: layout.isWide)
                             }
                             .buttonStyle(.plain)
                         }

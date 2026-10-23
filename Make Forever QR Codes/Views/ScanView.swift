@@ -22,16 +22,12 @@ struct ScanView: View {
     @State private var cameraStatus = AVCaptureDevice.authorizationStatus(for: .video)
     @State private var photoItem: PhotosPickerItem?
     @State private var noCodeInPhoto = false
-    @Environment(\.horizontalSizeClass) private var sizeClass
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    /// The screen's shape and the Duo's fold, decided once for the whole app.
+    @Environment(\.screenLayout) private var layout
 
-    @State private var isLandscape = false
-    /// iPhone Duo half-closed: the fold, so the camera and the result each get a page.
-    @State private var fold: Fold?
-
-    private var wide: Bool {
-        (WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape) || fold != nil
-    }
+    /// iPhone Duo half-closed: the camera and the result each get a page.
+    private var fold: Fold? { layout.fold }
+    private var wide: Bool { layout.sideBySide }
 
     var body: some View {
         NavigationStack {
@@ -51,8 +47,6 @@ struct ScanView: View {
             }
         }
         .onDisappear { isVisible = false }
-        .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
-        .readFold($fold)
         // iPhone: the result slides up. (On iPad it shows beside the camera instead.)
         .sheet(item: Binding(get: { wide ? nil : result },
                              set: { if !wide { result = $0 } }),

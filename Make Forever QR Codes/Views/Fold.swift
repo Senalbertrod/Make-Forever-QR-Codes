@@ -40,27 +40,3 @@ struct Fold: Equatable {
         return nil
     }
 }
-
-private struct FoldReader: ViewModifier {
-    @Binding var fold: Fold?
-
-    func body(content: Content) -> some View {
-        content.background {
-            GeometryReader { proxy in
-                let found = Fold.find(in: proxy)
-                Color.clear
-                    .onAppear { fold = found }
-                    .onChange(of: found) { _, new in
-                        withAnimation(.spring(duration: 0.4)) { fold = new }
-                    }
-            }
-        }
-    }
-}
-
-extension View {
-    /// Keeps `fold` up to date with the iPhone Duo's fold (nil when there isn't one).
-    func readFold(_ fold: Binding<Fold?>) -> some View {
-        modifier(FoldReader(fold: fold))
-    }
-}

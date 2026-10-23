@@ -18,11 +18,10 @@ struct CodeDetailView: View {
     var onDelete: ((SavedCode) -> Void)? = nil
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.horizontalSizeClass) private var sizeClass
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
-    @State private var isLandscape = false
-    /// iPhone Duo half-closed: the fold, to split the screen exactly on it.
-    @State private var fold: Fold?
+    /// The screen's shape and the Duo's fold, decided once for the whole app.
+    @Environment(\.screenLayout) private var layout
+    /// iPhone Duo half-closed: split exactly on the fold (only when on its own).
+    private var fold: Fold? { stacked ? nil : layout.fold }
 
     @State private var showFullScreen = false
     @State private var showPrint = false
@@ -35,7 +34,7 @@ struct CodeDetailView: View {
 
     private var image: UIImage? { code.image(size: 1024) }
     /// iPad (standing up, or beside the list): everything a bit bigger.
-    private var big: Bool { stacked || WideLayout.isOn(sizeClass, verticalSizeClass) }
+    private var big: Bool { stacked || layout.isWide }
 
     var body: some View {
         ScrollView {
@@ -54,7 +53,7 @@ struct CodeDetailView: View {
                         .padding(.top, 40)
                         .frame(width: fold.rightWidth)
                 }
-            } else if WideLayout.isOn(sizeClass, verticalSizeClass) && isLandscape && !stacked {
+            } else if layout.isWide && layout.isLandscape && !stacked {
                 // iPad sideways: the code on the left, the buttons on the right
                 HStack(alignment: .center, spacing: 40) {
                     VStack(spacing: 20) {
@@ -80,8 +79,6 @@ struct CodeDetailView: View {
                 .frame(maxWidth: .infinity)   // scroll from anywhere, edge to edge
             }
         }
-        .onGeometryChange(for: Bool.self) { $0.size.width > $0.size.height } action: { isLandscape = $0 }
-        .readFold($fold)
         .navigationTitle(code.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
