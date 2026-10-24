@@ -126,6 +126,12 @@ struct MyCodesView: View {
         pickedCode ?? (sideBySide ? groups.first?.codes.first : nil)
     }
 
+    /// Side by side with nothing picked: the code to pick (the first in the list).
+    private var autoPick: PersistentIdentifier? {
+        guard sideBySide, pickedCode == nil else { return nil }
+        return groups.first?.codes.first?.persistentModelID
+    }
+
     var body: some View {
         NavigationSplitView(columnVisibility: .constant(.all)) {
             Group {
@@ -141,22 +147,27 @@ struct MyCodesView: View {
             }
             .toolbar(removing: .sidebarToggle)
         } detail: {
-            NavigationStack(path: $detailPath) {
-                Group {
-                    if let code = shownCode {
-                        CodeDetailView(code: code, stacked: sideBySide, onDelete: remove)
-                            .id(code.persistentModelID)
-                    } else {
-                        ContentUnavailableView("Pick a code", systemImage: "qrcode",
-                                               description: Text("It shows here, big enough to scan."))
+            // Narrow with no code picked: nothing here, so the list shows.
+            // (Side by side, or once a code is picked, it's the same screen
+            // the whole time, so closing or turning keeps your place.)
+            if sideBySide || selection != nil {
+                NavigationStack(path: $detailPath) {
+                    Group {
+                        if let code = shownCode {
+                            CodeDetailView(code: code, stacked: sideBySide, onDelete: remove)
+                                .id(code.persistentModelID)
+                        } else {
+                            ContentUnavailableView("Pick a code", systemImage: "qrcode",
+                                                   description: Text("It shows here, big enough to scan."))
+                        }
                     }
+                    .navigationDestination(for: CodeRoute.self) { route in
+                        CodeEditorView(type: route.code.type, existing: route.code, inColumn: sideBySide,
+                                       draft: drafts.draft(for: route.code))
+                    }
+                    // Half-closed: the code starts after the fold, on the right page.
+                    .safeAreaPadding(.leading, (fold?.gap ?? 0) / 2)
                 }
-                .navigationDestination(for: CodeRoute.self) { route in
-                    CodeEditorView(type: route.code.type, existing: route.code, inColumn: sideBySide,
-                                   draft: drafts.draft(for: route.code))
-                }
-                // Half-closed: the code starts after the fold, on the right page.
-                .safeAreaPadding(.leading, (fold?.gap ?? 0) / 2)
             }
         }
         .navigationSplitViewStyle(.balanced)
@@ -165,6 +176,12 @@ struct MyCodesView: View {
         .environment(\.horizontalSizeClass, sideBySide ? .regular : .compact)
         // (Narrow: Apple's split view shows the list when no code is picked, and
         // the code on top of it when one is. Back un-picks it.)
+        // Side by side, the code showing on the right counts as picked (even
+        // your first favorite, shown on its own), so closing the phone or
+        // turning the iPad opens that code instead of the list.
+        .onChange(of: autoPick, initial: true) {
+            if let autoPick { selection = autoPick }
+        }
         .onChange(of: selection) { old, new in
             // Picking another code (or going back to the list) closes the Edit
             // screen of the old one.
