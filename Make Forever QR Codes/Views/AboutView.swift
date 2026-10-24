@@ -29,9 +29,13 @@ struct AboutView: View {
                     InfoRow(symbol: "qrcode.viewfinder", title: "Scanned on your \(Device.name)",
                             text: "The Scan tab reads codes with the camera or from a photo, right on your \(Device.name). Nothing is saved unless you tap Save.")
                 }
-                Section("Privacy") {
+                Section {
                     InfoRow(symbol: "lock.shield", title: "Nothing leaves your \(Device.name)",
                             text: "No account, no ads, no tracking. Your codes are saved only on this device.")
+                } header: {
+                    Text("Privacy")
+                } footer: {
+                    Text("QR Code is a registered trademark of DENSO WAVE INCORPORATED.")
                 }
             }
             .navigationTitle("About")

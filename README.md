@@ -41,6 +41,10 @@ Everything runs on the device. No account, no analytics, no network calls. The c
 
 Made by **Senalbert Rodriguez**.
 
+## Trademark
+
+QR Code is a registered trademark of DENSO WAVE INCORPORATED.
+
 ## License
 
 Make Forever QR Codes is free and open source under the [MIT License](LICENSE). You're welcome to use it, learn from it, change it and share it. Just keep the copyright notice.
