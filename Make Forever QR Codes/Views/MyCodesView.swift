@@ -197,12 +197,17 @@ struct MyCodesView: View {
             if old != nil, old != new { detailPath = [] }
         }
         .onChange(of: compactColumn) {
-            // Narrow, nothing picked: never leave the code side on top.
-            // (Checked a moment later, after a tap has finished picking its code.)
-            guard compactColumn == .detail else { return }
+            // Narrow: keep "which side is on top" and "which code is picked" in step.
+            // (Checked a moment later, so a tap, or the phone closing, has finished first.)
             DispatchQueue.main.async {
-                if compactColumn == .detail, selection == nil, !sideBySide {
+                guard !sideBySide else { return }
+                if compactColumn == .detail, selection == nil {
+                    // Nothing picked: never leave the code side on top.
                     compactColumn = .sidebar
+                } else if compactColumn == .sidebar, selection != nil {
+                    // Back on the list (back arrow, or tapping My Codes again):
+                    // un-pick the code, so it can't jump back on top.
+                    selection = nil
                 }
             }
         }
