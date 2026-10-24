@@ -62,6 +62,12 @@ struct MyCodesView: View {
     @State private var selection: PersistentIdentifier?
     /// What's open on top of that code: its Edit screen, or nothing.
     @State private var detailPath: [CodeRoute] = []
+    /// Narrow: whether the list or the code is on top. Kept in step with
+    /// `selection` below, so the code side only shows when a code is picked.
+    @State private var compactColumn: NavigationSplitViewColumn = .sidebar
+    /// The last code shown on the code side. When you go back to the list, the
+    /// (hidden) code side keeps it, so nothing there changes and nothing pops up.
+    @State private var lastShownID: PersistentIdentifier?
     @State private var drafts = EditDrafts()
     /// Codes on their way out (hidden first, then deleted, so nothing shows a deleted code).
     @State private var removing: Set<PersistentIdentifier> = []
@@ -126,6 +132,12 @@ struct MyCodesView: View {
         pickedCode ?? (sideBySide ? groups.first?.codes.first : nil)
     }
 
+    /// The last code shown on the code side (if it still exists).
+    private var lastShown: SavedCode? {
+        guard let lastShownID, !removing.contains(lastShownID) else { return nil }
+        return codes.first { $0.persistentModelID == lastShownID }
+    }
+
     /// Side by side with nothing picked: the code to pick (the first in the list).
     private var autoPick: PersistentIdentifier? {
         guard sideBySide, pickedCode == nil else { return nil }
@@ -133,7 +145,7 @@ struct MyCodesView: View {
     }
 
     var body: some View {
-        NavigationSplitView(columnVisibility: .constant(.all)) {
+        NavigationSplitView(columnVisibility: .constant(.all), preferredCompactColumn: $compactColumn) {
             Group {
                 if let fold {
                     // Half-closed: the list fills the left page, up to the middle of the fold.
@@ -147,27 +159,22 @@ struct MyCodesView: View {
             }
             .toolbar(removing: .sidebarToggle)
         } detail: {
-            // Narrow with no code picked: nothing here, so the list shows.
-            // (Side by side, or once a code is picked, it's the same screen
-            // the whole time, so closing or turning keeps your place.)
-            if sideBySide || selection != nil {
-                NavigationStack(path: $detailPath) {
-                    Group {
-                        if let code = shownCode {
-                            CodeDetailView(code: code, stacked: sideBySide, onDelete: remove)
-                                .id(code.persistentModelID)
-                        } else {
-                            ContentUnavailableView("Pick a code", systemImage: "qrcode",
-                                                   description: Text("It shows here, big enough to scan."))
-                        }
+            NavigationStack(path: $detailPath) {
+                Group {
+                    if let code = shownCode ?? lastShown {
+                        CodeDetailView(code: code, stacked: sideBySide, onDelete: remove)
+                            .id(code.persistentModelID)
+                    } else {
+                        ContentUnavailableView("Pick a code", systemImage: "qrcode",
+                                               description: Text("It shows here, big enough to scan."))
                     }
-                    .navigationDestination(for: CodeRoute.self) { route in
-                        CodeEditorView(type: route.code.type, existing: route.code, inColumn: sideBySide,
-                                       draft: drafts.draft(for: route.code))
-                    }
-                    // Half-closed: the code starts after the fold, on the right page.
-                    .safeAreaPadding(.leading, (fold?.gap ?? 0) / 2)
                 }
+                .navigationDestination(for: CodeRoute.self) { route in
+                    CodeEditorView(type: route.code.type, existing: route.code, inColumn: sideBySide,
+                                   draft: drafts.draft(for: route.code))
+                }
+                // Half-closed: the code starts after the fold, on the right page.
+                .safeAreaPadding(.leading, (fold?.gap ?? 0) / 2)
             }
         }
         .navigationSplitViewStyle(.balanced)
@@ -183,9 +190,24 @@ struct MyCodesView: View {
             if let autoPick { selection = autoPick }
         }
         .onChange(of: selection) { old, new in
+            // Narrow: the code on top when one is picked, the list when not.
+            compactColumn = new == nil ? .sidebar : .detail
             // Picking another code (or going back to the list) closes the Edit
             // screen of the old one.
             if old != nil, old != new { detailPath = [] }
+        }
+        .onChange(of: compactColumn) {
+            // Narrow, nothing picked: never leave the code side on top.
+            // (Checked a moment later, after a tap has finished picking its code.)
+            guard compactColumn == .detail else { return }
+            DispatchQueue.main.async {
+                if compactColumn == .detail, selection == nil, !sideBySide {
+                    compactColumn = .sidebar
+                }
+            }
+        }
+        .onChange(of: shownCode?.persistentModelID, initial: true) { _, id in
+            if let id { lastShownID = id }
         }
         .onChange(of: detailPath) {
             // Editing the code shown on its own (side by side, nothing picked):
@@ -220,6 +242,7 @@ struct MyCodesView: View {
                 detailPath = []
             }
             if selection == id { selection = nil }
+            if lastShownID == id { lastShownID = nil }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             modelContext.delete(code)
