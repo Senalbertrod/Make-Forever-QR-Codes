@@ -49,6 +49,9 @@ private final class EditDrafts {
 }
 
 struct MyCodesView: View {
+    /// Changes when the My Codes tab is tapped while already open: back to the list.
+    var tappedAgain = 0
+
     @Environment(\.modelContext) private var modelContext
     /// The screen's shape and the Duo's fold, decided once for the whole app.
     @Environment(\.screenLayout) private var layout
@@ -195,6 +198,13 @@ struct MyCodesView: View {
             // Picking another code (or going back to the list) closes the Edit
             // screen of the old one.
             if old != nil, old != new { detailPath = [] }
+        }
+        // Tapping My Codes again: back to the list, with the code un-picked,
+        // so it can't jump back on top.
+        .onChange(of: tappedAgain) {
+            detailPath = []
+            selection = nil
+            if !sideBySide { compactColumn = .sidebar }
         }
         .onChange(of: compactColumn) {
             // Narrow: keep "which side is on top" and "which code is picked" in step.

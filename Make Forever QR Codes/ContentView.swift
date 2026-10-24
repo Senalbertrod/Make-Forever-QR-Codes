@@ -11,6 +11,9 @@ import SwiftData
 
 struct ContentView: View {
     @State private var selection = 0
+    /// Goes up by one each time My Codes is tapped while it's already open,
+    /// so My Codes goes back to its list (see MyCodesView).
+    @State private var myCodesTappedAgain = 0
     /// The real width class. The tab bar is told it's narrow (so it sits at the
     /// bottom), and each tab gets the real one back.
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -27,7 +30,10 @@ struct ContentView: View {
     var body: some View {
         // The layout is decided once, here, for every screen (see WideLayout.swift).
         ScreenLayoutReader {
-            TabView(selection: $selection) {
+            TabView(selection: Binding(get: { selection }, set: { tab in
+                if tab == selection, tab == 2 { myCodesTappedAgain += 1 }
+                selection = tab
+            })) {
                 Tab("Make", systemImage: "qrcode", value: 0) {
                     MakeView(onSaved: { selection = 2 })
                         .environment(\.horizontalSizeClass, sizeClass)
@@ -37,7 +43,7 @@ struct ContentView: View {
                         .environment(\.horizontalSizeClass, sizeClass)
                 }
                 Tab("My Codes", systemImage: "square.grid.2x2", value: 2) {
-                    MyCodesView()
+                    MyCodesView(tappedAgain: myCodesTappedAgain)
                         .environment(\.horizontalSizeClass, sizeClass)
                 }
             }
