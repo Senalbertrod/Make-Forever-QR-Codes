@@ -26,6 +26,8 @@ struct ScanResultView: View {
     @State private var name = ""
     @State private var saved = false
     @State private var copied: String?
+    @State private var joining = false
+    @State private var joinResult: WiFiJoiner.Outcome?
 
     var body: some View {
         if let onDone {
@@ -179,14 +181,28 @@ struct ScanResultView: View {
             Button("Add to Calendar", systemImage: "calendar.badge.plus") { showAddEvent = true }
 
         case .wifi(let w):
-            // REMINDER: when the Apple Developer Program is joined (before the App Store
-            // upload), add a one-tap "Join Network" button here with NEHotspotConfiguration.
-            // It needs the Hotspot Configuration permission, which free accounts can't use.
+            // One tap to join (iPhone, iPad and iPhone Duo all show this same list).
+            if !w.ssid.isEmpty {
+                Button {
+                    join(w)
+                } label: {
+                    HStack {
+                        Label("Join Network", systemImage: "wifi")
+                        if joining {
+                            Spacer()
+                            ProgressView()
+                        }
+                    }
+                }
+                .disabled(joining)
+                if let joinResult { joinMessage(joinResult, network: w.ssid) }
+            }
+            // Backup: join by hand in Settings.
             if !w.password.isEmpty {
                 Button("Copy Password", systemImage: "key") { copy(w.password) }
             }
             Button("Copy Network Name", systemImage: "doc.on.doc") { copy(w.ssid) }
-            Text("To join, go to Settings › Wi-Fi, pick the network and paste the password.")
+            Text("If joining doesn't work, go to Settings › Wi-Fi, pick the network and paste the password.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
 
@@ -216,6 +232,40 @@ struct ScanResultView: View {
             openURL(url)
         default:
             break
+        }
+    }
+
+    private func join(_ wifi: WiFiInfo) {
+        joining = true
+        joinResult = nil
+        Task {
+            joinResult = await WiFiJoiner.join(wifi)
+            joining = false
+        }
+    }
+
+    @ViewBuilder
+    private func joinMessage(_ result: WiFiJoiner.Outcome, network: String) -> some View {
+        switch result {
+        case .joined:
+            Label("Joined \(network)", systemImage: "checkmark")
+                .font(.footnote)
+                .foregroundStyle(.green)
+        case .alreadyJoined:
+            Label("Your \(Device.name) is already on \(network)", systemImage: "checkmark")
+                .font(.footnote)
+                .foregroundStyle(.green)
+        case .cancelled:
+            EmptyView()
+        case .notConfirmed:
+            Label("Your \(Device.name) couldn't connect. The password in the code may be wrong.",
+                  systemImage: "exclamationmark.triangle")
+                .font(.footnote)
+                .foregroundStyle(.orange)
+        case .failed(let reason):
+            Label("Couldn't join. \(reason)", systemImage: "exclamationmark.triangle")
+                .font(.footnote)
+                .foregroundStyle(.orange)
         }
     }
 

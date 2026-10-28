@@ -21,7 +21,8 @@ Most QR services make "dynamic" codes that point to their own server, and the co
 - **iPad and iPhone Duo layout:** on iPad, and on iPhone Duo when it's open, the app uses the whole screen (closed, the Duo looks like any iPhone; half-closed like a book, My Codes, a saved code, Edit and Scan split exactly on the fold, one page each side; opening or closing it keeps your place), with the tabs at the bottom like on iPhone. Five tiles per row on Make; when making or opening a code, the code is on top standing up, and on the left with the settings or buttons on the right sideways; when scanning sideways, the camera slides left with the result on the right (standing up, the result slides up like on iPhone). My Codes looks like iPhone standing up; sideways, the list is on the left and the code you pick shows big on the right, ready to scan. In a narrow split screen it uses the iPhone layout
 - Light mode, dark mode and tinted app icons
 
-- **Scan tab:** scan with the camera or from a photo. It shows what's inside before anything opens, with the website name in a clear font so look-alike letters stand out. Buttons to open, add to Contacts or Calendar, or copy a Wi-Fi password. Save to My Codes only if you want
+- **Scan tab:** scan with the camera or from a photo. It shows what's inside before anything opens, with the website name in a clear font so look-alike letters stand out. Buttons to open, or add to Contacts or Calendar. Save to My Codes only if you want
+- **Join Wi-Fi with one tap:** scan a Wi-Fi code and tap **Join Network**. Your iPhone or iPad asks once, then joins, no copying or pasting. Works the same on iPhone, iPad and iPhone Duo (closed, open, or half-closed with the result on the right page). If it can't connect, it says so, and Copy Password and Copy Network Name are still there to join by hand in Settings
 
 ## Privacy
 
@@ -29,7 +30,6 @@ Everything runs on the device. No account, no analytics, no network calls. The c
 
 ## Coming next
 
-- **Reminder before the App Store upload:** once the Apple Developer Program is joined, add a one-tap "Join Network" button for scanned Wi-Fi codes (needs the Hotspot Configuration permission, which free accounts can't use)
 - A "Make Forever QR Code" action in the Share menu (Safari and other apps)
 
 ## Requirements
@@ -47,7 +47,7 @@ Everything runs on the device. No account, no analytics, no network calls. The c
 
 | Version | What's new |
 | --- | --- |
-| 1.0 | First App Store release. |
+| 1.0 | First App Store release. Includes one-tap Join Network for scanned Wi-Fi codes on iPhone, iPad and iPhone Duo. |
 
 ## Author
 
