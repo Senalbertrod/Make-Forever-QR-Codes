@@ -108,15 +108,17 @@ enum PrintService {
                                 withAttributes: attributes)
     }
 
-    /// Opens Apple's print screen (printer, copies, preview).
-    static func print(pdf: Data, jobName: String) {
+    /// Opens Apple's print screen (printer, copies, preview) on top of whatever is
+    /// showing. Call it while the Print options are still open: if they're closing,
+    /// iPhone quietly never shows the print screen. `done` is true once it printed.
+    static func print(pdf: Data, jobName: String, done: @escaping (Bool) -> Void = { _ in }) {
         let controller = UIPrintInteractionController.shared
         let info = UIPrintInfo(dictionary: nil)
         info.outputType = .general
         info.jobName = jobName
         controller.printInfo = info
         controller.printingItem = pdf
-        controller.present(animated: true, completionHandler: nil)
+        controller.present(animated: true) { _, completed, _ in done(completed) }
     }
 }
 

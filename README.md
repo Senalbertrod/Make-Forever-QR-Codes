@@ -47,7 +47,7 @@ Everything runs on the device. No account, no analytics, no network calls. The c
 
 | Version | What's new |
 | --- | --- |
-| 1.0 | First App Store release. Includes one-tap Join Network for scanned Wi-Fi codes on iPhone, iPad and iPhone Duo. |
+| 1.0 | First App Store release. Includes one-tap Join Network for scanned Wi-Fi codes on iPhone, iPad and iPhone Duo. Printing works: one large code, a code with a caption, or a sheet of small codes, in three sizes, or save a PDF for a print shop. |
 
 ## Author
 

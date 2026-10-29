@@ -14,9 +14,11 @@ struct PrintOptionsView: View {
     @State private var layout: PrintLayout = .single
     @State private var size: PrintSize = .large
     @State private var caption = ""
+    /// The page, made again only when a choice changes (not on every redraw).
+    @State private var pdf = Data()
 
-    private var pdf: Data {
-        PrintService.pdf(for: code, layout: layout, size: size, caption: caption.trimmed)
+    private func makePDF() {
+        pdf = PrintService.pdf(for: code, layout: layout, size: size, caption: caption.trimmed)
     }
 
     var body: some View {
@@ -58,11 +60,10 @@ struct PrintOptionsView: View {
                 }
                 Section {
                     Button("Print…", systemImage: "printer") {
-                        let data = pdf
-                        let name = code.name
-                        dismiss()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            PrintService.print(pdf: data, jobName: name)
+                        // The print screen opens on top of this one. Close this only
+                        // after printing; Cancel comes back here to change something.
+                        PrintService.print(pdf: pdf, jobName: code.name) { printed in
+                            if printed { dismiss() }
                         }
                     }
                     ShareLink(item: PDFFile(data: pdf, name: code.name),
@@ -72,6 +73,9 @@ struct PrintOptionsView: View {
                 } footer: {
                     Text("The printer screen lets you pick the printer and the number of copies. A PDF is handy for print shops.")
                 }
+            }
+            .onChange(of: "\(layout.rawValue)|\(size.rawValue)|\(caption.trimmed)", initial: true) {
+                makePDF()
             }
             .navigationTitle("Print")
             .navigationBarTitleDisplayMode(.inline)
