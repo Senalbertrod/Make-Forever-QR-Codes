@@ -49,7 +49,7 @@ struct EventAdder: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> EKEventEditViewController {
         let store = EKEventStore()
         let event = EKEvent(eventStore: store)
-        event.title = info.title.isEmpty ? "Event" : info.title
+        event.title = info.title.isEmpty ? String(localized: "Event") : info.title
         let start = info.start ?? Date()
         event.startDate = start
         event.endDate = max(info.end ?? start.addingTimeInterval(3600), start)

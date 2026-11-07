@@ -63,6 +63,7 @@ struct ScanResultView: View {
             Section {
                 Label(code.title, systemImage: code.symbol)
                     .font(.headline)
+                    .accessibilityAddTraits(.isHeader)
                 content
             }
 
@@ -146,13 +147,13 @@ struct ScanResultView: View {
             }
 
         case .wifi(let w):
-            LabeledContent("Network", value: w.ssid.isEmpty ? "No name" : w.ssid)
+            LabeledContent("Network", value: w.ssid.isEmpty ? String(localized: "No name") : w.ssid)
             LabeledContent("Security", value: w.security.title)
             if w.security != .none {
                 LabeledContent("Password", value: w.password)
                     .textSelection(.enabled)
             }
-            if w.hidden { LabeledContent("Hidden network", value: "Yes") }
+            if w.hidden { LabeledContent("Hidden network", value: String(localized: "Yes")) }
 
         case .text:
             Text(LinkSafety.visible(code.raw))
@@ -211,7 +212,7 @@ struct ScanResultView: View {
         }
 
         if let copied {
-            Label("Copied \(copied)", systemImage: "checkmark")
+            Label(copied, systemImage: "checkmark")
                 .font(.footnote)
                 .foregroundStyle(.green)
         }
@@ -219,10 +220,11 @@ struct ScanResultView: View {
 
     private var openTitle: String {
         switch code.kind {
-        case .social: "Open Profile"
-        case .location: "Open in Maps"
-        case .appLink(_, let app): app == "another app" ? "Open" : "Open in \(app)"
-        default: "Open Website"
+        case .appLink(_, let app):
+            app == ScanKind.anotherApp ? String(localized: "Open") : String(localized: "Open in \(app)")
+        case .social: String(localized: "Open Profile")
+        case .location: String(localized: "Open in Maps")
+        default: String(localized: "Open Website")
         }
     }
 
@@ -272,10 +274,10 @@ struct ScanResultView: View {
     private func copy(_ text: String) {
         UIPasteboard.general.string = text
         switch code.kind {
-        case .wifi(let w) where text == w.password && !text.isEmpty: copied = "password"
-        case .wifi: copied = "network name"
-        case .link, .social, .location, .appLink: copied = "link"
-        default: copied = "text"
+        case .wifi(let w) where text == w.password && !text.isEmpty: copied = String(localized: "Copied password")
+        case .wifi: copied = String(localized: "Copied network name")
+        case .link, .social, .location, .appLink: copied = String(localized: "Copied link")
+        default: copied = String(localized: "Copied text")
         }
     }
 
@@ -297,7 +299,7 @@ private struct ContactSummary: View {
         let parts = [has(CNContactGivenNameKey) ? contact.givenName : "",
                      has(CNContactFamilyNameKey) ? contact.familyName : ""]
         let full = parts.filter { !$0.isEmpty }.joined(separator: " ")
-        return full.isEmpty ? "No name" : full
+        return full.isEmpty ? String(localized: "No name") : full
     }
 
     private var company: String {

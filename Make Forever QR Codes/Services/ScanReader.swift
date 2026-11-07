@@ -35,6 +35,9 @@ enum ScanKind {
     case event(EventInfo)
     case wifi(WiFiInfo)
     case text
+
+    /// The app name for links to an app the scanner doesn't know.
+    static let anotherApp = "another app"
 }
 
 struct ScannedCode: Identifiable {
@@ -49,14 +52,16 @@ struct ScannedCode: Identifiable {
 
     var title: String {
         switch kind {
-        case .link: "Website"
-        case .social(let service, _): service == .other ? "Social profile" : "\(service.title) profile"
-        case .location: "Location"
-        case .appLink(_, let app): "Opens \(app)"
-        case .contact: "Contact"
-        case .event: "Event"
-        case .wifi: "Wi-Fi network"
-        case .text: "Text"
+        case .link: String(localized: "Website")
+        case .social(let service, _):
+            service == .other ? String(localized: "Social profile") : String(localized: "\(service.title) profile")
+        case .location: String(localized: "Location")
+        case .appLink(_, let app):
+            app == ScanKind.anotherApp ? String(localized: "Opens another app") : String(localized: "Opens \(app)")
+        case .contact: String(localized: "Contact")
+        case .event: String(localized: "Event")
+        case .wifi: String(localized: "Wi-Fi network")
+        case .text: String(localized: "Text")
         }
     }
 
@@ -126,11 +131,11 @@ struct ScannedCode: Identifiable {
             let user = url.path().split(separator: "/").last.map(String.init) ?? ""
             return user.isEmpty ? title : "\(service.title): \(user.hasPrefix("@") ? user : "@" + user)"
         case .contact(let c):
-            guard let c else { return "Contact" }
+            guard let c else { return String(localized: "Contact") }
             let name = [c.givenName, c.familyName].filter { !$0.isEmpty }.joined(separator: " ")
-            return name.isEmpty ? (c.organizationName.isEmpty ? "Contact" : c.organizationName) : name
+            return name.isEmpty ? (c.organizationName.isEmpty ? String(localized: "Contact") : c.organizationName) : name
         case .event(let e):
-            return e.title.isEmpty ? "Event" : e.title
+            return e.title.isEmpty ? String(localized: "Event") : e.title
         case .wifi(let w):
             return w.ssid.isEmpty ? "Wi-Fi" : "Wi-Fi: \(w.ssid)"
         case .appLink, .text:
@@ -148,7 +153,7 @@ enum ScanReader {
         if upper.hasPrefix("BEGIN:VCARD") { return .contact(contact(from: text)) }
         if upper.contains("BEGIN:VEVENT"), let e = event(from: text) { return .event(e) }
         if upper.hasPrefix("GEO:"), let url = mapsLink(fromGeo: text) { return .location(url) }
-        if upper.hasPrefix("SMSTO:"), let url = messageLink(fromSMSTO: text) { return .appLink(url, appName: "Messages") }
+        if upper.hasPrefix("SMSTO:"), let url = messageLink(fromSMSTO: text) { return .appLink(url, appName: String(localized: "Messages", comment: "Name of the Apple app")) }
 
         guard !text.contains(where: \.isWhitespace), let url = makeURL(from: text),
               let scheme = url.scheme?.lowercased() else { return .text }
@@ -163,7 +168,7 @@ enum ScanReader {
             return .appLink(url, appName: app)
         }
         if text.contains("://") {
-            return .appLink(url, appName: "another app")
+            return .appLink(url, appName: ScanKind.anotherApp)
         }
         return .text
     }
@@ -177,12 +182,12 @@ enum ScanReader {
 
     private static func appName(for scheme: String) -> String? {
         switch scheme {
-        case "tel", "telprompt": "Phone"
-        case "sms", "smsto", "imessage": "Messages"
-        case "mailto": "Mail"
+        case "tel", "telprompt": String(localized: "Phone", comment: "Name of the Apple app")
+        case "sms", "smsto", "imessage": String(localized: "Messages", comment: "Name of the Apple app")
+        case "mailto": String(localized: "Mail", comment: "Name of the Apple app")
         case "facetime", "facetime-audio": "FaceTime"
-        case "maps": "Maps"
-        case "shortcuts": "Shortcuts"
+        case "maps": String(localized: "Maps", comment: "Name of the Apple app")
+        case "shortcuts": String(localized: "Shortcuts", comment: "Name of the Apple app")
         case "itms-apps", "itms-appss": "App Store"
         default: nil
         }

@@ -14,18 +14,25 @@ enum LineKind {
 
 /// Phones, emails or websites: a label menu and a text field per line.
 struct LabeledLinesSection: View {
-    let title: String
-    let addTitle: String
-    let placeholder: String
+    let title: LocalizedStringKey
+    let addTitle: LocalizedStringKey
+    let placeholder: LocalizedStringKey
     @Binding var lines: [LabeledValue]
     let labels: [String]
     let max: Int
     let kind: LineKind
+    /// The largest text sizes: the label above the field, so both fit.
+    @Environment(\.dynamicTypeSize) private var textSize
+    private var lineLayout: AnyLayout {
+        textSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+            : AnyLayout(HStackLayout(spacing: 10))
+    }
 
     var body: some View {
         Section(title) {
             ForEach($lines) { $line in
-                HStack(spacing: 10) {
+                lineLayout {
                     LabelMenu(label: $line.label, options: labels)
                     field(text: $line.value)
                     if lines.count > 1 {
@@ -155,11 +162,12 @@ struct LabelMenu: View {
     var body: some View {
         Menu {
             ForEach(options, id: \.self) { option in
-                Button(option) { label = option }
+                Button(option.labelTitle) { label = option }
             }
         } label: {
-            MenuLabelText(text: label)
+            MenuLabelText(text: label.labelTitle)
         }
+        .accessibilityLabel(Text("Label: \(label.labelTitle)"))
     }
 }
 
@@ -178,7 +186,7 @@ private struct MenuLabelText: View {
 }
 
 private struct AddButton: View {
-    let title: String
+    let title: LocalizedStringKey
     let action: () -> Void
 
     var body: some View {

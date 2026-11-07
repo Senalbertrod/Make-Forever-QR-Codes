@@ -1,0 +1,46 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Make Forever QR" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Make Forever QR"
+          }
+        }
+      }
+    },
+    "No codes yet" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todavía no hay códigos"
+          }
+        }
+      }
+    },
+    "On your iPhone, open Make Forever QR and tap the watch button on a code." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En tu iPhone, abre Make Forever QR y toca el botón del reloj en un código."
+          }
+        }
+      }
+    },
+    "QR code for %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código QR de %@"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

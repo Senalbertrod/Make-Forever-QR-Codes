@@ -15,16 +15,16 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
 
     var title: String {
         switch self {
-        case .link: "Link"
-        case .contact: "Contact"
-        case .social: "Social Profile"
-        case .wifi: "Wi-Fi"
-        case .text: "Text"
-        case .phone: "Phone"
-        case .message: "Message"
-        case .email: "Email"
-        case .location: "Location"
-        case .event: "Event"
+        case .link: String(localized: "Link")
+        case .contact: String(localized: "Contact")
+        case .social: String(localized: "Social Profile")
+        case .wifi: String(localized: "Wi-Fi")
+        case .text: String(localized: "Text")
+        case .phone: String(localized: "Phone")
+        case .message: String(localized: "Message")
+        case .email: String(localized: "Email")
+        case .location: String(localized: "Location")
+        case .event: String(localized: "Event")
         }
     }
 
@@ -46,16 +46,16 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
     /// What happens when someone scans this kind of code.
     var scanResult: String {
         switch self {
-        case .link: "Opens the website"
-        case .contact: "Offers to add the contact"
-        case .social: "Opens the profile"
-        case .wifi: "Joins the Wi-Fi network"
-        case .text: "Shows the text"
-        case .phone: "Offers to call the number"
-        case .message: "Opens a text message, ready to send"
-        case .email: "Opens a new email, ready to send"
-        case .location: "Opens the spot in Maps"
-        case .event: "Offers to add the event to the calendar"
+        case .link: String(localized: "Opens the website")
+        case .contact: String(localized: "Offers to add the contact")
+        case .social: String(localized: "Opens the profile")
+        case .wifi: String(localized: "Joins the Wi-Fi network")
+        case .text: String(localized: "Shows the text")
+        case .phone: String(localized: "Offers to call the number")
+        case .message: String(localized: "Opens a text message, ready to send")
+        case .email: String(localized: "Opens a new email, ready to send")
+        case .location: String(localized: "Opens the spot in Maps")
+        case .event: String(localized: "Offers to add the event to the calendar")
         }
     }
 
@@ -181,22 +181,22 @@ enum CodeType: String, CaseIterable, Identifiable, Codable {
         case .link:
             let url = f.url.trimmed
             let full = url.contains("://") ? url : "https://" + url
-            return URL(string: full)?.host() ?? "Link"
+            return URL(string: full)?.host() ?? String(localized: "Link")
         case .contact:
             let name = [f.firstName.trimmed, f.lastName.trimmed].filter { !$0.isEmpty }.joined(separator: " ")
-            return name.isEmpty ? (f.company.trimmed.isEmpty ? "Contact" : f.company.trimmed) : name
+            return name.isEmpty ? (f.company.trimmed.isEmpty ? String(localized: "Contact") : f.company.trimmed) : name
         case .social:
             if let user = f.socialService.username(from: f.socialHandle), !user.isEmpty, f.socialService != .other {
                 return "\(f.socialService.title): @\(user)"
             }
-            return f.socialService == .other ? "Social Profile" : f.socialService.title
+            return f.socialService == .other ? String(localized: "Social Profile") : f.socialService.title
         case .wifi: return f.ssid.trimmed.isEmpty ? "Wi-Fi" : "Wi-Fi: \(f.ssid.trimmed)"
         case .text: return String(f.text.trimmed.prefix(30))
-        case .phone: return "Call \(f.phoneNumber.trimmed)"
-        case .message: return "Text \(f.messageNumber.trimmed)"
-        case .email: return "Email \(f.emailTo.trimmed)"
-        case .location: return f.placeName.trimmed.isEmpty ? "Location" : f.placeName.trimmed
-        case .event: return f.eventTitle.trimmed.isEmpty ? "Event" : f.eventTitle.trimmed
+        case .phone: return String(localized: "Call \(f.phoneNumber.trimmed)")
+        case .message: return String(localized: "Text \(f.messageNumber.trimmed)", comment: "Saved name for a text message code, like \"Text 555 1234\"")
+        case .email: return String(localized: "Email \(f.emailTo.trimmed)", comment: "Saved name for an email code")
+        case .location: return f.placeName.trimmed.isEmpty ? String(localized: "Location") : f.placeName.trimmed
+        case .event: return f.eventTitle.trimmed.isEmpty ? String(localized: "Event") : f.eventTitle.trimmed
         }
     }
 }

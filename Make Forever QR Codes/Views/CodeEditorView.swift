@@ -97,7 +97,7 @@ struct CodeEditorView: View {
                 }
             }
         }
-        .navigationTitle(existing == nil ? type.title : "Edit \(type.title)")
+        .navigationTitle(existing == nil ? type.title : String(localized: "Edit \(type.title)"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -146,7 +146,8 @@ struct CodeEditorView: View {
 
     private var preview: some View {
         QRCodeImage(payload: tooLong ? "" : payload, foreground: fg, background: bg,
-                    icon: d.showIcon ? type : nil)
+                    icon: d.showIcon ? type : nil,
+                    accessibilityText: String(localized: "Preview of your \(type.title) code"))
     }
 
     private var previewNotes: some View {

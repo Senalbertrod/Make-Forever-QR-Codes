@@ -117,10 +117,10 @@ enum QRRenderer {
     /// A warning to show under the color pickers, or nil if the colors are fine.
     static func colorWarning(foreground: UIColor, background: UIColor) -> String? {
         if contrast(foreground, background) < 3 {
-            return "These colors are too similar. Some phones won't be able to scan this code."
+            return String(localized: "These colors are too similar. Some phones won't be able to scan this code.")
         }
         if foreground.luminance > background.luminance {
-            return "Light squares on a dark background can't be read by some scanners. Dark on light is safest."
+            return String(localized: "Light squares on a dark background can't be read by some scanners. Dark on light is safest.")
         }
         return nil
     }

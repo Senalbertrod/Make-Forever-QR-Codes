@@ -14,8 +14,8 @@ enum WiFiSecurity: String, CaseIterable, Codable, Identifiable {
     var title: String {
         switch self {
         case .wpa: "WPA / WPA2 / WPA3"
-        case .wep: "WEP (old)"
-        case .none: "None (open network)"
+        case .wep: String(localized: "WEP (old)")
+        case .none: String(localized: "None (open network)")
         }
     }
     /// The value used inside Wi-Fi QR codes.
@@ -31,7 +31,7 @@ enum WiFiSecurity: String, CaseIterable, Codable, Identifiable {
 enum LocationMode: String, CaseIterable, Codable, Identifiable {
     case address, coordinates
     var id: String { rawValue }
-    var title: String { self == .address ? "Address" : "Coordinates" }
+    var title: String { self == .address ? String(localized: "Address") : String(localized: "Coordinates") }
 }
 
 struct CodeFields: Codable, Equatable {

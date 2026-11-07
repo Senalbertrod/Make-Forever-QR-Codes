@@ -17,7 +17,7 @@ struct FullScreenCodeView: View {
             VStack(spacing: 24) {
                 Spacer()
                 QRCodeImage(payload: code.payload, foreground: code.foreground, background: code.background,
-                            icon: code.icon)
+                            icon: code.icon, accessibilityText: String(localized: "QR code for \(code.name)"))
                     .padding(24)
                 Text(code.name)
                     .font(.title2.weight(.semibold))
@@ -31,6 +31,8 @@ struct FullScreenCodeView: View {
         }
         .contentShape(Rectangle())
         .onTapGesture { dismiss() }
+        // VoiceOver: the two-finger "scrub" gesture closes it too.
+        .accessibilityAction(.escape) { dismiss() }
         .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
         .statusBarHidden()

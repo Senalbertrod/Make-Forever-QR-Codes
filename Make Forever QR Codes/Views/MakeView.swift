@@ -13,9 +13,14 @@ struct MakeView: View {
     @State private var showAbout = false
     /// The screen's shape and the Duo's fold, decided once for the whole app.
     @Environment(\.screenLayout) private var layout
+    @Environment(\.dynamicTypeSize) private var textSize
 
     private var columns: [GridItem] {
-        layout.isWide
+        // The largest text sizes: fewer, wider tiles so the names fit.
+        if textSize.isAccessibilitySize {
+            return Array(repeating: GridItem(.flexible(), spacing: 12), count: layout.isWide ? 3 : 2)
+        }
+        return layout.isWide
             ? Array(repeating: GridItem(.flexible(), spacing: 16), count: 5)
             : [GridItem(.adaptive(minimum: 100), spacing: 12)]
     }
@@ -62,6 +67,7 @@ private struct TypeTile: View {
                 .font(.system(size: 28, weight: .medium))
                 .foregroundStyle(.tint)
                 .frame(height: 34)
+                .accessibilityHidden(true)
             Text(type.title)
                 .font(.subheadline.weight(.medium))
                 .multilineTextAlignment(.center)
@@ -72,5 +78,6 @@ private struct TypeTile: View {
         .padding(8)
         .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 16))
         .contentShape(RoundedRectangle(cornerRadius: 16))
+        .accessibilityHint(type.scanResult)
     }
 }

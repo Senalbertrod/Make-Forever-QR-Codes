@@ -43,7 +43,7 @@ enum SocialService: String, CaseIterable, Codable, Identifiable {
         case .facebook: "Facebook"
         case .youtube: "YouTube"
         case .threads: "Threads"
-        case .other: "Other"
+        case .other: String(localized: "Other")
         }
     }
 
@@ -78,6 +78,12 @@ struct SocialProfile: Codable, Equatable, Identifiable {
     var id = UUID()
     var service: SocialService
     var handle = ""
+}
+
+extension String {
+    /// A contact label ("Work", "Mobile"...) in the person's language. The label
+    /// itself is saved in English, so codes and contact cards stay the same.
+    var labelTitle: String { String(localized: String.LocalizationValue(self)) }
 }
 
 /// Limits and label choices for the + button.

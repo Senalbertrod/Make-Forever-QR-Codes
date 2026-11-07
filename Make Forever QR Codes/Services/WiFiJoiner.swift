@@ -42,9 +42,9 @@ enum WiFiJoiner {
             case .alreadyAssociated: return .alreadyJoined
             case .userDenied: return .cancelled
             case .invalidWPAPassphrase, .invalidWEPPassphrase:
-                return .failed("The password in this code isn't a valid Wi-Fi password.")
+                return .failed(String(localized: "The password in this code isn't a valid Wi-Fi password."))
             case .invalidSSID, .invalidSSIDPrefix:
-                return .failed("The network name in this code isn't valid.")
+                return .failed(String(localized: "The network name in this code isn't valid."))
             default:
                 return .failed(error.localizedDescription)
             }

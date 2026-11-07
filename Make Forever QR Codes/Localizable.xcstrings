@@ -1,0 +1,2400 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ copy" : {
+      "comment" : "Name of a duplicated code",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ (copia)"
+          }
+        }
+      }
+    },
+    "%@ profile" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil de %@"
+          }
+        }
+      }
+    },
+    "+1 555 123 4567" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+1 555 123 4567"
+          }
+        }
+      }
+    },
+    "A link code works as long as the website exists. Every other kind works with no internet at all." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un código de enlace funciona mientras exista el sitio web. Todos los demás tipos funcionan sin internet."
+          }
+        }
+      }
+    },
+    "About" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de"
+          }
+        }
+      }
+    },
+    "Add address" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar dirección"
+          }
+        }
+      }
+    },
+    "Add email" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar correo"
+          }
+        }
+      }
+    },
+    "Add phone" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar teléfono"
+          }
+        }
+      }
+    },
+    "Add social profile" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar perfil social"
+          }
+        }
+      }
+    },
+    "Add to Calendar" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar a Calendario"
+          }
+        }
+      }
+    },
+    "Add to Contacts" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar a Contactos"
+          }
+        }
+      }
+    },
+    "Add website" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agregar sitio web"
+          }
+        }
+      }
+    },
+    "Address" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dirección"
+          }
+        }
+      }
+    },
+    "Adds a small %@ icon. The code still scans, it just gets a little denser." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agrega un pequeño ícono de %@. El código se sigue escaneando, solo queda un poco más denso."
+          }
+        }
+      }
+    },
+    "All Codes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos los códigos"
+          }
+        }
+      }
+    },
+    "All day" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo el día"
+          }
+        }
+      }
+    },
+    "App" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App"
+          }
+        }
+      }
+    },
+    "Appearance" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apariencia"
+          }
+        }
+      }
+    },
+    "Arrange" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordenar"
+          }
+        }
+      }
+    },
+    "Back to black and white" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a blanco y negro"
+          }
+        }
+      }
+    },
+    "Background" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fondo"
+          }
+        }
+      }
+    },
+    "Black on white always scans best." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Negro sobre blanco siempre se escanea mejor."
+          }
+        }
+      }
+    },
+    "Call %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Llamar al %@"
+          }
+        }
+      }
+    },
+    "Camera is off for Make Forever QR" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La cámara está desactivada para Make Forever QR"
+          }
+        }
+      }
+    },
+    "Camera scanning isn't available on this device" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El escaneo con la cámara no está disponible en este dispositivo"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        }
+      }
+    },
+    "Caption" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto"
+          }
+        }
+      }
+    },
+    "City" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciudad"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
+        }
+      }
+    },
+    "Code color" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Color del código"
+          }
+        }
+      }
+    },
+    "Code size" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño del código"
+          }
+        }
+      }
+    },
+    "Code with a caption" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código con texto"
+          }
+        }
+      }
+    },
+    "Codes never expire" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los códigos nunca vencen"
+          }
+        }
+      }
+    },
+    "Codes you make are saved here." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los códigos que hagas se guardan aquí."
+          }
+        }
+      }
+    },
+    "Colors" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Colores"
+          }
+        }
+      }
+    },
+    "Company" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empresa"
+          }
+        }
+      }
+    },
+    "Contact" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contacto"
+          }
+        }
+      }
+    },
+    "Coordinates" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coordenadas"
+          }
+        }
+      }
+    },
+    "Copied link" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enlace copiado"
+          }
+        }
+      }
+    },
+    "Copied network name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de la red copiado"
+          }
+        }
+      }
+    },
+    "Copied password" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contraseña copiada"
+          }
+        }
+      }
+    },
+    "Copied text" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto copiado"
+          }
+        }
+      }
+    },
+    "Copy" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar"
+          }
+        }
+      }
+    },
+    "Copy Link" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar enlace"
+          }
+        }
+      }
+    },
+    "Copy Network Name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar nombre de la red"
+          }
+        }
+      }
+    },
+    "Copy Password" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copiar contraseña"
+          }
+        }
+      }
+    },
+    "Couldn't join. %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo conectar. %@"
+          }
+        }
+      }
+    },
+    "Country" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "País"
+          }
+        }
+      }
+    },
+    "Dark" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oscuro"
+          }
+        }
+      }
+    },
+    "Delete" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar"
+          }
+        }
+      }
+    },
+    "Delete this code?" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Eliminar este código?"
+          }
+        }
+      }
+    },
+    "Deleting" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar"
+          }
+        }
+      }
+    },
+    "Deleting a code only removes it from My Codes. Printed or shared copies keep working." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar un código solo lo quita de Mis códigos. Las copias impresas o compartidas siguen funcionando."
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "Drag a kind of code up or down. All its codes move with it, in Favorites and in All Codes." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrastra un tipo de código hacia arriba o hacia abajo. Todos sus códigos se mueven con él, en Favoritos y en Todos los códigos."
+          }
+        }
+      }
+    },
+    "Duplicate" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duplicar"
+          }
+        }
+      }
+    },
+    "Edit" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar"
+          }
+        }
+      }
+    },
+    "Edit %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar %@"
+          }
+        }
+      }
+    },
+    "Email" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correo"
+          }
+        }
+      }
+    },
+    "Email %@" : {
+      "comment" : "Saved name for an email code",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Correo a %@"
+          }
+        }
+      }
+    },
+    "Ends" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina"
+          }
+        }
+      }
+    },
+    "Event" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evento"
+          }
+        }
+      }
+    },
+    "Favorite" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorito"
+          }
+        }
+      }
+    },
+    "Favorites" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favoritos"
+          }
+        }
+      }
+    },
+    "Fill from my contact card" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Llenar con una tarjeta de contacto"
+          }
+        }
+      }
+    },
+    "Fill in the form to see your code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Llena el formulario para ver tu código"
+          }
+        }
+      }
+    },
+    "Find by" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar por"
+          }
+        }
+      }
+    },
+    "First name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
+          }
+        }
+      }
+    },
+    "For example \"Bakery menu\" or \"Home Wi-Fi\"." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por ejemplo, \"Menú de la panadería\" o \"Wi-Fi de casa\"."
+          }
+        }
+      }
+    },
+    "For example \"Scan for our menu\"" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por ejemplo, \"Escanea para ver el menú\""
+          }
+        }
+      }
+    },
+    "Guests scan the code and join without typing the password." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus invitados escanean el código y se conectan sin escribir la contraseña."
+          }
+        }
+      }
+    },
+    "Hidden network" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Red oculta"
+          }
+        }
+      }
+    },
+    "Home" : {
+      "comment" : "Contact label (saved in English, shown translated)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Casa"
+          }
+        }
+      }
+    },
+    "How it works" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo funciona"
+          }
+        }
+      }
+    },
+    "Icon in the middle" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ícono en el centro"
+          }
+        }
+      }
+    },
+    "If joining doesn't work, go to Settings › Wi-Fi, pick the network and paste the password." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si no se conecta, ve a Configuración › Wi-Fi, elige la red y pega la contraseña."
+          }
+        }
+      }
+    },
+    "It shows here, big enough to scan." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aparece aquí, lo bastante grande para escanearlo."
+          }
+        }
+      }
+    },
+    "Job title" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargo"
+          }
+        }
+      }
+    },
+    "Join Network" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectarse a la red"
+          }
+        }
+      }
+    },
+    "Joined %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conectado a %@"
+          }
+        }
+      }
+    },
+    "Joins the Wi-Fi network" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se conecta a la red Wi-Fi"
+          }
+        }
+      }
+    },
+    "Label under each code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto debajo de cada código"
+          }
+        }
+      }
+    },
+    "Label: %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etiqueta: %@"
+          }
+        }
+      }
+    },
+    "Large (7 in / 18 cm)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grande (7 in / 18 cm)"
+          }
+        }
+      }
+    },
+    "Last name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apellido"
+          }
+        }
+      }
+    },
+    "Latitude (for example 40.7484)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Latitud (por ejemplo, 40.7484)"
+          }
+        }
+      }
+    },
+    "Layout" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diseño"
+          }
+        }
+      }
+    },
+    "Leave empty to use the code's name." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déjalo vacío para usar el nombre del código."
+          }
+        }
+      }
+    },
+    "Light" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claro"
+          }
+        }
+      }
+    },
+    "Light squares on a dark background can't be read by some scanners. Dark on light is safest." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunos lectores no pueden leer cuadros claros sobre fondo oscuro. Oscuro sobre claro es lo más seguro."
+          }
+        }
+      }
+    },
+    "Link" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enlace"
+          }
+        }
+      }
+    },
+    "Link to your profile" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enlace a tu perfil"
+          }
+        }
+      }
+    },
+    "Links" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enlaces"
+          }
+        }
+      }
+    },
+    "Location" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubicación"
+          }
+        }
+      }
+    },
+    "Location (optional)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lugar (opcional)"
+          }
+        }
+      }
+    },
+    "Longitude (for example -73.9857)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longitud (por ejemplo, -73.9857)"
+          }
+        }
+      }
+    },
+    "Mail" : {
+      "comment" : "Name of the Apple app",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mail"
+          }
+        }
+      }
+    },
+    "Make" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear"
+          }
+        }
+      }
+    },
+    "Make a Code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear un código"
+          }
+        }
+      }
+    },
+    "Maps" : {
+      "comment" : "Name of the Apple app",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mapas"
+          }
+        }
+      }
+    },
+    "Match Device" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Igual que el dispositivo"
+          }
+        }
+      }
+    },
+    "Medium (4 in / 10 cm)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mediano (4 in / 10 cm)"
+          }
+        }
+      }
+    },
+    "Message" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensaje"
+          }
+        }
+      }
+    },
+    "Message (optional)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensaje (opcional)"
+          }
+        }
+      }
+    },
+    "Messages" : {
+      "comment" : "Name of the Apple app",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensajes"
+          }
+        }
+      }
+    },
+    "Mobile" : {
+      "comment" : "Contact label (saved in English, shown translated)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celular"
+          }
+        }
+      }
+    },
+    "My Codes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mis códigos"
+          }
+        }
+      }
+    },
+    "Name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre"
+          }
+        }
+      }
+    },
+    "Name this code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ponle nombre a este código"
+          }
+        }
+      }
+    },
+    "Network" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Red"
+          }
+        }
+      }
+    },
+    "Network name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de la red"
+          }
+        }
+      }
+    },
+    "No QR code found" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontró ningún código QR"
+          }
+        }
+      }
+    },
+    "No account, no ads, no tracking. Your codes are saved only on this device." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin cuenta, sin anuncios, sin rastreo. Tus códigos se guardan solo en este dispositivo."
+          }
+        }
+      }
+    },
+    "No codes yet" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todavía no hay códigos"
+          }
+        }
+      }
+    },
+    "No name" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin nombre"
+          }
+        }
+      }
+    },
+    "None (open network)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ninguna (red abierta)"
+          }
+        }
+      }
+    },
+    "Not saved unless you tap Save." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se guarda a menos que toques Guardar."
+          }
+        }
+      }
+    },
+    "Notes (optional)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notas (opcional)"
+          }
+        }
+      }
+    },
+    "Nothing leaves your %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada sale de tu %@"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "Offers to add the contact" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ofrece agregar el contacto"
+          }
+        }
+      }
+    },
+    "Offers to add the event to the calendar" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ofrece agregar el evento al calendario"
+          }
+        }
+      }
+    },
+    "Offers to call the number" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ofrece llamar al número"
+          }
+        }
+      }
+    },
+    "On Apple Watch" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En el Apple Watch"
+          }
+        }
+      }
+    },
+    "One large code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un código grande"
+          }
+        }
+      }
+    },
+    "Open" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir"
+          }
+        }
+      }
+    },
+    "Open Profile" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir perfil"
+          }
+        }
+      }
+    },
+    "Open Settings" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Configuración"
+          }
+        }
+      }
+    },
+    "Open Website" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir sitio web"
+          }
+        }
+      }
+    },
+    "Open in %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir en %@"
+          }
+        }
+      }
+    },
+    "Open in Maps" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir en Mapas"
+          }
+        }
+      }
+    },
+    "Opens %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre %@"
+          }
+        }
+      }
+    },
+    "Opens a new email, ready to send" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre un correo nuevo, listo para enviar"
+          }
+        }
+      }
+    },
+    "Opens a text message, ready to send" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre un mensaje de texto, listo para enviar"
+          }
+        }
+      }
+    },
+    "Opens another app" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre otra app"
+          }
+        }
+      }
+    },
+    "Opens in Maps when scanned. Viewing the map needs internet." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se abre en Mapas al escanearlo. Para ver el mapa se necesita internet."
+          }
+        }
+      }
+    },
+    "Opens the profile" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre el perfil"
+          }
+        }
+      }
+    },
+    "Opens the spot in Maps" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre el lugar en Mapas"
+          }
+        }
+      }
+    },
+    "Opens the website" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre el sitio web"
+          }
+        }
+      }
+    },
+    "Other" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otro"
+          }
+        }
+      }
+    },
+    "Password" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contraseña"
+          }
+        }
+      }
+    },
+    "Paste the link to your profile." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pega el enlace a tu perfil."
+          }
+        }
+      }
+    },
+    "Personal" : {
+      "comment" : "Contact label (saved in English, shown translated)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personal"
+          }
+        }
+      }
+    },
+    "Phone" : {
+      "comment" : "Name of the Apple app",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teléfono"
+          }
+        }
+      }
+    },
+    "Phone number" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Número de teléfono"
+          }
+        }
+      }
+    },
+    "Pick a code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un código"
+          }
+        }
+      }
+    },
+    "Pick a contact to fill in the form. The app only sees the contact you pick." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un contacto para llenar el formulario. La app solo ve el contacto que elijas."
+          }
+        }
+      }
+    },
+    "Place name (optional)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre del lugar (opcional)"
+          }
+        }
+      }
+    },
+    "Point the camera at a QR code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apunta la cámara a un código QR"
+          }
+        }
+      }
+    },
+    "Portfolio" : {
+      "comment" : "Contact label (saved in English, shown translated)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portafolio"
+          }
+        }
+      }
+    },
+    "Preview" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vista previa"
+          }
+        }
+      }
+    },
+    "Preview of your %@ code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vista previa de tu código de %@"
+          }
+        }
+      }
+    },
+    "Print" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imprimir"
+          }
+        }
+      }
+    },
+    "Print it, it's yours" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imprímelo, es tuyo"
+          }
+        }
+      }
+    },
+    "Printed a code with the wrong information? Fix it in the app and print it again." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Imprimiste un código con información equivocada? Corrígelo en la app e imprímelo otra vez."
+          }
+        }
+      }
+    },
+    "Printed codes can't change" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los códigos impresos no cambian"
+          }
+        }
+      }
+    },
+    "Printed codes keep working forever. To stop using one, throw away the paper." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los códigos impresos funcionan para siempre. Para dejar de usar uno, tira el papel."
+          }
+        }
+      }
+    },
+    "Printed or shared copies still work." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las copias impresas o compartidas siguen funcionando."
+          }
+        }
+      }
+    },
+    "Print…" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imprimir…"
+          }
+        }
+      }
+    },
+    "Privacy" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacidad"
+          }
+        }
+      }
+    },
+    "QR Code is a registered trademark of DENSO WAVE INCORPORATED." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "QR Code es una marca registrada de DENSO WAVE INCORPORATED."
+          }
+        }
+      }
+    },
+    "QR code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código QR"
+          }
+        }
+      }
+    },
+    "QR code for %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código QR de %@"
+          }
+        }
+      }
+    },
+    "QR code found: %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código QR encontrado: %@"
+          }
+        }
+      }
+    },
+    "Remove" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar"
+          }
+        }
+      }
+    },
+    "Remove from Watch" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar del Apple Watch"
+          }
+        }
+      }
+    },
+    "Rename" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar"
+          }
+        }
+      }
+    },
+    "Save" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
+          }
+        }
+      }
+    },
+    "Save Image" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar imagen"
+          }
+        }
+      }
+    },
+    "Save or share as PDF" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar o compartir como PDF"
+          }
+        }
+      }
+    },
+    "Save to My Codes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar en Mis códigos"
+          }
+        }
+      }
+    },
+    "Saved to My Codes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardado en Mis códigos"
+          }
+        }
+      }
+    },
+    "Saved to Photos" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardado en Fotos"
+          }
+        }
+      }
+    },
+    "Scan" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanear"
+          }
+        }
+      }
+    },
+    "Scan from a photo" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escanear desde una foto"
+          }
+        }
+      }
+    },
+    "Scanned Code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código escaneado"
+          }
+        }
+      }
+    },
+    "Scanned on your %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se escanea en tu %@"
+          }
+        }
+      }
+    },
+    "Scanning" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escaneo"
+          }
+        }
+      }
+    },
+    "Search codes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar códigos"
+          }
+        }
+      }
+    },
+    "Security" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguridad"
+          }
+        }
+      }
+    },
+    "Send Anyway" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar de todos modos"
+          }
+        }
+      }
+    },
+    "Send to Watch" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviar al Apple Watch"
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configuración"
+          }
+        }
+      }
+    },
+    "Share" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compartir"
+          }
+        }
+      }
+    },
+    "Sheet of small codes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoja de códigos pequeños"
+          }
+        }
+      }
+    },
+    "Shortcuts" : {
+      "comment" : "Name of the Apple app",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atajos"
+          }
+        }
+      }
+    },
+    "Shown under the code's name." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aparece debajo del nombre del código."
+          }
+        }
+      }
+    },
+    "Shows the code full screen" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra el código en pantalla completa"
+          }
+        }
+      }
+    },
+    "Shows the text" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra el texto"
+          }
+        }
+      }
+    },
+    "Size" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaño"
+          }
+        }
+      }
+    },
+    "Small (2 in / 5 cm)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pequeño (2 in / 5 cm)"
+          }
+        }
+      }
+    },
+    "Social Profile" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil social"
+          }
+        }
+      }
+    },
+    "Social profile" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil social"
+          }
+        }
+      }
+    },
+    "Social profiles" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfiles sociales"
+          }
+        }
+      }
+    },
+    "Starts" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empieza"
+          }
+        }
+      }
+    },
+    "State" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estado"
+          }
+        }
+      }
+    },
+    "Street" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calle"
+          }
+        }
+      }
+    },
+    "Subject (optional)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asunto (opcional)"
+          }
+        }
+      }
+    },
+    "Tap anywhere to close · Turn up brightness for easier scanning" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca en cualquier lugar para cerrar · Sube el brillo para escanear más fácil"
+          }
+        }
+      }
+    },
+    "Text" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto"
+          }
+        }
+      }
+    },
+    "Text %@" : {
+      "comment" : "Saved name for a text message code, like \"Text 555 1234\"",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensaje al %@"
+          }
+        }
+      }
+    },
+    "Text message" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensaje de texto"
+          }
+        }
+      }
+    },
+    "The Scan tab reads codes with the camera or from a photo, right on your %@. Nothing is saved unless you tap Save." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La pestaña Escanear lee códigos con la cámara o desde una foto, directamente en tu %@. No se guarda nada a menos que toques Guardar."
+          }
+        }
+      }
+    },
+    "The information is saved on your device. No server sits in between, so nobody can switch your code off." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La información se guarda en tu dispositivo. No hay ningún servidor en medio, así que nadie puede desactivar tu código."
+          }
+        }
+      }
+    },
+    "The network name in this code isn't valid." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El nombre de la red en este código no es válido."
+          }
+        }
+      }
+    },
+    "The password in this code isn't a valid Wi-Fi password." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La contraseña en este código no es una contraseña de Wi-Fi válida."
+          }
+        }
+      }
+    },
+    "The printer screen lets you pick the printer and the number of copies. A PDF is handy for print shops." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la pantalla de impresión eliges la impresora y el número de copias. Un PDF es práctico para una imprenta."
+          }
+        }
+      }
+    },
+    "These colors are too similar. Some phones won't be able to scan this code." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estos colores se parecen demasiado. Algunos teléfonos no podrán escanear este código."
+          }
+        }
+      }
+    },
+    "This code has too much information to scan from the watch screen." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este código tiene demasiada información para escanearlo desde la pantalla del reloj."
+          }
+        }
+      }
+    },
+    "This code is getting dense. It may be hard to scan from a small screen; keep it shorter if you can." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este código se está volviendo denso. Puede costar escanearlo desde una pantalla pequeña; hazlo más corto si puedes."
+          }
+        }
+      }
+    },
+    "This code is too long for an icon, so it's shown without one." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este código es demasiado largo para un ícono, así que se muestra sin él."
+          }
+        }
+      }
+    },
+    "Title" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Título"
+          }
+        }
+      }
+    },
+    "To" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para"
+          }
+        }
+      }
+    },
+    "Too big for Apple Watch" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demasiado grande para el Apple Watch"
+          }
+        }
+      }
+    },
+    "Too much text for one QR code. Make it shorter." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demasiado texto para un código QR. Hazlo más corto."
+          }
+        }
+      }
+    },
+    "Too much text for one code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demasiado texto para un código"
+          }
+        }
+      }
+    },
+    "Try a picture where the code is clear and not cut off." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba con una foto donde el código se vea claro y completo."
+          }
+        }
+      }
+    },
+    "Turn on the camera in Settings to scan, or scan from a photo." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activa la cámara en Configuración para escanear, o escanea desde una foto."
+          }
+        }
+      }
+    },
+    "Type your username, like @yourname. A full link works too." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe tu nombre de usuario, como @tunombre. También sirve un enlace completo."
+          }
+        }
+      }
+    },
+    "Unfavorite" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quitar de favoritos"
+          }
+        }
+      }
+    },
+    "Username" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de usuario"
+          }
+        }
+      }
+    },
+    "Username or link" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usuario o enlace"
+          }
+        }
+      }
+    },
+    "Version" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versión"
+          }
+        }
+      }
+    },
+    "WEP (old)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "WEP (antigua)"
+          }
+        }
+      }
+    },
+    "Website" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sitio web"
+          }
+        }
+      }
+    },
+    "What's inside shows up here." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquí aparece lo que contiene."
+          }
+        }
+      }
+    },
+    "When scanned: %@." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al escanearlo: %@."
+          }
+        }
+      }
+    },
+    "Wi-Fi" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wi-Fi"
+          }
+        }
+      }
+    },
+    "Wi-Fi network" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Red Wi-Fi"
+          }
+        }
+      }
+    },
+    "Work" : {
+      "comment" : "Contact label (saved in English, shown translated)",
+      "extractionState" : "manual",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trabajo"
+          }
+        }
+      }
+    },
+    "Yes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sí"
+          }
+        }
+      }
+    },
+    "You can still scan from a photo or screenshot." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún puedes escanear desde una foto o captura de pantalla."
+          }
+        }
+      }
+    },
+    "Your %@ couldn't connect. The password in the code may be wrong." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu %@ no se pudo conectar. Puede que la contraseña del código esté mal."
+          }
+        }
+      }
+    },
+    "Your %@ is already on %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Your %1$@ is already on %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu %1$@ ya está conectado a %2$@"
+          }
+        }
+      }
+    },
+    "Your text" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu texto"
+          }
+        }
+      }
+    },
+    "ZIP / Postal code" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Código postal"
+          }
+        }
+      }
+    },
+    "example.com" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ejemplo.com"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

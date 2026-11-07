@@ -24,6 +24,12 @@ struct ScanView: View {
     @State private var noCodeInPhoto = false
     /// The screen's shape and the Duo's fold, decided once for the whole app.
     @Environment(\.screenLayout) private var layout
+    /// Reduce Motion: results fade in instead of sliding.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    private var motion: Animation { reduceMotion ? .easeInOut(duration: 0.2) : .spring(duration: 0.45) }
+    private var resultTransition: AnyTransition {
+        reduceMotion ? .opacity : .move(edge: .trailing).combined(with: .opacity)
+    }
 
     /// iPhone Duo half-closed: the camera and the result each get a page.
     private var fold: Fold? { layout.fold }
@@ -54,6 +60,12 @@ struct ScanView: View {
             ScanResultView(code: code)
         }
         .sensoryFeedback(.success, trigger: result?.id)
+        // VoiceOver: say what was found, so nobody has to look for it.
+        .onChange(of: result?.id) {
+            if let result {
+                AccessibilityNotification.Announcement(String(localized: "QR code found: \(result.title)")).post()
+            }
+        }
         .onChange(of: photoItem) {
             guard let item = photoItem else { return }
             photoItem = nil
@@ -108,12 +120,12 @@ struct ScanView: View {
             Group {
                 if let result {
                     ScanResultView(code: result) {
-                        withAnimation(.spring(duration: 0.45)) { self.result = nil }
+                        withAnimation(motion) { self.result = nil }
                         pauseBriefly()
                     }
                     .id(result.id)
                     .clipShape(RoundedRectangle(cornerRadius: 24))
-                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                    .transition(resultTransition)
                 } else {
                     ContentUnavailableView("Point the camera at a QR code",
                                            systemImage: "qrcode.viewfinder",
@@ -125,7 +137,7 @@ struct ScanView: View {
             .frame(width: fold.rightWidth)
         }
         .padding(.bottom, 8)
-        .animation(.spring(duration: 0.45), value: result?.id)
+        .animation(motion, value: result?.id)
     }
 
     private var middleScan: some View {
@@ -144,13 +156,13 @@ struct ScanView: View {
 
                 if let result {
                     ScanResultView(code: result) {
-                        withAnimation(.spring(duration: 0.45)) { self.result = nil }
+                        withAnimation(motion) { self.result = nil }
                         pauseBriefly()
                     }
                     .id(result.id)
                     .clipShape(RoundedRectangle(cornerRadius: 24))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .transition(.move(edge: .trailing).combined(with: .opacity))
+                    .transition(resultTransition)
                 }
             }
             .padding(.horizontal, 24)
@@ -158,7 +170,7 @@ struct ScanView: View {
             .padding(.bottom, 24)
             .frame(width: geo.size.width, height: geo.size.height)
         }
-        .animation(.spring(duration: 0.45), value: result?.id)
+        .animation(motion, value: result?.id)
     }
 
     private var phoneScan: some View {
@@ -215,7 +227,7 @@ struct ScanView: View {
         }
     }
 
-    private func unavailable(_ title: String, symbol: String, text: String) -> some View {
+    private func unavailable(_ title: LocalizedStringKey, symbol: String, text: LocalizedStringKey) -> some View {
         ContentUnavailableView {
             Label(title, systemImage: symbol)
         } description: {

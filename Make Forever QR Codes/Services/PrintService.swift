@@ -15,9 +15,9 @@ enum PrintLayout: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .single: "One large code"
-        case .captioned: "Code with a caption"
-        case .sheet: "Sheet of small codes"
+        case .single: String(localized: "One large code")
+        case .captioned: String(localized: "Code with a caption")
+        case .sheet: String(localized: "Sheet of small codes")
         }
     }
 }
@@ -27,9 +27,9 @@ enum PrintSize: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .small: "Small (2 in / 5 cm)"
-        case .medium: "Medium (4 in / 10 cm)"
-        case .large: "Large (7 in / 18 cm)"
+        case .small: String(localized: "Small (2 in / 5 cm)")
+        case .medium: String(localized: "Medium (4 in / 10 cm)")
+        case .large: String(localized: "Large (7 in / 18 cm)")
         }
     }
     /// Width of the code on paper, in points (72 per inch).

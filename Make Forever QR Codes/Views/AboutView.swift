@@ -51,8 +51,8 @@ struct AboutView: View {
 
 private struct InfoRow: View {
     let symbol: String
-    let title: String
-    let text: String
+    let title: LocalizedStringKey
+    let text: LocalizedStringKey
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
