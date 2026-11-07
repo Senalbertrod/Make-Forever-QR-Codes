@@ -21,7 +21,6 @@ Most QR services make "dynamic" codes that point to their own server, and the co
 - **iPad and iPhone Duo layout:** on iPad, and on iPhone Duo when it's open, the app uses the whole screen (closed, the Duo looks like any iPhone; half-closed like a book, My Codes, a saved code, Edit and Scan split exactly on the fold, one page each side; opening or closing it keeps your place), with the tabs at the bottom like on iPhone. Five tiles per row on Make; when making or opening a code, the code is on top standing up, and on the left with the settings or buttons on the right sideways; when scanning sideways, the camera slides left with the result on the right (standing up, the result slides up like on iPhone). My Codes looks like iPhone standing up; sideways, the list is on the left and the code you pick shows big on the right, ready to scan. In a narrow split screen it uses the iPhone layout
 - Light mode, dark mode and tinted app icons
 - **English and Spanish:** the whole app, on iPhone, iPad and Apple Watch, switches to Spanish by itself when the device is set to Spanish
-- **Accessibility:** VoiceOver says what a scanned code holds, every QR code picture has a spoken name ("QR code for Home Wi-Fi"), screens fit the largest text sizes, and results fade instead of sliding when Reduce Motion is on
 
 - **Scan tab:** scan with the camera or from a photo. It shows what's inside before anything opens, with the website name in a clear font so look-alike letters stand out. Buttons to open, or add to Contacts or Calendar. Save to My Codes only if you want
 - **Join Wi-Fi with one tap:** scan a Wi-Fi code and tap **Join Network**. Your iPhone or iPad asks once, then joins, no copying or pasting. Works the same on iPhone, iPad and iPhone Duo (closed, open, or half-closed with the result on the right page). If it can't connect, it says so, and Copy Password and Copy Network Name are still there to join by hand in Settings
@@ -53,7 +52,7 @@ Everything runs on the device. No account, no analytics, no network calls. The c
 
 | Version | What's new |
 | --- | --- |
-| 1.1 | Make Forever QR now speaks Spanish: it switches by itself when your iPhone, iPad or Apple Watch is set to Spanish. Better for everyone: VoiceOver says what a scanned code holds, QR codes have spoken names, every screen fits the largest text sizes, and Reduce Motion is respected. Codes you already saved stay exactly the same. |
+| 1.1 | Make Forever QR now speaks Spanish: it switches by itself when your iPhone, iPad or Apple Watch is set to Spanish. Codes you already saved stay exactly the same. |
 | 1.0 | First App Store release. Includes one-tap Join Network for scanned Wi-Fi codes on iPhone, iPad and iPhone Duo. Printing works: one large code, a code with a caption, or a sheet of small codes, in three sizes, or save a PDF for a print shop. |
 
 ## Author

@@ -33,11 +33,6 @@ struct CodeDetailView: View {
     @State private var hasWatch = false
 
     private var image: UIImage? { code.image(size: 1024) }
-    /// The largest text sizes: the buttons go one under the other so their names fit.
-    @Environment(\.dynamicTypeSize) private var textSize
-    private var buttonRow: AnyLayout {
-        textSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 12)) : AnyLayout(HStackLayout(spacing: 12))
-    }
     /// iPad (standing up, or beside the list): everything a bit bigger.
     private var big: Bool { stacked || layout.isWide }
 
@@ -153,7 +148,7 @@ struct CodeDetailView: View {
     private func codeImage(maxWidth: CGFloat) -> some View {
         Button { showFullScreen = true } label: {
             QRCodeImage(payload: code.payload, foreground: code.foreground, background: code.background,
-                        icon: code.icon, accessibilityText: String(localized: "QR code for \(code.name)"))
+                        icon: code.icon)
                 .frame(maxWidth: maxWidth)
                 .shadow(color: .black.opacity(0.12), radius: 8, y: 2)
         }
@@ -173,7 +168,7 @@ struct CodeDetailView: View {
 
     private var actions: some View {
         VStack(spacing: 12) {
-            buttonRow {
+            HStack(spacing: 12) {
                 if let image {
                     ShareLink(item: PNGFile(image: image, name: code.name),
                               preview: SharePreview(code.name, image: Image(uiImage: image))) {
@@ -190,7 +185,7 @@ struct CodeDetailView: View {
                     ActionLabel(title: "Print", symbol: "printer")
                 }
             }
-            buttonRow {
+            HStack(spacing: 12) {
                 if code.canEdit {
                     // (My Codes opens the editor, so it can keep you there when the iPad turns.)
                     NavigationLink(value: CodeRoute.edit(code)) {
@@ -233,9 +228,7 @@ private struct ActionLabel: View {
     var body: some View {
         VStack(spacing: 6) {
             Image(systemName: symbol).font(.title3)
-                .accessibilityHidden(true)
             Text(title).font(.caption.weight(.medium))
-                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, minHeight: 64)
         .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 14))

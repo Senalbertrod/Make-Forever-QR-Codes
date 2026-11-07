@@ -21,18 +21,11 @@ struct LabeledLinesSection: View {
     let labels: [String]
     let max: Int
     let kind: LineKind
-    /// The largest text sizes: the label above the field, so both fit.
-    @Environment(\.dynamicTypeSize) private var textSize
-    private var lineLayout: AnyLayout {
-        textSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
-            : AnyLayout(HStackLayout(spacing: 10))
-    }
 
     var body: some View {
         Section(title) {
             ForEach($lines) { $line in
-                lineLayout {
+                HStack(spacing: 10) {
                     LabelMenu(label: $line.label, options: labels)
                     field(text: $line.value)
                     if lines.count > 1 {
@@ -167,7 +160,6 @@ struct LabelMenu: View {
         } label: {
             MenuLabelText(text: label.labelTitle)
         }
-        .accessibilityLabel(Text("Label: \(label.labelTitle)"))
     }
 }
 

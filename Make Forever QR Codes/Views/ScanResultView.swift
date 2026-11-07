@@ -63,7 +63,6 @@ struct ScanResultView: View {
             Section {
                 Label(code.title, systemImage: code.symbol)
                     .font(.headline)
-                    .accessibilityAddTraits(.isHeader)
                 content
             }
 

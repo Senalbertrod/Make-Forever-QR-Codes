@@ -825,16 +825,6 @@
         }
       }
     },
-    "Label: %@" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Etiqueta: %@"
-          }
-        }
-      }
-    },
     "Large (7 in / 18 cm)" : {
       "localizations" : {
         "es" : {
@@ -1525,16 +1515,6 @@
         }
       }
     },
-    "Preview of your %@ code" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vista previa de tu código de %@"
-          }
-        }
-      }
-    },
     "Print" : {
       "localizations" : {
         "es" : {
@@ -1631,26 +1611,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Código QR"
-          }
-        }
-      }
-    },
-    "QR code for %@" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código QR de %@"
-          }
-        }
-      }
-    },
-    "QR code found: %@" : {
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Código QR encontrado: %@"
           }
         }
       }

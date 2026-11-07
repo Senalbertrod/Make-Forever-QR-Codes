@@ -13,8 +13,6 @@ struct QRCodeImage: View {
     var background: UIColor = .white
     var icon: CodeType? = nil
     var pixelSize: CGFloat = 1024
-    /// What VoiceOver says for the code, like "QR code for Home Wi-Fi".
-    var accessibilityText: String? = nil
 
     var body: some View {
         if let payload, let image = QRRenderer.image(for: payload, size: pixelSize,
@@ -24,7 +22,7 @@ struct QRCodeImage: View {
                 .interpolation(.none)
                 .resizable()
                 .aspectRatio(1, contentMode: .fit)
-                .accessibilityLabel(accessibilityText ?? String(localized: "QR code"))
+                .accessibilityLabel("QR code")
         } else {
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(.secondarySystemBackground))

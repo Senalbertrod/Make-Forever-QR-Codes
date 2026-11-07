@@ -146,8 +146,7 @@ struct CodeEditorView: View {
 
     private var preview: some View {
         QRCodeImage(payload: tooLong ? "" : payload, foreground: fg, background: bg,
-                    icon: d.showIcon ? type : nil,
-                    accessibilityText: String(localized: "Preview of your \(type.title) code"))
+                    icon: d.showIcon ? type : nil)
     }
 
     private var previewNotes: some View {

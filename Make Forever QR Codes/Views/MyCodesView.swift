@@ -414,30 +414,21 @@ private struct CodeRow: View {
     let code: SavedCode
     /// Bigger code pictures (iPad).
     var big = false
-    /// The largest text sizes: the picture above the words, so the name fits.
-    @Environment(\.dynamicTypeSize) private var textSize
-    private var rowLayout: AnyLayout {
-        textSize.isAccessibilitySize
-            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
-            : AnyLayout(HStackLayout(spacing: 14))
-    }
 
     var body: some View {
-        rowLayout {
+        HStack(spacing: 14) {
             if let image = code.image(size: big ? 240 : 180) {
                 Image(uiImage: image)
                     .interpolation(.none)
                     .resizable()
                     .frame(width: big ? 76 : 52, height: big ? 76 : 52)
                     .clipShape(RoundedRectangle(cornerRadius: 6))
-                    .accessibilityHidden(true)
             }
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 4) {
-                    Text(code.name).font(.headline).lineLimit(textSize.isAccessibilitySize ? 3 : 1)
+                    Text(code.name).font(.headline).lineLimit(1)
                     if code.isFavorite {
                         Image(systemName: "star.fill").font(.caption).foregroundStyle(.yellow)
-                            .accessibilityLabel("Favorite")
                     }
                     if code.onWatch {
                         Image(systemName: "applewatch").font(.caption).foregroundStyle(.green)
@@ -453,7 +444,5 @@ private struct CodeRow: View {
             }
         }
         .padding(.vertical, big ? 8 : 4)
-        // VoiceOver reads the row as one: name, favorite, watch, kind and date.
-        .accessibilityElement(children: .combine)
     }
 }
